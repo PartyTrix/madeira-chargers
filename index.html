@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com https://*.goatcounter.com; connect-src 'self' https://photon.komoot.io https://router.project-osrm.org; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Madeira EV Chargers</title>
@@ -33,6 +33,9 @@
     <symbol id="i-plug" viewBox="0 0 24 24"><path d="M8 3v5M16 3v5M5 8h14v3a7 7 0 0 1-14 0zM12 18v3"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9l8-6 8 6M4 15l8 6 8-6"/></symbol>
   </svg>
 
@@ -46,10 +49,17 @@
     </button>
   </header>
 
+  <form class="search" id="search" role="search" autocomplete="off">
+    <label class="search-box">
+      <svg><use href="#i-search"/></svg>
+      <input id="q" type="search" placeholder="Where to? e.g. Funchal" aria-label="Search a destination in Madeira" enterkeyhint="search">
+    </label>
+    <ul id="results" class="results" role="listbox" hidden></ul>
+  </form>
+
   <nav class="filters" aria-label="Map options">
     <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Prices on map</button>
     <button class="chip" data-filter="fast" aria-pressed="false"><svg><use href="#i-bolt"/></svg>Fast 50 kW+</button>
-    <button class="chip" data-filter="card" aria-pressed="false"><svg><use href="#i-card"/></svg>Pay by card</button>
     <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has a price</button>
   </nav>
 
@@ -72,12 +82,15 @@
       <footer class="foot">
         <p>Chargers and prices: <a href="https://www.mobie.pt" target="_blank" rel="noopener">MOBI.E</a> via the
         <a href="https://nap-portugal.imt-ip.pt/" target="_blank" rel="noopener">National Access Point (IMT)</a>, updated daily.
-        Prices are the charger operator's fee before VAT; your app's energy price (e.g. Miio) and the MOBI.E fee come on top.
+        Prices are estimated totals including VAT: the operator's fee plus a typical app energy price and the MOBI.E fee. Check your app before charging.
+        Search by <a href="https://photon.komoot.io" target="_blank" rel="noopener">Photon</a>, routes by <a href="https://project-osrm.org" target="_blank" rel="noopener">OSRM</a>.
         Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.
         Not an official MOBI.E site.</p>
       </footer>
     </div>
 
+    <div id="route-view" class="view" hidden></div>
+    <div id="help-view" class="view" hidden></div>
     <div id="detail-view" class="view" hidden></div>
   </section>
 

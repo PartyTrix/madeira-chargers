@@ -4,7 +4,7 @@ A fast, mobile-first map of every public EV charger in Madeira and Porto Santo.
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
-Live at **https://madeirachargers.com**. Plain HTML/CSS/JS, no build step, no npm packages, no tracking. Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
+Live at **https://madeirachargers.com**. Plain HTML/CSS/JS, no build step, no npm packages, no cookies. Visit counts go to [GoatCounter](https://madeirachargers.goatcounter.com) (cookie-free, no personal data; set `GOATCOUNTER` in `app.js` to `""` to switch it off). Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
 
 ## How it maintains itself
 
@@ -20,7 +20,13 @@ Run the refresh by hand any time from **Actions → Refresh data & deploy → Ru
 
 The price shown is the **operator's (OPC) price** published on the National Access Point for the charger's most powerful socket, turned into one comparable **≈ €/kWh** figure: per-minute and start fees are spread over a typical 20 kWh top-up (11 kW on AC, up to 75 kW on DC). Colours are quartiles of the prices in Madeira, so green means "cheap for Madeira".
 
-It excludes VAT, the MOBI.E network fee and the payment app's (CEME, e.g. Miio) own fee, and the page says so.
+On top of that operator fee the page adds what every driver pays, so the number is close to what Miio charges:
+
+- the charging app's energy price (Miio, €/kWh),
+- the MOBI.E network fee per session,
+- VAT (22% in Madeira).
+
+Each charger card shows the breakdown. These shared numbers live in `data/pricing.json` (`app_energy_kwh`, `mobie_fee_session`, `vat`, `session_kwh`); edit them there when Miio or MOBI.E change their prices.
 
 To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 
@@ -32,6 +38,10 @@ To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 ```
 
 `kwh` €/kWh, `min` €/minute, `start` € per session, `free: true` for free chargers. Station keys are the MOBI.E code shown at the bottom of each charger's card.
+
+## Search and routes
+
+Type a place in the search bar to get a route from your location and the chargers within 1 km of it, in driving order. Place search uses [Photon](https://photon.komoot.io) and routes use the public [OSRM](https://project-osrm.org) demo server, both free and called only when someone searches. If location is blocked, the page explains how to allow it again, or you can tap your position on the map.
 
 ## Adding a charger
 

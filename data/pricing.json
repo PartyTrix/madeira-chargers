@@ -1,0 +1,20 @@
+{
+  "_help": [
+    "Used to turn the charger operator's fee into an estimated total price, the way a driver pays it in an app like Miio.",
+    "total per kWh = (operator fee per kWh + app energy price per kWh + MOBI.E fee / session kWh) x (1 + VAT)",
+    "Edit the numbers here when they change; the site picks them up on the next deploy."
+  ],
+  "app_name": "Miio",
+  "app_energy_kwh": 0.20,
+  "app_energy_is_estimate": true,
+  "mobie_fee_session": 0.1088,
+  "vat": 0.22,
+  "vat_label": "VAT (Madeira 22%)",
+  "session_kwh": 20,
+  "updated": "2026-11-23",
+  "sources": {
+    "mobie_fee_session": "MOBI.E / ERSE EGME tariff 2026: EUR 0.1088 per charge",
+    "vat": "Madeira standard VAT rate 22%",
+    "app_energy_kwh": "Estimate until confirmed from Miio's Pricing tab"
+  }
+}
