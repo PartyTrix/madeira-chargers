@@ -44,6 +44,28 @@ async function get(url, binary = false) {
   }
 }
 
+// MOBI.E's document server sometimes answers with an HTML page instead of
+// the CSV. Try the download form, and follow a tariff link if one is on the page.
+async function getTariffCsv() {
+  const H = { "User-Agent": "madeira-chargers (GitHub Actions)", Accept: "text/csv,*/*" };
+  for (const url of [TARIFF_URL, TARIFF_URL + "?download=true"]) {
+    const res = await fetch(url, { headers: H }).catch((e) => ({ ok: false, statusText: String(e) }));
+    if (!res.ok) { console.warn(`${url}: ${res.status} ${res.statusText}`); continue; }
+    const body = decode(Buffer.from(await res.arrayBuffer()));
+    if (body.includes("UID_TOMADA")) return body;
+    console.warn(`${url} (${res.headers.get("content-type")}) is not the CSV. Title: ${body.match(/<title>([^<]*)/i)?.[1]}`);
+    const links = [...new Set(body.match(/\/documents\/[^"'\s<>]*/g) || [])].filter((l) => /tarif/i.test(l));
+    console.warn(`Tariff-like links on that page: ${links.slice(0, 10).join(" ")}`);
+    for (const l of links) {
+      const r2 = await fetch(new URL(l.replace(/&amp;/g, "&"), "https://www.mobie.pt"), { headers: H }).catch(() => null);
+      if (!r2?.ok) continue;
+      const b2 = decode(Buffer.from(await r2.arrayBuffer()));
+      if (b2.includes("UID_TOMADA")) { console.log(`Tariffs found at ${l}`); return b2; }
+    }
+  }
+  throw new Error("Could not download the MOBI.E tariff CSV");
+}
+
 function decode(buf) {
   // The tariff CSV has been seen as both UTF-8 and Windows-1252.
   const utf = buf.toString("utf8");
@@ -161,7 +183,7 @@ console.log(`NAP: ${sites.length} sites in Madeira`);
 
 let tariffRows = [];
 try {
-  const csv = csvArg ? decode(await readFile(csvArg)) : decode(await get(TARIFF_URL, true));
+  const csv = csvArg ? decode(await readFile(csvArg)) : await getTariffCsv();
   tariffRows = parseCsv(csv);
   console.log(`Tariff CSV: ${tariffRows.length} rows. Columns: ${Object.keys(tariffRows[0] || {}).join(", ")}`);
   const sample = tariffRows.filter((r) => /^(RBR|FNC|CML)-/.test(r.ID)).slice(0, 4);
