@@ -91,6 +91,10 @@ function parseSites(xml) {
       street: unxml(text(tag(addr, "text"))),
       city: unxml(text(tag(addr, "city"))),
       open24h: /OpenAllHours/.test(head),
+      // How you can start a session. creditCard/debitCard = pay at the charger.
+      auth: [...new Set([...s.matchAll(/authenticationAndIdentificationMethods>(\w+)</g)].map((x) => x[1]))],
+      // Charging-app (CEME) brands accepted, e.g. MOB, EDP, GLP. Any = works with MOBI.E apps like Miio.
+      ceme: new Set([...s.matchAll(/brandsAccepted>(\w+)</g)].map((x) => x[1])).size,
       lat, lon, points,
     });
   }
@@ -164,6 +168,12 @@ const features = sites.map((s) => {
       operator: s.operator,
       address: [s.street, s.city].filter(Boolean).join(", ") || null,
       opening_hours: s.open24h ? "24/7" : null,
+      // Sites outside MOBI.E publish no payment info: leave it unknown.
+      pay: !s.ceme && !s.auth.length ? null : {
+        apps: s.ceme > 0,
+        card: s.auth.includes("creditCard") || s.auth.includes("debitCard"),
+        rfid: s.auth.includes("rfid"),
+      },
       max_kw: maxKw,
       sockets: Object.values(grouped),
       tariff: best?.tariff || null,

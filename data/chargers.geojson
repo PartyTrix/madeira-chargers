@@ -18,6 +18,11 @@
     "operator": null,
     "address": "Caminho da Cancela São Gonçalo, Cancela",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -47,6 +52,11 @@
     "operator": null,
     "address": "Caminho da Cancela São Gonçalo, Cancela",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -76,6 +86,11 @@
     "operator": null,
     "address": "Estrada Dr. João Abel de Freitas, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -105,6 +120,11 @@
     "operator": null,
     "address": "Estrada Dr. João Abel de Freitas, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -140,6 +160,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "R. Frei Pedro da Guarda, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -169,6 +194,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "R. Frei Pedro da Guarda, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -198,6 +228,11 @@
     "operator": null,
     "address": "Ed. São Lucas, Estrada Monumental, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -227,6 +262,11 @@
     "operator": null,
     "address": "Ed. São Lucas, Estrada Monumental, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -262,6 +302,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "R. dos Dragoeiros 59, Ribeira Brava",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -291,6 +336,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "R. do Ribeirinho 47-49, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 7,
     "sockets": [
      {
@@ -320,6 +370,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "R. do Ribeirinho 47-49, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -349,6 +404,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "Sítio do Barreiro, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 7,
     "sockets": [
      {
@@ -378,6 +438,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "Sítio do Barreiro, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -407,6 +472,11 @@
     "operator": null,
     "address": "R. das Vinhas, Estreito Camara de Lobos, Estreito",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -436,6 +506,11 @@
     "operator": null,
     "address": "R. das Vinhas, Estreito Camara de Lobos, Estreito",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -465,6 +540,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "Est Dom João V,, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 7,
     "sockets": [
      {
@@ -494,6 +574,11 @@
     "operator": "Modelo Continente Hipermercados, S.A.",
     "address": "Est Dom João V,, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": false,
+     "card": false,
+     "rfid": false
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -529,6 +614,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Avenida Dom Manuel I, Calheta, Madeira",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -564,6 +654,11 @@
     "operator": "FactorENERGIA",
     "address": "Avenida D. Manuel I, Calheta, Madeira",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -605,6 +700,11 @@
     "operator": "FactorENERGIA",
     "address": "Avenida D. Manuel I, Calheta, Madeira",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -640,6 +740,11 @@
     "operator": "FactorENERGIA",
     "address": "Caminho Jardim do Mar, Calheta, Madeira",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -675,6 +780,11 @@
     "operator": "FactorENERGIA",
     "address": "Parque de estacionamento da Rua da Carreira,, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -710,6 +820,11 @@
     "operator": "FactorENERGIA",
     "address": "Estrada do Cabo Girão - Miradouro, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -745,6 +860,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua João Augusto de Ornelas, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -780,6 +900,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua Artur de Sousa \"Pinga\", Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -815,6 +940,11 @@
     "operator": "Galp Power OPC",
     "address": "NA, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -852,6 +982,11 @@
     "operator": "Galp Power OPC",
     "address": "NA, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -889,6 +1024,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Rua 31 de Janeiro, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -924,6 +1064,11 @@
     "operator": "Helexia II Energy Services, Lda.",
     "address": "R. do Engenho Velho 4, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -965,6 +1110,11 @@
     "operator": "Helexia II Energy Services, Lda.",
     "address": "R. do Engenho Velho 4, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1000,6 +1150,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua José da Silva \"Saca\", Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -1049,6 +1204,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua José da Silva \"Saca\", Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -1098,6 +1258,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Rua Nova do Vale da Ajuda, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1131,6 +1296,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Caminho do Poço Barral 28, 9020-148 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1164,6 +1334,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Pico dos Barcelos, 9020-148, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1197,6 +1372,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "R. do Gorgulho 11, 9000-107 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1230,6 +1410,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Av. da Madalena 99, 9020-402 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1263,6 +1448,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Universidade da Madeira, 9020-105 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1296,6 +1486,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Av. do Infante 62C, 9000-015 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1329,6 +1524,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Caminho do Lombo Segundo 69, 9020-122 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1362,6 +1562,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Rua 5 de Outubro 91B, 9000-079 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1395,6 +1600,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Rua Dos Ferreiros 127-107, 9000-082 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1428,6 +1638,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "R. Nova da Igreja 32, 9060-053 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1461,6 +1676,11 @@
     "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
     "address": "Av. Calouste Gulbenkian 9, 9000-044 Funchal, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 11,
     "sockets": [
      {
@@ -1494,6 +1714,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua Nova da Quinta Deão, nº64, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1529,6 +1754,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua das Cruzes nº1, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1564,6 +1794,11 @@
     "operator": "FactorENERGIA",
     "address": "Av. Calouste Gulbekian, Ed 2000, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1599,6 +1834,11 @@
     "operator": "FactorENERGIA",
     "address": "Largo Severiano Ferraz, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1634,6 +1874,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua Ribeira de João Gomes, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1669,6 +1914,11 @@
     "operator": "Powerdot, S.A",
     "address": "Av. Mário Soares 143, São Martinho, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1702,6 +1952,11 @@
     "operator": "Powerdot, S.A",
     "address": "R. José da Silva \"Saca\" 1109, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -1735,6 +1990,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Estrada Dr. João Abel de Freitas (Bomba Re..., Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -1792,6 +2052,11 @@
     "operator": "Galp Power OPC",
     "address": "CAMINHO DO POÇO BARRAL Nº 52, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 180,
     "sockets": [
      {
@@ -1829,6 +2094,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua do Ribeirinho de Baixo, 27, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 100,
     "sockets": [
      {
@@ -1878,6 +2148,11 @@
     "operator": "Galp Power OPC",
     "address": "AVENIDA DO INFANTE, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 90,
     "sockets": [
      {
@@ -1915,6 +2190,11 @@
     "operator": "Galp Power OPC",
     "address": "RUA DA RIBEIRA DE JOÃO GOMES, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 90,
     "sockets": [
      {
@@ -1952,6 +2232,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Dr. Brito Câmara 9, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 100,
     "sockets": [
      {
@@ -2001,6 +2286,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Dr. Brito Câmara 9, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 100,
     "sockets": [
      {
@@ -2042,6 +2332,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Avenida Sá Carneiro, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2077,6 +2372,11 @@
     "operator": "Mobiletric",
     "address": "Rua Imperatriz D Amelia, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.2,
     "sockets": [
      {
@@ -2114,6 +2414,11 @@
     "operator": "Mobiletric",
     "address": "AV. SÁ CARNEIRO, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2151,6 +2456,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Dr. Brito Câmara 9, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2184,6 +2494,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Dr. Brito Câmara 9, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2217,6 +2532,11 @@
     "operator": "EDP Comercial",
     "address": "Avenida Luís de Camões, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2252,6 +2572,11 @@
     "operator": "FactorENERGIA",
     "address": "Avenida do Infante, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2287,6 +2612,11 @@
     "operator": "FactorENERGIA",
     "address": "Avenida do Infante, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2322,6 +2652,11 @@
     "operator": "Mota-Engil Renewing",
     "address": "Estrada Monumental, 390, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 24,
     "sockets": [
      {
@@ -2366,6 +2701,11 @@
     "operator": "Mota-Engil Renewing",
     "address": "Estrada Monumental, 390, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 11,
     "sockets": [
      {
@@ -2401,6 +2741,11 @@
     "operator": "Mota-Engil Renewing",
     "address": "Estrada Monumental, 390, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 11,
     "sockets": [
      {
@@ -2436,6 +2781,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Brigadeiro Oudinot 2, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2469,6 +2819,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Brigadeiro Oudinot 2, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2502,6 +2857,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Brigadeiro Oudinot 2, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2535,6 +2895,11 @@
     "operator": "EDP Comercial",
     "address": "McDonald´s Funchal Rua Nova do Engenho Velho, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 90,
     "sockets": [
      {
@@ -2592,6 +2957,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Artur de Sousa Pinga, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2625,6 +2995,11 @@
     "operator": "Powerdot, S.A",
     "address": "Rua Do Visconde De Anadia 27, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2658,6 +3033,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Via rápida Cota 200, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -2715,6 +3095,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Via rápida Cota 200, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -2772,6 +3157,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Estrada da Liberdade - Levada do Cavalo, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -2829,6 +3219,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Caminho de São Martinho, nº 12 - Nazaré, Funchal",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -2886,6 +3281,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua da Estacada, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -2921,6 +3321,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Praceta 25 de Abril, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -2974,6 +3379,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua do Porto, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -3015,6 +3425,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua do Porto, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3050,6 +3465,11 @@
     "operator": "FactorENERGIA",
     "address": "Caminho Velho do Massapez, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -3094,6 +3514,11 @@
     "operator": "FactorENERGIA",
     "address": "Caminho Velho do Massapez, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3129,6 +3554,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua do Leiria, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -3182,6 +3612,11 @@
     "operator": "FactorENERGIA",
     "address": "Clube de Golf do Santo da Serra, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3217,6 +3652,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Rua da Árvore, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -3252,6 +3692,11 @@
     "operator": "FactorENERGIA",
     "address": "Estrada Regional 101, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3287,6 +3732,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua da Estacada 65, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3322,6 +3772,11 @@
     "operator": "FactorENERGIA",
     "address": "Estrada Fonte de Santo António nº 67, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3357,6 +3812,11 @@
     "operator": "Galp Power",
     "address": "Zona Franca Industrial, Plataforma 24, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -3394,6 +3854,11 @@
     "operator": "Galp Power",
     "address": "Zona Franca Industrial, Plataforma 24, Machico",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -3431,6 +3896,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua do Figueiral, Porto Moniz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3466,6 +3936,11 @@
     "operator": "FactorENERGIA",
     "address": "Praça do Lyra, Porto Moniz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3501,6 +3976,11 @@
     "operator": "FactorENERGIA",
     "address": "Estrada Regional 101 - Santa, Porto Moniz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3536,6 +4016,11 @@
     "operator": "FactorENERGIA",
     "address": "Caminho do Teleférico das Achadas da Cruz, Porto Moniz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3571,6 +4056,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua Maximiano Sousa, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -3606,6 +4096,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Sítio do Espírito Santo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3641,6 +4136,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Sítio do Espírito Santo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3676,6 +4176,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Parque Empresarial do Porto Santo, Lote 7, Lo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -3711,6 +4216,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua Manuel Gregório Pestana, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3746,6 +4256,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua Manuel Gregório Pestana, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3781,6 +4296,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Estrada Regional nº111, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3816,6 +4336,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Estrada Regional nº111, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3851,6 +4376,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Pé na Água - Porto Santo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3886,6 +4416,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Pé na Água, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3921,6 +4456,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Pé na Água - Porto Santo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3956,6 +4496,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Pé na Água - Porto Santo, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -3991,6 +4536,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Sítio das Marinhas, Porto Santo",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -4026,6 +4576,11 @@
     "operator": "FactorENERGIA",
     "address": "Azinhaga do Poço Barral N 23, Ponta do Sol",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4059,6 +4614,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Avenida Nova Cidade, Câmara de Lobos",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -4112,6 +4672,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua Comandante Agostinho de Sousa Macedo, Ribeira Brava",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4147,6 +4712,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Estrada Regional n.º 104 - Sítio da Murteira, Ribeira Brava",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -4204,6 +4774,11 @@
     "operator": "FactorENERGIA",
     "address": "Lugares de estapúblico situado em frente ao B, Ribeira Brava",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4239,6 +4814,11 @@
     "operator": "FactorENERGIA",
     "address": "Caniço Shopping Piso -1, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4272,6 +4852,11 @@
     "operator": "FactorENERGIA",
     "address": "Aeroportos da Madeira, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4305,6 +4890,11 @@
     "operator": "FactorENERGIA",
     "address": "Aeroportos da Madeira, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4338,6 +4928,11 @@
     "operator": "FactorENERGIA",
     "address": "Aeroportos da Madeira, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4371,6 +4966,11 @@
     "operator": "FactorENERGIA",
     "address": "Aeroportos da Madeira, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4404,6 +5004,11 @@
     "operator": "Mobiletric",
     "address": "Praia Dos Reis Magos, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 11,
     "sockets": [
      {
@@ -4441,6 +5046,11 @@
     "operator": "Município de Santa Cruz",
     "address": "Alameda, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4474,6 +5084,11 @@
     "operator": "EDP Comercial",
     "address": "Hotel Vila Gale Santa Cruz, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -4511,6 +5126,11 @@
     "operator": "EDP Comercial",
     "address": "Hotel Vila Galé Santa Cruz, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -4548,6 +5168,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Estrada da Ponta Oliveira - Caniço de Baixo, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -4605,6 +5230,11 @@
     "operator": "Município de Santa Cruz",
     "address": "Rua João Paulo II, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4638,6 +5268,11 @@
     "operator": "Município de Santa Cruz",
     "address": "Rua João Paulo II, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4671,6 +5306,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "E.R. 101 - Sítio da Lombadinha, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -4728,6 +5368,11 @@
     "operator": "EDP Comercial",
     "address": "Rua São Fernando 5, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 7.4,
     "sockets": [
      {
@@ -4765,6 +5410,11 @@
     "operator": "FactorENERGIA",
     "address": "Rua Canto do Ribeiro nº4.1, Parq Emp Cancela, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4800,6 +5450,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Rua da Quinta - Cancela, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 60,
     "sockets": [
      {
@@ -4853,6 +5508,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Sitio da Pedra Mole, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -4888,6 +5548,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Sitio da Pedra Mole, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 300,
     "sockets": [
      {
@@ -4923,6 +5588,11 @@
     "operator": "REPSOL Portuguesa Lda",
     "address": "Rua da Olaria, Santa Cruz",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 120,
     "sockets": [
      {
@@ -4960,6 +5630,11 @@
     "operator": "FactorENERGIA",
     "address": "Estrada da Quinta do Furão, Santana",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -4995,6 +5670,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Sítio do Serrado, Santana",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -5030,6 +5710,11 @@
     "operator": "Iberdrola | bp pulse",
     "address": "Sitio dos Barreiros, Santana",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": true,
+     "rfid": true
+    },
     "max_kw": 150,
     "sockets": [
      {
@@ -5065,6 +5750,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Largo do Municipio, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -5100,6 +5790,11 @@
     "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
     "address": "Estrada Regional 104, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 50,
     "sockets": [
      {
@@ -5153,6 +5848,11 @@
     "operator": "FactorENERGIA",
     "address": "Caminho do Cemitério da Boaventura, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -5188,6 +5888,11 @@
     "operator": "FactorENERGIA",
     "address": "ER101 nº 110, Ponta Delgada, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -5223,6 +5928,11 @@
     "operator": "FactorENERGIA",
     "address": "Avenida Marcos Marques Rosa nº34, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 22,
     "sockets": [
      {
@@ -5258,6 +5968,11 @@
     "operator": "Galp Power OPC",
     "address": "E.N. 104 - SÃO VICENTE, São Vicente",
     "opening_hours": "24/7",
+    "pay": {
+     "apps": true,
+     "card": false,
+     "rfid": true
+    },
     "max_kw": 120,
     "sockets": [
      {

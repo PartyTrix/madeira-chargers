@@ -80,6 +80,8 @@
       eff: effectivePerKwh(tariff, p.max_kw),
       fast: (p.max_kw || 0) >= 50,
       mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
+      pay: p.pay || {},
+      payUnknown: p.source === "mobie" && !p.pay,
       title: p.name || p.operator || p.network || "EV charger",
       operator: shortOp(p.operator),
     };
@@ -174,6 +176,7 @@
     if (c.max_kw) bits.push(`${fmtKw(c.max_kw)} kW`);
     if (c.sockets?.length) bits.push(c.sockets.map((s) => s.type).join(", "));
     if (c.operator && c.operator !== c.title) bits.push(c.operator);
+    if (c.pay.card) bits.push("💳 card");
     if (state.me) bits.push(`${dist(c).toFixed(1)} km`);
     return bits.join(" · ") || "Details unknown";
   }
@@ -205,7 +208,7 @@
       ${t?.note ? `<div class="meta">${esc(t.note)}</div>` : ""}
       ${t?.later ? `<div class="meta">⚠️ ${esc(t.later)}</div>` : ""}
       ${c.eff != null ? `<details class="meta"><summary>Operator fee, before VAT. What's included?</summary>On top you pay your app's energy price (e.g. Miio) and the MOBI.E fee. Those are about the same at every charger, so this fee is what makes one charger cheaper than another.</details>` : ""}
-      ${c.mobie ? "" : `<div class="meta">No MOBI.E code: Miio may not work here, you may need to pay at the charger.</div>`}
+      ${payBlock(c)}
       <ul class="sockets">
         ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</li>`).join("")
           || (c.max_kw ? `<li>Up to ${fmtKw(c.max_kw)} kW</li>` : "")}
@@ -215,6 +218,23 @@
     card.hidden = false;
     card.querySelector(".close").onclick = closeCard;
     document.getElementById("sheet").classList.remove("open");
+  }
+
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const MIIO = isIOS || !isAndroid
+    ? "https://apps.apple.com/pt/app/miio/id1462182013"
+    : "https://play.google.com/store/search?q=miio&c=apps";
+
+  // How to pay here: MOBI.E apps (Miio etc.), and/or a bank card at the charger.
+  function payBlock(c) {
+    const p = c.pay;
+    if (c.payUnknown) return `<div class="meta">Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger itself.</div>`;
+    const bits = [];
+    if (p.card) bits.push(`<li>💳 Pay by bank card at the charger</li>`);
+    if (p.apps) bits.push(`<li>📱 Miio or any MOBI.E app / card</li>`);
+    if (!bits.length) return "";
+    return `<ul class="sockets pay">${bits.join("")}</ul>${
+      p.apps ? `<a class="miio" href="${MIIO}" target="_blank" rel="noopener">Charge with Miio ↗</a>` : ""}`;
   }
 
   // Show a socket's own price only when it differs from the headline price.
