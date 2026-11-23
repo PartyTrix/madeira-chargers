@@ -13,10 +13,14 @@
     me: null,
     layer: null,
     selected: null,
+    labels: load("labels") === "1",
   };
+  const canHover = matchMedia("(hover: hover)").matches;
+  const isAndroid = /Android/i.test(navigator.userAgent);
 
   // ---------- map ----------
-  const map = L.map("map", { zoomControl: false, preferCanvas: true }).fitBounds(MADEIRA);
+  // A generous tap tolerance so small pins are easy to hit with a finger.
+  const map = L.map("map", { zoomControl: false, renderer: L.canvas({ tolerance: 12 }) }).fitBounds(MADEIRA);
   L.control.zoom({ position: "topright" }).addTo(map);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
@@ -111,9 +115,17 @@
         weight: c.fast ? 3 : 2,
         fillColor: css(c.colourVar),
         fillOpacity: 1,
+        bubblingMouseEvents: false, // otherwise the map's click handler closes the card again
       });
-      m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
-      m.on("click", () => openCard(c));
+      // Labels only from street level, otherwise they pile on top of each other.
+      if (state.labels && c.eff != null && map.getZoom() >= 13) {
+        m.bindTooltip(euro(c.eff), {
+          permanent: true, direction: "top", offset: [0, c.fast ? -10 : -7], className: "price-label",
+        });
+      } else if (canHover) {
+        m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
+      }
+      m.on("click", (e) => { L.DomEvent.stop(e); openCard(c); });
       m.addTo(state.layer);
     }
     renderList();
@@ -179,25 +191,26 @@
       <button class="close" aria-label="Close">✕</button>
       <h2 id="card-title">${esc(c.title)}</h2>
       <div class="meta">${esc([c.operator, c.network, c.ref, c.address].filter(Boolean).join(" · ") || "Operator unknown")}</div>
+      <div class="nav">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=${dest}" target="_blank" rel="noopener">Google Maps</a>
+        <a class="alt" href="https://maps.apple.com/?daddr=${dest}" target="_blank" rel="noopener">Apple Maps</a>
+        <a class="alt" href="https://waze.com/ul?ll=${dest}&navigate=yes" target="_blank" rel="noopener">Waze</a>
+        ${isAndroid ? `<a class="alt wide" href="geo:${dest}?q=${dest}(${encodeURIComponent(c.title)})">Open in another maps app</a>` : ""}
+      </div>
       <div class="price-big" style="--c:var(${c.colourVar})">
         ${c.eff != null
-          ? `<strong>≈ ${euro(c.eff)}/kWh fee</strong><span>${esc(parts.join(" + "))}${t?.updated ? " · checked " + esc(t.updated) : ""}</span>`
+          ? `<strong>≈ ${euro(c.eff)}/kWh</strong><span>${esc(parts.join(" + "))}${t?.updated ? " · checked " + esc(t.updated) : ""}</span>`
           : `<span>No price on file yet. Check Miio or your charging app.</span>`}
       </div>
       ${t?.note ? `<div class="meta">${esc(t.note)}</div>` : ""}
       ${t?.later ? `<div class="meta">⚠️ ${esc(t.later)}</div>` : ""}
-      ${c.eff != null ? `<div class="meta">This is the charger operator's fee, before VAT. On top you pay your app's energy price (e.g. Miio) and the MOBI.E fee, which are about the same at every charger, so this fee is what makes one charger cheaper than another.</div>` : ""}
+      ${c.eff != null ? `<details class="meta"><summary>Operator fee, before VAT. What's included?</summary>On top you pay your app's energy price (e.g. Miio) and the MOBI.E fee. Those are about the same at every charger, so this fee is what makes one charger cheaper than another.</details>` : ""}
       ${c.mobie ? "" : `<div class="meta">No MOBI.E code: Miio may not work here, you may need to pay at the charger.</div>`}
       <ul class="sockets">
         ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</li>`).join("")
           || (c.max_kw ? `<li>Up to ${fmtKw(c.max_kw)} kW</li>` : "")}
         ${c.opening_hours ? `<li>🕒 ${esc(c.opening_hours)}</li>` : ""}
       </ul>
-      <div class="nav">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${dest}" target="_blank" rel="noopener">Google Maps</a>
-        <a class="alt" href="https://maps.apple.com/?daddr=${dest}" target="_blank" rel="noopener">Apple Maps</a>
-        <a class="alt" href="https://waze.com/ul?ll=${dest}&navigate=yes" target="_blank" rel="noopener">Waze</a>
-      </div>
       <div class="id">${c.mobie ? "MOBI.E code" : "ID"}: ${esc(c.id)}</div>`;
     card.hidden = false;
     card.querySelector(".close").onclick = closeCard;
@@ -241,7 +254,21 @@
     if (open) closeCard();
   });
   document.getElementById("locate").addEventListener("click", locate);
+  const labelsBtn = document.getElementById("labels");
+  labelsBtn.setAttribute("aria-pressed", state.labels);
+  labelsBtn.addEventListener("click", () => {
+    state.labels = !state.labels;
+    labelsBtn.setAttribute("aria-pressed", state.labels);
+    save("labels", state.labels ? "1" : "0");
+    render();
+  });
   map.on("moveend", renderList);
+  let lastZoomBand = map.getZoom() >= 13;
+  map.on("zoomend", () => {
+    const band = map.getZoom() >= 13;
+    if (state.labels && band !== lastZoomBand) render();
+    lastZoomBand = band;
+  });
   map.on("click", closeCard);
   document.addEventListener("keydown", (e) => e.key === "Escape" && closeCard());
 
@@ -267,10 +294,12 @@
   }
 
   // ---------- helpers ----------
+  function load(k) { try { return localStorage.getItem(k); } catch { return null; } }
+  function save(k, v) { try { localStorage.setItem(k, v); } catch { /* private mode */ } }
   function shortOp(s) {
     let out = s;
     for (let i = 0; i < 3; i++)
-      out = out?.replace(/\s*[-,]?\s*(Unipessoal|Lda\.?|S\.?A\.?|Soluções em .*)$/i, "").replace(/[,\s]+$/, "");
+      out = out?.replace(/[\s,-]+(Unipessoal|Lda\.?|S\.?A\.?|Soluções em .*)$/i, "").replace(/[,\s]+$/, "");
     return out || s;
   }
   function dist(c) {

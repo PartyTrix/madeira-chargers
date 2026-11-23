@@ -44,7 +44,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   flex-wrap: wrap;
 }
 .bar h1 { font-size: 17px; margin: 0; white-space: nowrap; }
-.filters { display: flex; gap: 6px; }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip {
   border: 1px solid var(--line); background: var(--chip); border-radius: 999px;
   padding: 6px 12px; min-height: 36px; white-space: nowrap;
@@ -106,17 +106,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border: 0; border-radius: 50%; background: var(--chip); font-size: 18px;
 }
 .card .meta { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
-.price-big { display: flex; align-items: baseline; gap: 8px; margin: 8px 0; }
-.price-big strong { font-size: 22px; color: var(--c); }
+.price-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 8px 0; }
+.price-big strong { font-size: 22px; color: var(--c); white-space: nowrap; }
 .price-big span { color: var(--muted); font-size: 13px; }
 .sockets { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; padding: 0; list-style: none; }
 .sockets li { background: var(--chip); border-radius: 8px; padding: 4px 8px; font-size: 13px; }
-.nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 8px; }
+details.meta summary { cursor: pointer; }
+details.meta[open] summary { margin-bottom: 4px; }
 .nav a {
   display: flex; align-items: center; justify-content: center; min-height: 48px;
   border-radius: 12px; background: var(--accent); color: #fff; text-decoration: none; font-weight: 600;
 }
 .nav a.alt { background: var(--chip); color: var(--fg); border: 1px solid var(--line); }
+.nav a.wide { grid-column: 1 / -1; }
+.leaflet-tooltip.price-label {
+  padding: 1px 5px; font: 700 12px/1.3 system-ui, sans-serif; border-radius: 6px;
+  background: #111827; color: #fff; border: 0; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+.leaflet-tooltip-top.price-label::before { border-top-color: #111827; }
 .card .id { margin-top: 12px; color: var(--muted); font-size: 11px; }
 
 @media (min-width: 900px) {
