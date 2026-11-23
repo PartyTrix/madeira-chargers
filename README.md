@@ -4,7 +4,7 @@ A fast, mobile-first map of every public EV charger in Madeira and Porto Santo.
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
-Plain HTML/CSS/JS, no build step, no npm packages, no tracking. Hosted free on GitHub Pages.
+Live at **https://madeirachargers.com**. Plain HTML/CSS/JS, no build step, no npm packages, no tracking. Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
 
 ## How it maintains itself
 
