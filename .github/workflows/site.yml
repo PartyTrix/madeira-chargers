@@ -35,13 +35,10 @@ jobs:
           git commit -am "data: refresh chargers from MOBI.E"
           git push
 
-  deploy:
+  build:
     needs: refresh
     if: always() && needs.refresh.result != 'failure'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -57,5 +54,16 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+
+  # Deploy in its own job (GitHub's recommended layout): the artifact is fully
+  # registered before deploy-pages looks for it.
+  deploy:
+    needs: build
+    if: always() && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v5
