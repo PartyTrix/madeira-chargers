@@ -1,17 +1,17 @@
 // Refreshes data/chargers.geojson with every public charger in Madeira and
 // Porto Santo, from the official MOBI.E feed published on Portugal's National
-// Access Point (NAP, AFIR), plus each socket's operator (OPC) tariff from MOBI.E.
+// Access Point (NAP, AFIR), with each charging point's operator price.
 // No dependencies: needs Node 20+ (built-in fetch).
 //
 //   node scripts/update-data.mjs                 # download live data
-//   node scripts/update-data.mjs nap.xml tar.csv # use local files instead
+//   node scripts/update-data.mjs static.xml status.xml # use local files instead
 //
 // Manual additions live in data/extra.geojson; price overrides in data/tariffs.json.
 
 import { readFile, writeFile } from "node:fs/promises";
 
 const NAP_URL = "https://pgm.mobie.pt/integration/nap/evChargingInfra";
-const TARIFF_URL = "https://www.mobie.pt/documents/42032/106470/Tarifas";
+const NAP_STATUS_URL = "https://pgm.mobie.pt/integration/nap/evActualStatus";
 const OUT = new URL("../data/chargers.geojson", import.meta.url);
 const EXTRA = new URL("../data/extra.geojson", import.meta.url);
 
@@ -42,34 +42,6 @@ async function get(url, binary = false) {
       await new Promise((r) => setTimeout(r, 5000 * attempt));
     }
   }
-}
-
-// MOBI.E's document server sometimes answers with an HTML page instead of
-// the CSV. Try the download form, and follow a tariff link if one is on the page.
-async function getTariffCsv() {
-  const H = { "User-Agent": "madeira-chargers (GitHub Actions)", Accept: "text/csv,*/*" };
-  for (const url of [TARIFF_URL, TARIFF_URL + "?download=true"]) {
-    const res = await fetch(url, { headers: H }).catch((e) => ({ ok: false, statusText: String(e) }));
-    if (!res.ok) { console.warn(`${url}: ${res.status} ${res.statusText}`); continue; }
-    const body = decode(Buffer.from(await res.arrayBuffer()));
-    if (body.includes("UID_TOMADA")) return body;
-    console.warn(`${url} (${res.headers.get("content-type")}) is not the CSV. Title: ${body.match(/<title>([^<]*)/i)?.[1]}`);
-    const links = [...new Set(body.match(/\/documents\/[^"'\s<>]*/g) || [])].filter((l) => /tarif/i.test(l));
-    console.warn(`Tariff-like links on that page: ${links.slice(0, 10).join(" ")}`);
-    for (const l of links) {
-      const r2 = await fetch(new URL(l.replace(/&amp;/g, "&"), "https://www.mobie.pt"), { headers: H }).catch(() => null);
-      if (!r2?.ok) continue;
-      const b2 = decode(Buffer.from(await r2.arrayBuffer()));
-      if (b2.includes("UID_TOMADA")) { console.log(`Tariffs found at ${l}`); return b2; }
-    }
-  }
-  throw new Error("Could not download the MOBI.E tariff CSV");
-}
-
-function decode(buf) {
-  // The tariff CSV has been seen as both UTF-8 and Windows-1252.
-  const utf = buf.toString("utf8");
-  return utf.includes("�") ? new TextDecoder("windows-1252").decode(buf) : utf;
 }
 
 // ---------- NAP (DATEX II 3.3) ----------
@@ -125,47 +97,25 @@ function parseSites(xml) {
   return sites;
 }
 
-// ---------- MOBI.E tariffs (CSV) ----------
-function parseCsv(csv) {
-  const lines = csv.split(/\r?\n/).filter(Boolean);
-  const sep = lines[0].includes(";") ? ";" : ",";
-  const head = lines[0].split(sep).map((h) => h.trim().replace(/^"|"$/g, "").replace(/^﻿/, ""));
-  return lines.slice(1).map((l) => {
-    const cells = l.split(sep).map((c) => c.trim().replace(/^"|"$/g, ""));
-    return Object.fromEntries(head.map((h, i) => [h, cells[i]]));
-  });
-}
-
-const num = (s) => parseFloat(String(s).replace(",", "."));
-
-// '€ 0.1 /kWh', '€ 0.261 /charge', '€ 0.03 /min até 120 min', '€ 0.2 /min após 60 min'
-function parseTariffText(s) {
-  const m = String(s).match(/([\d]+(?:[.,]\d+)?)\s*\/\s*(\w+)/);
-  if (!m) return null;
-  return {
-    eur: num(m[1]),
-    unit: m[2].toLowerCase(),
-    from: num(String(s).match(/ap[oó]s\s+([\d.,]+)\s*min/i)?.[1] ?? 0),
-  };
-}
-
-// station code -> socket number -> { kwh, min, start, minLater }
-function buildTariffs(rows, codes) {
-  const out = {};
-  for (const r of rows) {
-    if (!codes.has(r.ID)) continue;
-    if ((r.TIPO_TARIFARIO || "REGULAR") !== "REGULAR") continue;
-    const p = parseTariffText(r.TARIFA);
-    if (!p) continue;
-    const parts = String(r.UID_TOMADA).split("-");
-    const sock = parts.length >= 3 ? String(parseInt(parts.at(-2), 10)) : String(parseInt(r.UID_TOMADA, 10));
-    const t = ((out[r.ID] ||= {})[sock] ||= {});
-    if (r.TIPO_TARIFA === "ENERGY") t.kwh = Math.max(t.kwh || 0, p.eur);
-    else if (r.TIPO_TARIFA === "FLAT") t.start = Math.max(t.start || 0, p.eur);
-    else if (r.TIPO_TARIFA === "TIME") {
-      if (p.from === 0) t.min = Math.max(t.min || 0, p.eur);
-      else t.later = `+€${p.eur}/min after ${p.from} min`;
+// ---------- tariffs (NAP dynamic feed, DATEX II 3.3) ----------
+// Each charging point lists its operator rates, before VAT:
+//   pricePerDeliveryUnit -> € per kWh, pricePerChargingTime -> € per minute,
+//   flatRate -> € per session.
+function parseRates(xml, codes) {
+  const out = {}; // point id -> { kwh, min, start }
+  const re = /<(\w+:)?refillPointStatus\b[^>]*>([\s\S]*?)<\/\1?refillPointStatus>/g;
+  for (const m of xml.matchAll(re)) {
+    const p = m[2];
+    const id = p.match(/\bid="([^"]+)"/)?.[1];
+    if (!id || !codes.has(id.replace(/-\d+$/, ""))) continue;
+    const t = {};
+    for (const r of p.matchAll(/pricingPolicy>(\w+)<\/(?:\w+:)?pricingPolicy>\s*<(?:\w+:)?minimumDeliveryFee>([\d.]+)</g)) {
+      const v = parseFloat(r[2]);
+      if (r[1] === "pricePerDeliveryUnit") t.kwh = v;
+      else if (r[1] === "pricePerChargingTime") t.min = v;
+      else if (r[1] === "flatRate") t.start = v;
     }
+    if (Object.keys(t).length) out[id] = t;
   }
   return out;
 }
@@ -175,33 +125,24 @@ async function readJson(url, fallback) {
   try { return JSON.parse(await readFile(url, "utf8")); } catch { return fallback; }
 }
 
-const [napArg, csvArg] = process.argv.slice(2);
+const [napArg, statusArg] = process.argv.slice(2);
 console.log("Downloading NAP inventory…");
 const xml = napArg ? await readFile(napArg, "utf8") : await get(NAP_URL);
 const sites = parseSites(xml);
 console.log(`NAP: ${sites.length} sites in Madeira`);
 
-let tariffRows = [];
+let rates = {};
 try {
-  const csv = csvArg ? decode(await readFile(csvArg)) : await getTariffCsv();
-  tariffRows = parseCsv(csv);
-  console.log(`Tariff CSV: ${tariffRows.length} rows. Columns: ${Object.keys(tariffRows[0] || {}).join(", ")}`);
-  const sample = tariffRows.filter((r) => /^(RBR|FNC|CML)-/.test(r.ID)).slice(0, 4);
-  console.log("Sample Madeira rows:", JSON.stringify(sample));
+  console.log("Downloading NAP prices…");
+  const dyn = statusArg ? await readFile(statusArg, "utf8") : await get(NAP_STATUS_URL);
+  rates = parseRates(dyn, new Set(sites.map((s) => s.code)));
+  console.log(`Prices for ${Object.keys(rates).length} charging points`);
 } catch (e) {
-  console.warn(`Tariffs unavailable, continuing without them: ${e}`);
+  console.warn(`Prices unavailable, continuing without them: ${e}`);
 }
-const tariffs = buildTariffs(tariffRows, new Set(sites.map((s) => s.code)));
 
 const features = sites.map((s) => {
-  const t = tariffs[s.code] || {};
-  const sockets = s.points.map((p) => {
-    const n = String(parseInt(p.id.split("-").at(-1), 10));
-    return { type: p.type, kw: p.kw, tariff: t[n] || null };
-  });
-  // If socket numbers don't line up but the whole site has one tariff, use it.
-  const distinct = [...new Set(Object.values(t).map((x) => JSON.stringify(x)))];
-  if (distinct.length === 1) for (const so of sockets) so.tariff ||= JSON.parse(distinct[0]);
+  const sockets = s.points.map((p) => ({ type: p.type, kw: p.kw, tariff: rates[p.id] || null }));
 
   const maxKw = Math.max(0, ...sockets.map((x) => x.kw || 0)) || null;
   // Headline price = the tariff of the most powerful socket.
@@ -249,7 +190,7 @@ if (!features.length) {
 
 await writeFile(OUT, JSON.stringify({
   type: "FeatureCollection",
-  attribution: "MOBI.E data via NAP Portugal (IMT). Tariffs © MOBI.E.",
+  attribution: "MOBI.E data via NAP Portugal (IMT).",
   features: all,
 }, null, 1) + "\n");
 const priced = features.filter((f) => f.properties.tariff).length;

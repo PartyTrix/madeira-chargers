@@ -77,6 +77,7 @@
       fast: (p.max_kw || 0) >= 50,
       mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
       title: p.name || p.operator || p.network || "EV charger",
+      operator: shortOp(p.operator),
     };
   }
 
@@ -143,7 +144,7 @@
             <div class="li-name">${esc(c.title)}</div>
             <div class="li-sub">${esc(subline(c))}</div>
           </div>
-          <div class="li-price">${c.eff != null ? "≈ " + euro(c.eff) + "<small>per kWh</small>" : "<small>no price</small>"}</div>
+          <div class="li-price">${c.eff != null ? "≈ " + euro(c.eff) + "<small>fee per kWh</small>" : "<small>no price</small>"}</div>
         </li>`
       )
       .join("");
@@ -180,12 +181,12 @@
       <div class="meta">${esc([c.operator, c.network, c.ref, c.address].filter(Boolean).join(" · ") || "Operator unknown")}</div>
       <div class="price-big" style="--c:var(${c.colourVar})">
         ${c.eff != null
-          ? `<strong>≈ ${euro(c.eff)}/kWh</strong><span>${esc(parts.join(" + "))}${t?.updated ? " · checked " + esc(t.updated) : ""}</span>`
+          ? `<strong>≈ ${euro(c.eff)}/kWh fee</strong><span>${esc(parts.join(" + "))}${t?.updated ? " · checked " + esc(t.updated) : ""}</span>`
           : `<span>No price on file yet. Check Miio or your charging app.</span>`}
       </div>
       ${t?.note ? `<div class="meta">${esc(t.note)}</div>` : ""}
       ${t?.later ? `<div class="meta">⚠️ ${esc(t.later)}</div>` : ""}
-      ${c.eff != null ? `<div class="meta">Operator price before VAT, MOBI.E fee and your app's fee.</div>` : ""}
+      ${c.eff != null ? `<div class="meta">This is the charger operator's fee, before VAT. On top you pay your app's energy price (e.g. Miio) and the MOBI.E fee, which are about the same at every charger, so this fee is what makes one charger cheaper than another.</div>` : ""}
       ${c.mobie ? "" : `<div class="meta">No MOBI.E code: Miio may not work here, you may need to pay at the charger.</div>`}
       <ul class="sockets">
         ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</li>`).join("")
@@ -266,6 +267,12 @@
   }
 
   // ---------- helpers ----------
+  function shortOp(s) {
+    let out = s;
+    for (let i = 0; i < 3; i++)
+      out = out?.replace(/\s*[-,]?\s*(Unipessoal|Lda\.?|S\.?A\.?|Soluções em .*)$/i, "").replace(/[,\s]+$/, "");
+    return out || s;
+  }
   function dist(c) {
     if (!state.me) return 0;
     const R = 6371, toR = Math.PI / 180;

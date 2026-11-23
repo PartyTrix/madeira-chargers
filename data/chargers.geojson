@@ -1,6 +1,6 @@
 {
  "type": "FeatureCollection",
- "attribution": "MOBI.E data via NAP Portugal (IMT). Tariffs © MOBI.E.",
+ "attribution": "MOBI.E data via NAP Portugal (IMT).",
  "features": [
   {
    "type": "Feature",
@@ -534,11 +534,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -563,17 +569,23 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04
+    },
     "source": "mobie"
    }
   },
@@ -598,11 +610,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -627,11 +645,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -656,11 +680,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -685,11 +715,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -714,11 +750,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.05,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.05,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -743,11 +785,17 @@
      {
       "type": "CCS",
       "kw": 150,
-      "tariff": null,
+      "tariff": {
+       "min": 0.09,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.09,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -772,11 +820,19 @@
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.6,
+       "min": 0,
+       "start": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.6,
+     "min": 0,
+     "start": 0
+    },
     "source": "mobie"
    }
   },
@@ -801,11 +857,19 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0,
+       "min": 0.04,
+       "start": 0.26
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0,
+     "min": 0.04,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -865,17 +929,23 @@
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.53
+      },
       "count": 1
      },
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.53
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.53
+    },
     "source": "mobie"
    }
   },
@@ -900,11 +970,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.53,
+       "min": 0.02
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.53,
+     "min": 0.02
+    },
     "source": "mobie"
    }
   },
@@ -929,23 +1005,31 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -970,23 +1054,31 @@
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -1011,11 +1103,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1040,11 +1136,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1069,11 +1169,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1098,11 +1202,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1127,11 +1235,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1156,11 +1268,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1185,11 +1301,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1214,11 +1334,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1243,11 +1367,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1272,11 +1400,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1301,11 +1433,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1330,11 +1466,15 @@
      {
       "type": "Type 2",
       "kw": 11,
-      "tariff": null,
+      "tariff": {
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1359,11 +1499,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0,
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0,
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1388,11 +1534,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0,
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0,
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1417,11 +1569,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0,
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0,
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1446,11 +1604,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0,
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0,
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1475,11 +1639,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0,
+       "start": 0.11
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0,
+     "start": 0.11
+    },
     "source": "mobie"
    }
   },
@@ -1504,11 +1674,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -1533,11 +1707,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -1562,23 +1740,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -1603,11 +1797,19 @@
      {
       "type": "CCS",
       "kw": 180,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.25,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.25,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   },
@@ -1632,23 +1834,31 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 100,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.55
+    },
     "source": "mobie"
    }
   },
@@ -1673,11 +1883,19 @@
      {
       "type": "CCS",
       "kw": 90,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.15,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.15,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   },
@@ -1702,11 +1920,19 @@
      {
       "type": "CCS",
       "kw": 90,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.15,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.15,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   },
@@ -1731,23 +1957,31 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 100,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.55
+    },
     "source": "mobie"
    }
   },
@@ -1772,17 +2006,23 @@
      {
       "type": "CCS",
       "kw": 100,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 2
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.55
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.55
+    },
     "source": "mobie"
    }
   },
@@ -1807,11 +2047,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.05,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.05,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -1836,11 +2082,19 @@
      {
       "type": "Type 2",
       "kw": 7.2,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0,
+       "min": 0.03,
+       "start": 0.26
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0,
+     "min": 0.03,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -1865,11 +2119,19 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0,
+       "min": 0.03,
+       "start": 0.26
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0,
+     "min": 0.03,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -1894,11 +2156,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -1923,11 +2189,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -1952,11 +2222,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.03,
+       "start": 0.26
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.03,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -1981,11 +2257,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2010,11 +2292,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2039,17 +2327,26 @@
      {
       "type": "CCS",
       "kw": 24,
-      "tariff": null,
+      "tariff": {
+       "min": 0.05,
+       "start": 0.21
+      },
       "count": 1
      },
      {
       "type": "CHAdeMO",
       "kw": 24,
-      "tariff": null,
+      "tariff": {
+       "min": 0.05,
+       "start": 0.21
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.05,
+     "start": 0.21
+    },
     "source": "mobie"
    }
   },
@@ -2074,11 +2371,17 @@
      {
       "type": "Type 2",
       "kw": 11,
-      "tariff": null,
+      "tariff": {
+       "min": 0.02,
+       "start": 0.21
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.02,
+     "start": 0.21
+    },
     "source": "mobie"
    }
   },
@@ -2103,11 +2406,17 @@
      {
       "type": "Type 2",
       "kw": 11,
-      "tariff": null,
+      "tariff": {
+       "min": 0.02,
+       "start": 0.21
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.02,
+     "start": 0.21
+    },
     "source": "mobie"
    }
   },
@@ -2132,11 +2441,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -2161,11 +2474,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -2190,11 +2507,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -2219,23 +2540,39 @@
      {
       "type": "CCS",
       "kw": 90,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.1,
+       "start": 0.4
+      },
       "count": 1
      },
      {
       "type": "CHAdeMO",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.1,
+       "start": 0.4
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.1,
+       "start": 0.4
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.1,
+     "min": 0.1,
+     "start": 0.4
+    },
     "source": "mobie"
    }
   },
@@ -2260,11 +2597,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -2289,11 +2630,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.39
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.39
+    },
     "source": "mobie"
    }
   },
@@ -2318,23 +2663,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2359,23 +2720,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2400,23 +2777,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2441,23 +2834,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2482,11 +2891,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2511,23 +2926,35 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -2552,17 +2979,23 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04
+    },
     "source": "mobie"
    }
   },
@@ -2587,11 +3020,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2616,17 +3055,26 @@
      {
       "type": "CHAdeMO",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.11,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.11,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.11,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2651,11 +3099,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2680,23 +3134,35 @@
      {
       "type": "CHAdeMO",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.11,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.11,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.11,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.11,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2721,11 +3187,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2785,11 +3257,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2814,11 +3292,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2843,11 +3327,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2872,11 +3362,19 @@
      {
       "type": "CCS",
       "kw": 120,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.18,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.18,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   },
@@ -2901,11 +3399,19 @@
      {
       "type": "CCS",
       "kw": 120,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.18,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.18,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   },
@@ -2930,11 +3436,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -2959,11 +3471,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -2988,11 +3506,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3017,11 +3541,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3046,11 +3576,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3075,11 +3611,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3104,11 +3646,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3168,11 +3716,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3197,11 +3751,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3226,11 +3786,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3255,11 +3821,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3284,11 +3856,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3313,11 +3891,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3342,11 +3926,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3371,11 +3961,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3400,11 +3996,17 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3429,11 +4031,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3458,23 +4064,35 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.07,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.07,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.07,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.07,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -3499,11 +4117,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3528,23 +4152,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3569,11 +4209,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3598,11 +4244,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04
+    },
     "source": "mobie"
    }
   },
@@ -3627,11 +4277,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3656,11 +4310,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3685,11 +4343,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3714,11 +4376,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3743,11 +4409,19 @@
      {
       "type": "Type 2",
       "kw": 11,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0,
+       "min": 0.03,
+       "start": 0.26
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0,
+     "min": 0.03,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -3772,11 +4446,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3801,11 +4479,19 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.02,
+       "start": 0.26
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.1,
+     "min": 0.02,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -3830,11 +4516,19 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.02,
+       "start": 0.26
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.1,
+     "min": 0.02,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -3859,23 +4553,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3900,11 +4610,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3929,11 +4643,15 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0
+    },
     "source": "mobie"
    }
   },
@@ -3958,23 +4676,39 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.05,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.05,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -3999,11 +4733,19 @@
      {
       "type": "Type 2",
       "kw": 7.4,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.1,
+       "min": 0.02,
+       "start": 0.26
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.1,
+     "min": 0.02,
+     "start": 0.26
+    },
     "source": "mobie"
    }
   },
@@ -4028,11 +4770,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4057,23 +4805,35 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 60,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -4168,11 +4928,19 @@
      {
       "type": "CCS",
       "kw": 120,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.15,
+       "min": 0.15,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.15,
+     "min": 0.15,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4197,11 +4965,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4226,11 +5000,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -4290,11 +5070,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.04,
+       "start": 0.16
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.04,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -4319,23 +5105,35 @@
      {
       "type": "CHAdeMO",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "CCS",
       "kw": 50,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      },
      {
       "type": "Type 2",
       "kw": 43,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.16
+      },
       "count": 1
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.16
+    },
     "source": "mobie"
    }
   },
@@ -4360,11 +5158,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4389,11 +5193,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4418,11 +5228,17 @@
      {
       "type": "Type 2",
       "kw": 22,
-      "tariff": null,
+      "tariff": {
+       "min": 0.06,
+       "start": 0.3
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "min": 0.06,
+     "start": 0.3
+    },
     "source": "mobie"
    }
   },
@@ -4447,11 +5263,19 @@
      {
       "type": "CCS",
       "kw": 120,
-      "tariff": null,
+      "tariff": {
+       "kwh": 0.35,
+       "min": 0.18,
+       "start": 0.5
+      },
       "count": 2
      }
     ],
-    "tariff": null,
+    "tariff": {
+     "kwh": 0.35,
+     "min": 0.18,
+     "start": 0.5
+    },
     "source": "mobie"
    }
   }
