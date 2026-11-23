@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Madeira EV Chargers</title>
+  <meta name="description" content="Every public EV charger in Madeira and Porto Santo on one fast map, coloured by price, with one-tap navigation.">
+  <meta name="theme-color" content="#0f766e">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M18 4 8 18h7l-2 10 11-15h-7z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar">
+    <h1>⚡ Madeira EV Chargers</h1>
+    <div class="filters" role="group" aria-label="Filters">
+      <button class="chip" data-filter="fast" aria-pressed="false">Fast ≥ 50 kW</button>
+      <button class="chip" data-filter="priced" aria-pressed="false">Has price</button>
+      <button class="chip icon" id="locate" aria-label="Show my location" title="Show my location">◎</button>
+    </div>
+  </header>
+
+  <main id="map" aria-label="Map of chargers"></main>
+
+  <section id="sheet" class="sheet" aria-label="Charger list">
+    <button id="sheet-handle" class="handle" aria-expanded="false">
+      <span class="grip"></span>
+      <span id="sheet-title">Loading chargers…</span>
+    </button>
+    <div class="sheet-tools">
+      <label>Sort
+        <select id="sort">
+          <option value="price">Cheapest first</option>
+          <option value="power">Fastest first</option>
+          <option value="distance">Nearest first</option>
+        </select>
+      </label>
+      <span class="legend" aria-label="Price legend">
+        <i style="--c:var(--p1)"></i>cheap
+        <i style="--c:var(--p2)"></i>
+        <i style="--c:var(--p3)"></i>
+        <i style="--c:var(--p4)"></i>pricey
+        <i style="--c:var(--p0)"></i>no price
+      </span>
+    </div>
+    <ol id="list" class="list"></ol>
+    <footer class="foot">
+      Locations © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL).
+      Prices are community-entered estimates before your payment app's fee; check the app before charging.
+      Missing a charger? <a href="https://www.openstreetmap.org/edit" target="_blank" rel="noopener">Add it to OpenStreetMap</a>.
+    </footer>
+  </section>
+
+  <div id="card" class="card" hidden role="dialog" aria-modal="false" aria-labelledby="card-title"></div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

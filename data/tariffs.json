@@ -1,0 +1,11 @@
+{
+  "_help": [
+    "Prices shown on the map. All amounts in EUR, before the payment app's (CEME, e.g. Miio) own fee.",
+    "kwh = price per kWh, min = price per minute, start = fixed fee per session.",
+    "'operators' applies to every charger whose OSM operator or network matches the key (case-insensitive, substring match).",
+    "'stations' overrides one charger: use its id (shown at the bottom of the charger's card, e.g. osm-node-123456) or its Mobi.E code (e.g. FNC-00012).",
+    "Set 'updated' to the date you checked the price so visitors know how fresh it is."
+  ],
+  "operators": {},
+  "stations": {}
+}

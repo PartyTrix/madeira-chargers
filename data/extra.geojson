@@ -1,0 +1,5 @@
+{
+ "type": "FeatureCollection",
+ "_help": "Add chargers that are missing from OpenStreetMap here. Copy the example, change the id, coordinates [longitude, latitude] and details. Better still: add them to openstreetmap.org so everyone benefits.",
+ "features": []
+}
