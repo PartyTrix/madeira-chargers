@@ -8,7 +8,7 @@
 
   const state = {
     all: [],
-    filters: { fast: false, priced: false },
+    filters: { fast: false, priced: false, card: false },
     sort: "price",
     me: null,
     layer: null,
@@ -103,7 +103,8 @@
   // ---------- rendering ----------
   function visible() {
     return state.all.filter(
-      (c) => (!state.filters.fast || c.fast) && (!state.filters.priced || c.eff != null)
+      (c) => (!state.filters.fast || c.fast) && (!state.filters.priced || c.eff != null) &&
+        (!state.filters.card || c.pay.card)
     );
   }
 
