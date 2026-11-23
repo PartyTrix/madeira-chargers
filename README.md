@@ -52,3 +52,7 @@ Note the order is `[longitude, latitude]`.
 - Map tiles: OpenStreetMap standard tiles, under their [tile usage policy](https://operations.osmfoundation.org/policies/tiles/). If the site gets heavy traffic, switch the URL in `app.js` to another free tile provider.
 - Leaflet: BSD-2-Clause (`vendor/leaflet/LICENSE`).
 - Miio's app data is not scraped.
+
+## Licence
+
+The code is source-available under the [PolyForm Noncommercial 1.0.0](LICENSE) licence: anyone may use, copy and change it for non-commercial purposes, but not to make money. The charger data has its own terms (non-commercial, with attribution to MOBI.E / NAP Portugal), and Leaflet keeps its BSD-2-Clause licence.
