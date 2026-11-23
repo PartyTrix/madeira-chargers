@@ -1,20 +1,26 @@
 {
   "_help": [
-    "Used to turn the charger operator's fee into an estimated total price, the way a driver pays it in an app like Miio.",
-    "total per kWh = (operator fee per kWh + app energy price per kWh + MOBI.E fee / session kWh) x (1 + VAT)",
+    "Used to turn the charger operator's fee into an estimated total, the way Miio bills it.",
+    "total = (operator fee + session kWh x (app energy + grid access + excise) + app activation + MOBI.E fee) x (1 + VAT)",
     "Edit the numbers here when they change; the site picks them up on the next deploy."
   ],
   "app_name": "Miio",
-  "app_energy_kwh": 0.20,
-  "app_energy_is_estimate": true,
-  "mobie_fee_session": 0.1088,
+  "app_energy_kwh": 0.304,
+  "app_energy_is_estimate": false,
+  "app_activation": 0,
+  "grid_access_kwh": 0.078,
+  "excise_kwh": 0.001,
+  "mobie_fee_session": 0,
   "vat": 0.22,
   "vat_label": "VAT (Madeira 22%)",
   "session_kwh": 20,
   "updated": "2026-11-23",
   "sources": {
-    "mobie_fee_session": "MOBI.E / ERSE EGME tariff 2026: EUR 0.1088 per charge",
-    "vat": "Madeira standard VAT rate 22%",
-    "app_energy_kwh": "Estimate until confirmed from Miio's Pricing tab"
+    "app_energy_kwh": "Miio session breakdown at FUN-00003, Nov 2026: energy EUR 3.04 for 10 kWh",
+    "grid_access_kwh": "Same Miio breakdown: grid access (TAR) EUR 0.78 for 10 kWh",
+    "excise_kwh": "Same Miio breakdown: Special Consumption Tax (IEC) EUR 0.01 for 10 kWh",
+    "app_activation": "Miio activation was EUR 0 ('miio offer'); raise it here if Miio starts charging one",
+    "mobie_fee_session": "Not shown as a separate line in Miio's breakdown, so 0",
+    "vat": "Madeira standard VAT rate 22%, as shown by Miio"
   }
 }

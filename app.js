@@ -40,12 +40,12 @@
   }).fitBounds(MADEIRA, { paddingBottomRight: [0, 120] });
   L.control.zoom({ position: "topright" }).addTo(map);
   let tiles;
+  // OpenStreetMap's own tiles: no key needed. Dark mode dims them with a CSS filter.
   function setTiles() {
     tiles?.remove();
-    const style = dark.matches ? "dark_all" : "rastertiles/voyager";
-    tiles = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`, {
-      maxZoom: 19, subdomains: "abcd",
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
   }
   setTiles();
@@ -106,18 +106,19 @@
   }
   const sessionKwh = () => state.pricing?.session_kwh || 20;
 
-  // What a driver actually pays per kWh: operator fee + the app's energy
-  // price + the MOBI.E fee, then VAT. Components live in data/pricing.json.
+  // What a driver actually pays, the way Miio bills it: operator fee + the
+  // app's energy price + grid access and excise per kWh + fixed fees, then VAT.
+  // Components live in data/pricing.json.
   function breakdown(opc) {
     const p = state.pricing;
     if (opc == null || !p) return null;
     const n = sessionKwh();
     const operator = opc * n;
-    const energy = (p.app_energy_kwh || 0) * n;
-    const mobie = p.mobie_fee_session || 0;
-    const net = operator + energy + mobie;
+    const energy = (p.app_energy_kwh || 0) * n + (p.app_activation || 0);
+    const fees = ((p.grid_access_kwh || 0) + (p.excise_kwh || 0)) * n + (p.mobie_fee_session || 0);
+    const net = operator + energy + fees;
     const vat = net * (p.vat || 0);
-    return { n, operator, energy, mobie, vat, total: net + vat, perKwh: (net + vat) / n };
+    return { n, operator, energy, fees, vat, total: net + vat, perKwh: (net + vat) / n };
   }
 
   function enrich(f, tariffs) {
@@ -336,11 +337,11 @@
         <table class="breakdown">
           <tr><td>Charger operator (${esc(parts.join(" + "))})</td><td>${euro(bd.operator)}</td></tr>
           <tr><td>Energy from ${esc(p.app_name || "your app")} (${euro(p.app_energy_kwh)}/kWh${p.app_energy_is_estimate ? ", estimate" : ""})</td><td>${euro(bd.energy)}</td></tr>
-          <tr><td>MOBI.E fee per session</td><td>${euro(bd.mobie)}</td></tr>
+          <tr><td>Grid access and electricity tax</td><td>${euro(bd.fees)}</td></tr>
           <tr><td>${esc(p.vat_label || "VAT")}</td><td>${euro(bd.vat)}</td></tr>
           <tr class="total"><td>Total for ${bd.n} kWh</td><td>${euro(bd.total)}</td></tr>
         </table>
-        <p>Your app may price energy a little differently, so check it before charging.${t?.later ? ` Note: ${esc(t.later)}.` : ""}</p>
+        <p>Worked out the way Miio itemises a session. Real costs depend on your car's charging speed, so check the app before charging.${t?.later ? ` Note: ${esc(t.later)}.` : ""}</p>
       </details>` : ""}`;
   }
 

@@ -22,11 +22,13 @@ The price shown is the **operator's (OPC) price** published on the National Acce
 
 On top of that operator fee the page adds what every driver pays, so the number is close to what Miio charges:
 
-- the charging app's energy price (Miio, €/kWh),
-- the MOBI.E network fee per session,
+- Miio's energy price (€0.304/kWh in Nov 2026),
+- grid access (€0.078/kWh) and electricity tax (€0.001/kWh),
 - VAT (22% in Madeira).
 
-Each charger card shows the breakdown. These shared numbers live in `data/pricing.json` (`app_energy_kwh`, `mobie_fee_session`, `vat`, `session_kwh`); edit them there when Miio or MOBI.E change their prices.
+These match the itemised session breakdown Miio shows.
+
+Each charger card shows the breakdown. These shared numbers live in `data/pricing.json` (`app_energy_kwh`, `grid_access_kwh`, `excise_kwh`, `app_activation`, `mobie_fee_session`, `vat`, `session_kwh`); edit them there when Miio or MOBI.E change their prices.
 
 To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 
@@ -59,7 +61,7 @@ Note the order is `[longitude, latitude]`.
 ## Data and licences
 
 - Chargers and prices: MOBI.E data published on the [National Access Point](https://nap-portugal.imt-ip.pt/) (IMT). Free reuse with attribution, for non-commercial purposes. Credited on the page.
-- Map tiles: [CARTO](https://carto.com/attributions) Voyager / Dark Matter basemaps (© OpenStreetMap contributors, © CARTO), free for non-commercial use. If the site ever gets heavy traffic, switch the URL in `app.js`.
+- Map tiles: [OpenStreetMap](https://www.openstreetmap.org/copyright) standard tiles (© OpenStreetMap contributors), used under the OSM tile usage policy with attribution; dark mode dims them with a CSS filter. CARTO's basemaps started requiring an API key in Nov 2026. If the site ever gets heavy traffic, switch the URL in `app.js`.
 - Font: Manrope, SIL Open Font License (`vendor/fonts/LICENSE-Manrope.txt`).
 - Leaflet: BSD-2-Clause (`vendor/leaflet/LICENSE`).
 - Miio's app data is not scraped.
