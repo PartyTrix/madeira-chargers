@@ -1,10 +1,9 @@
 {
   "_help": [
-    "Prices shown on the map. All amounts in EUR, before the payment app's (CEME, e.g. Miio) own fee.",
-    "kwh = price per kWh, min = price per minute, start = fixed fee per session.",
-    "'operators' applies to every charger whose OSM operator or network matches the key (case-insensitive, substring match).",
-    "'stations' overrides one charger: use its id (shown at the bottom of the charger's card, e.g. osm-node-123456) or its Mobi.E code (e.g. FNC-00012).",
-    "Set 'updated' to the date you checked the price so visitors know how fresh it is."
+    "Price overrides. Official MOBI.E operator tariffs are loaded automatically every day; use this file only to fix or add a price.",
+    "All amounts in EUR. kwh = price per kWh, min = price per minute, start = fixed fee per session, note = free text, updated = date you checked.",
+    "'stations' overrides one charger by its MOBI.E code (e.g. FNC-00012), shown at the bottom of the charger's card.",
+    "'operators' applies to chargers that have no official price, when the operator name contains the key (case-insensitive)."
   ],
   "operators": {},
   "stations": {}

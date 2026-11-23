@@ -43,6 +43,7 @@
     const st = tariffs.stations || {};
     if (st[p.id]) return st[p.id];
     if (p.ref && st[p.ref]) return st[p.ref];
+    if (p.tariff) return p.tariff; // official MOBI.E operator tariff
     const hay = `${p.operator || ""} ${p.network || ""}`.toLowerCase();
     for (const [key, t] of Object.entries(tariffs.operators || {})) {
       if (key.startsWith("_")) continue;
@@ -74,6 +75,7 @@
       tariff,
       eff: effectivePerKwh(tariff, p.max_kw),
       fast: (p.max_kw || 0) >= 50,
+      mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
       title: p.name || p.operator || p.network || "EV charger",
     };
   }
@@ -182,8 +184,11 @@
           : `<span>No price on file yet. Check Miio or your charging app.</span>`}
       </div>
       ${t?.note ? `<div class="meta">${esc(t.note)}</div>` : ""}
+      ${t?.later ? `<div class="meta">⚠️ ${esc(t.later)}</div>` : ""}
+      ${c.eff != null ? `<div class="meta">Operator price before VAT, MOBI.E fee and your app's fee.</div>` : ""}
+      ${c.mobie ? "" : `<div class="meta">No MOBI.E code: Miio may not work here, you may need to pay at the charger.</div>`}
       <ul class="sockets">
-        ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}</li>`).join("")
+        ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</li>`).join("")
           || (c.max_kw ? `<li>Up to ${fmtKw(c.max_kw)} kW</li>` : "")}
         ${c.opening_hours ? `<li>🕒 ${esc(c.opening_hours)}</li>` : ""}
       </ul>
@@ -192,10 +197,21 @@
         <a class="alt" href="https://maps.apple.com/?daddr=${dest}" target="_blank" rel="noopener">Apple Maps</a>
         <a class="alt" href="https://waze.com/ul?ll=${dest}&navigate=yes" target="_blank" rel="noopener">Waze</a>
       </div>
-      <div class="id">ID: ${esc(c.id)}${c.source === "osm" ? ` · <a href="https://www.openstreetmap.org/${c.id.replace(/^osm-(\w+)-/, "$1/")}" target="_blank" rel="noopener">fix on OSM</a>` : ""}</div>`;
+      <div class="id">${c.mobie ? "MOBI.E code" : "ID"}: ${esc(c.id)}</div>`;
     card.hidden = false;
     card.querySelector(".close").onclick = closeCard;
     document.getElementById("sheet").classList.remove("open");
+  }
+
+  // Show a socket's own price only when it differs from the headline price.
+  function socketPrice(s, headline) {
+    const t = s.tariff;
+    if (!t || JSON.stringify(t) === JSON.stringify(headline)) return "";
+    const bits = [];
+    if (t.kwh) bits.push(`${euro(t.kwh)}/kWh`);
+    if (t.min) bits.push(`${euro(t.min)}/min`);
+    if (t.start) bits.push(`${euro(t.start)} start`);
+    return bits.length ? ` · ${esc(bits.join(" + "))}` : "";
   }
 
   function closeCard() {

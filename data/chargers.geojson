@@ -1,4 +1,4459 @@
 {
  "type": "FeatureCollection",
- "features": []
+ "attribution": "MOBI.E data via NAP Portugal (IMT). Tariffs © MOBI.E.",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.857866,
+     32.647938
+    ]
+   },
+   "properties": {
+    "id": "0842PL0001",
+    "ref": "0842PL0001",
+    "name": "Caminho da Cancela São Gonçalo",
+    "operator": null,
+    "address": "Caminho da Cancela São Gonçalo, Cancela",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.857866,
+     32.647938
+    ]
+   },
+   "properties": {
+    "id": "0842PR0002",
+    "ref": "0842PR0002",
+    "name": "Caminho da Cancela São Gonçalo",
+    "operator": null,
+    "address": "Caminho da Cancela São Gonçalo, Cancela",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.919516,
+     32.66031
+    ]
+   },
+   "properties": {
+    "id": "0845PL0001",
+    "ref": "0845PL0001",
+    "name": "Estrada Dr. João Abel de Freitas",
+    "operator": null,
+    "address": "Estrada Dr. João Abel de Freitas, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.919516,
+     32.66031
+    ]
+   },
+   "properties": {
+    "id": "0845PR0002",
+    "ref": "0845PR0002",
+    "name": "Estrada Dr. João Abel de Freitas",
+    "operator": null,
+    "address": "Estrada Dr. João Abel de Freitas, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.971346,
+     32.65483
+    ]
+   },
+   "properties": {
+    "id": "0867PL0001",
+    "ref": "0867PL0001",
+    "name": "R. Frei Pedro da Guarda",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "R. Frei Pedro da Guarda, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.971346,
+     32.65483
+    ]
+   },
+   "properties": {
+    "id": "0867PR0002",
+    "ref": "0867PR0002",
+    "name": "R. Frei Pedro da Guarda",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "R. Frei Pedro da Guarda, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.946856,
+     32.639492
+    ]
+   },
+   "properties": {
+    "id": "1493PL0001",
+    "ref": "1493PL0001",
+    "name": "Ed. São Lucas, Estrada Monumental",
+    "operator": null,
+    "address": "Ed. São Lucas, Estrada Monumental, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.946856,
+     32.639492
+    ]
+   },
+   "properties": {
+    "id": "1493PR0003",
+    "ref": "1493PR0003",
+    "name": "Ed. São Lucas, Estrada Monumental",
+    "operator": null,
+    "address": "Ed. São Lucas, Estrada Monumental, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.058092,
+     32.678833
+    ]
+   },
+   "properties": {
+    "id": "2082PR0001",
+    "ref": "2082PR0001",
+    "name": "R. dos Dragoeiros 59",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "R. dos Dragoeiros 59, Ribeira Brava",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.768728,
+     32.720654
+    ]
+   },
+   "properties": {
+    "id": "2085PL0001",
+    "ref": "2085PL0001",
+    "name": "R. do Ribeirinho 47-49",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "R. do Ribeirinho 47-49, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 7,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.768728,
+     32.720654
+    ]
+   },
+   "properties": {
+    "id": "2085PR0002",
+    "ref": "2085PR0002",
+    "name": "R. do Ribeirinho 47-49",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "R. do Ribeirinho 47-49, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.883322,
+     32.81067
+    ]
+   },
+   "properties": {
+    "id": "2086PL0001",
+    "ref": "2086PL0001",
+    "name": "Sítio do Barreiro",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "Sítio do Barreiro, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 7,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.883322,
+     32.81067
+    ]
+   },
+   "properties": {
+    "id": "2086PR0002",
+    "ref": "2086PR0002",
+    "name": "Sítio do Barreiro",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "Sítio do Barreiro, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.976645,
+     32.669834
+    ]
+   },
+   "properties": {
+    "id": "2087PL0001",
+    "ref": "2087PL0001",
+    "name": "R. das Vinhas, Estreito Camara de Lobos",
+    "operator": null,
+    "address": "R. das Vinhas, Estreito Camara de Lobos, Estreito",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.976645,
+     32.669834
+    ]
+   },
+   "properties": {
+    "id": "2087PR0002",
+    "ref": "2087PR0002",
+    "name": "R. das Vinhas, Estreito Camara de Lobos",
+    "operator": null,
+    "address": "R. das Vinhas, Estreito Camara de Lobos, Estreito",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.04516,
+     32.80286
+    ]
+   },
+   "properties": {
+    "id": "7922PL0001",
+    "ref": "7922PL0001",
+    "name": "Est Dom João V,",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "Est Dom João V,, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 7,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.04516,
+     32.80286
+    ]
+   },
+   "properties": {
+    "id": "7922PR0002",
+    "ref": "7922PR0002",
+    "name": "Est Dom João V,",
+    "operator": "Modelo Continente Hipermercados, S.A.",
+    "address": "Est Dom João V,, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.178612,
+     32.72139
+    ]
+   },
+   "properties": {
+    "id": "CLT-00004",
+    "ref": "CLT-00004",
+    "name": "Avenida Dom Manuel I",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Avenida Dom Manuel I, Calheta, Madeira",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.178307,
+     32.720806
+    ]
+   },
+   "properties": {
+    "id": "CLT-00005",
+    "ref": "CLT-00005",
+    "name": "Avenida D. Manuel I",
+    "operator": "FactorENERGIA",
+    "address": "Avenida D. Manuel I, Calheta, Madeira",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.178307,
+     32.72096
+    ]
+   },
+   "properties": {
+    "id": "CLT-00006",
+    "ref": "CLT-00006",
+    "name": "Avenida D. Manuel I",
+    "operator": "FactorENERGIA",
+    "address": "Avenida D. Manuel I, Calheta, Madeira",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.210867,
+     32.737713
+    ]
+   },
+   "properties": {
+    "id": "CLT-00007",
+    "ref": "CLT-00007",
+    "name": "Parque de Estacionamento Público do Jardim do Mar",
+    "operator": "FactorENERGIA",
+    "address": "Caminho Jardim do Mar, Calheta, Madeira",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.974709,
+     32.648773
+    ]
+   },
+   "properties": {
+    "id": "CML-00002",
+    "ref": "CML-00002",
+    "name": "Parque de Estacionamento Público do Centro de Câmara de Lobos",
+    "operator": "FactorENERGIA",
+    "address": "Parque de estacionamento da Rua da Carreira,, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.00549,
+     32.657097
+    ]
+   },
+   "properties": {
+    "id": "CML-00003",
+    "ref": "CML-00003",
+    "name": "Lugares de Estacionamento Público próximo ao Miradouro do Cabo Girão",
+    "operator": "FactorENERGIA",
+    "address": "Estrada do Cabo Girão - Miradouro, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.978859,
+     32.67216
+    ]
+   },
+   "properties": {
+    "id": "CML-00059",
+    "ref": "CML-00059",
+    "name": "Rua João Augusto de Ornelas",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua João Augusto de Ornelas, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903893,
+     32.64723
+    ]
+   },
+   "properties": {
+    "id": "FNC-00040",
+    "ref": "FNC-00040",
+    "name": "Rua Artur de Sousa \"Pinga\"",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua Artur de Sousa \"Pinga\", Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.95119,
+     32.659615
+    ]
+   },
+   "properties": {
+    "id": "FNC-00041",
+    "ref": "FNC-00041",
+    "name": "Shopping Madeira Piso -1",
+    "operator": "Galp Power OPC",
+    "address": "NA, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.95119,
+     32.659615
+    ]
+   },
+   "properties": {
+    "id": "FNC-00042",
+    "ref": "FNC-00042",
+    "name": "Shopping Madeira Piso -1",
+    "operator": "Galp Power OPC",
+    "address": "NA, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914595,
+     32.655163
+    ]
+   },
+   "properties": {
+    "id": "FNC-00044",
+    "ref": "FNC-00044",
+    "name": "Funchal - Ribeira Sta Luzia",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Rua 31 de Janeiro, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.93925,
+     32.64621
+    ]
+   },
+   "properties": {
+    "id": "FNC-00045",
+    "ref": "FNC-00045",
+    "name": "Leroy Merlin Funchal",
+    "operator": "Helexia II Energy Services, Lda.",
+    "address": "R. do Engenho Velho 4, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.93925,
+     32.64621
+    ]
+   },
+   "properties": {
+    "id": "FNC-00046",
+    "ref": "FNC-00046",
+    "name": "Leroy Merlin Funchal",
+    "operator": "Helexia II Energy Services, Lda.",
+    "address": "R. do Engenho Velho 4, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.9031,
+     32.647247
+    ]
+   },
+   "properties": {
+    "id": "FNC-00047",
+    "ref": "FNC-00047",
+    "name": "AHEAD_QC45",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua José da Silva \"Saca\", Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903126,
+     32.64736
+    ]
+   },
+   "properties": {
+    "id": "FNC-00048",
+    "ref": "FNC-00048",
+    "name": "AHEAD_QC60",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua José da Silva \"Saca\", Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94239,
+     32.6362
+    ]
+   },
+   "properties": {
+    "id": "FNC-00049",
+    "ref": "FNC-00049",
+    "name": "Rua Nova do Vale da Ajuda",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Rua Nova do Vale da Ajuda, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94318,
+     32.65637
+    ]
+   },
+   "properties": {
+    "id": "FNC-00050",
+    "ref": "FNC-00050",
+    "name": "Caminho do Poço Barral",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Caminho do Poço Barral 28, 9020-148 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94055,
+     32.65939
+    ]
+   },
+   "properties": {
+    "id": "FNC-00051",
+    "ref": "FNC-00051",
+    "name": "Pico dos Barcelos",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Pico dos Barcelos, 9020-148, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.93235,
+     32.63624
+    ]
+   },
+   "properties": {
+    "id": "FNC-00052",
+    "ref": "FNC-00052",
+    "name": "Lido",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "R. do Gorgulho 11, 9000-107 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.93015,
+     32.66054
+    ]
+   },
+   "properties": {
+    "id": "FNC-00053",
+    "ref": "FNC-00053",
+    "name": "Avenida da Madalena",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Av. da Madalena 99, 9020-402 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.92562,
+     32.65939
+    ]
+   },
+   "properties": {
+    "id": "FNC-00054",
+    "ref": "FNC-00054",
+    "name": "Universidade da Madeira",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Universidade da Madeira, 9020-105 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.92142,
+     32.64394
+    ]
+   },
+   "properties": {
+    "id": "FNC-00055",
+    "ref": "FNC-00055",
+    "name": "Avenida do Infante",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Av. do Infante 62C, 9000-015 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.92214,
+     32.6704
+    ]
+   },
+   "properties": {
+    "id": "FNC-00056",
+    "ref": "FNC-00056",
+    "name": "Caminho do Lombo Segundo, S. Roque",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Caminho do Lombo Segundo 69, 9020-122 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.91123,
+     32.65313
+    ]
+   },
+   "properties": {
+    "id": "FNC-00057",
+    "ref": "FNC-00057",
+    "name": "Rua 31 de janeiro",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Rua 5 de Outubro 91B, 9000-079 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.90913,
+     32.65027
+    ]
+   },
+   "properties": {
+    "id": "FNC-00058",
+    "ref": "FNC-00058",
+    "name": "Rua dos Ferreiros",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Rua Dos Ferreiros 127-107, 9000-082 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.88286,
+     32.64923
+    ]
+   },
+   "properties": {
+    "id": "FNC-00059",
+    "ref": "FNC-00059",
+    "name": "Caminho da Igreja",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "R. Nova da Igreja 32, 9060-053 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.9161,
+     32.64758
+    ]
+   },
+   "properties": {
+    "id": "FNC-00060",
+    "ref": "FNC-00060",
+    "name": "Edifício 2000, Av. Calouste Gulbenkien",
+    "operator": "Ecoinside - Soluções em Ecoeficiência e Sustentabilidade Lda",
+    "address": "Av. Calouste Gulbenkian 9, 9000-044 Funchal, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 11,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 11,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.91423,
+     32.655457
+    ]
+   },
+   "properties": {
+    "id": "FNC-00061",
+    "ref": "FNC-00061",
+    "name": "Lugares de Estacionamento na Rua Nova da Quinta Deão",
+    "operator": "FactorENERGIA",
+    "address": "Rua Nova da Quinta Deão, nº64, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.915424,
+     32.649956
+    ]
+   },
+   "properties": {
+    "id": "FNC-00062",
+    "ref": "FNC-00062",
+    "name": "Lugares de Estacionamento no Parque de Estacionamento Público da Rua das Cruzes",
+    "operator": "FactorENERGIA",
+    "address": "Rua das Cruzes nº1, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.91596,
+     32.647507
+    ]
+   },
+   "properties": {
+    "id": "FNC-00066",
+    "ref": "FNC-00066",
+    "name": "Parque 2000",
+    "operator": "FactorENERGIA",
+    "address": "Av. Calouste Gulbekian, Ed 2000, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.911669,
+     32.65207
+    ]
+   },
+   "properties": {
+    "id": "FNC-00068",
+    "ref": "FNC-00068",
+    "name": "Parque Severiano Ferraz",
+    "operator": "FactorENERGIA",
+    "address": "Largo Severiano Ferraz, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.90182,
+     32.65293
+    ]
+   },
+   "properties": {
+    "id": "FNC-00069",
+    "ref": "FNC-00069",
+    "name": "Parque Campo da Barca",
+    "operator": "FactorENERGIA",
+    "address": "Rua Ribeira de João Gomes, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.941874,
+     32.647507
+    ]
+   },
+   "properties": {
+    "id": "FNC-00071",
+    "ref": "FNC-00071",
+    "name": "Hospital Particular da Madeira  - Funchal",
+    "operator": "Powerdot, S.A",
+    "address": "Av. Mário Soares 143, São Martinho, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.90306,
+     32.64772
+    ]
+   },
+   "properties": {
+    "id": "FNC-00076",
+    "ref": "FNC-00076",
+    "name": "Parque de Estacionamento Almirante Reis - Funchal",
+    "operator": "Powerdot, S.A",
+    "address": "R. José da Silva \"Saca\" 1109, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.922495,
+     32.6711
+    ]
+   },
+   "properties": {
+    "id": "FNC-00078",
+    "ref": "FNC-00078",
+    "name": "ES S. ROQUE",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Estrada Dr. João Abel de Freitas (Bomba Re..., Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94624,
+     32.656757
+    ]
+   },
+   "properties": {
+    "id": "FNC-00079",
+    "ref": "FNC-00079",
+    "name": "CAMINHO DO POÇO BARRAL Nº 52",
+    "operator": "Galp Power OPC",
+    "address": "CAMINHO DO POÇO BARRAL Nº 52, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 180,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 180,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.904385,
+     32.649445
+    ]
+   },
+   "properties": {
+    "id": "FNC-00080",
+    "ref": "FNC-00080",
+    "name": "Centro Comercial Anadia - Funchal",
+    "operator": "Powerdot, S.A",
+    "address": "Rua do Ribeirinho de Baixo, 27, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 100,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 100,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.91811,
+     32.64497
+    ]
+   },
+   "properties": {
+    "id": "FNC-00081",
+    "ref": "FNC-00081",
+    "name": "AVENIDA DO INFANTE",
+    "operator": "Galp Power OPC",
+    "address": "AVENIDA DO INFANTE, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 90,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 90,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.90047,
+     32.656197
+    ]
+   },
+   "properties": {
+    "id": "FNC-00082",
+    "ref": "FNC-00082",
+    "name": "RUA DA RIBEIRA DE JOÃO GOMES",
+    "operator": "Galp Power OPC",
+    "address": "RUA DA RIBEIRA DE JOÃO GOMES, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 90,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 90,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914137,
+     32.64793
+    ]
+   },
+   "properties": {
+    "id": "FNC-00083",
+    "ref": "FNC-00083",
+    "name": "Plaza Madeira",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Dr. Brito Câmara 9, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 100,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 100,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914137,
+     32.64793
+    ]
+   },
+   "properties": {
+    "id": "FNC-00084",
+    "ref": "FNC-00084",
+    "name": "Plaza Madeira",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Dr. Brito Câmara 9, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 100,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 100,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.912966,
+     32.645245
+    ]
+   },
+   "properties": {
+    "id": "FUN-00003",
+    "ref": "FUN-00003",
+    "name": "Avenida Sá Carneiro",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Avenida Sá Carneiro, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.91723,
+     32.643803
+    ]
+   },
+   "properties": {
+    "id": "FUN-00004",
+    "ref": "FUN-00004",
+    "name": "Rua Imperatriz D Amelia",
+    "operator": "Mobiletric",
+    "address": "Rua Imperatriz D Amelia, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 7.2,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.2,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914173,
+     32.643974
+    ]
+   },
+   "properties": {
+    "id": "FUN-00005",
+    "ref": "FUN-00005",
+    "name": "AV. SÁ CARNEIRO",
+    "operator": "Mobiletric",
+    "address": "AV. SÁ CARNEIRO, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914137,
+     32.64793
+    ]
+   },
+   "properties": {
+    "id": "FUN-00018",
+    "ref": "FUN-00018",
+    "name": "Rua Dr. Brito Câmara 9",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Dr. Brito Câmara 9, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.914137,
+     32.64793
+    ]
+   },
+   "properties": {
+    "id": "FUN-00019",
+    "ref": "FUN-00019",
+    "name": "Rua Dr. Brito Câmara 9",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Dr. Brito Câmara 9, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.922653,
+     32.646626
+    ]
+   },
+   "properties": {
+    "id": "FUN-00020",
+    "ref": "FUN-00020",
+    "name": "Avenida Luís de Camões",
+    "operator": "EDP Comercial",
+    "address": "Avenida Luís de Camões, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.919289,
+     32.643284
+    ]
+   },
+   "properties": {
+    "id": "FUN-00021",
+    "ref": "FUN-00021",
+    "name": "Avenida do Infante",
+    "operator": "FactorENERGIA",
+    "address": "Avenida do Infante, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.919289,
+     32.643284
+    ]
+   },
+   "properties": {
+    "id": "FUN-00022",
+    "ref": "FUN-00022",
+    "name": "Avenida do Infante",
+    "operator": "FactorENERGIA",
+    "address": "Avenida do Infante, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94286,
+     32.63659
+    ]
+   },
+   "properties": {
+    "id": "FUN-00025",
+    "ref": "FUN-00025",
+    "name": "Estrada Monumental, 390",
+    "operator": "Mota-Engil Renewing",
+    "address": "Estrada Monumental, 390, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 24,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 24,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 24,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94286,
+     32.63666
+    ]
+   },
+   "properties": {
+    "id": "FUN-00026",
+    "ref": "FUN-00026",
+    "name": "Estrada Monumental, 390",
+    "operator": "Mota-Engil Renewing",
+    "address": "Estrada Monumental, 390, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 11,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 11,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94286,
+     32.63652
+    ]
+   },
+   "properties": {
+    "id": "FUN-00027",
+    "ref": "FUN-00027",
+    "name": "Estrada Monumental, 390",
+    "operator": "Mota-Engil Renewing",
+    "address": "Estrada Monumental, 390, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 11,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 11,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903893,
+     32.64942
+    ]
+   },
+   "properties": {
+    "id": "FUN-00028",
+    "ref": "FUN-00028",
+    "name": "Rua Brigadeiro Oudinot 2",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Brigadeiro Oudinot 2, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903893,
+     32.64942
+    ]
+   },
+   "properties": {
+    "id": "FUN-00029",
+    "ref": "FUN-00029",
+    "name": "Rua Brigadeiro Oudinot 2",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Brigadeiro Oudinot 2, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903893,
+     32.64942
+    ]
+   },
+   "properties": {
+    "id": "FUN-00030",
+    "ref": "FUN-00030",
+    "name": "Rua Brigadeiro Oudinot 2",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Brigadeiro Oudinot 2, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.94027,
+     32.64693
+    ]
+   },
+   "properties": {
+    "id": "FUN-00031",
+    "ref": "FUN-00031",
+    "name": "McDonalds Funchal",
+    "operator": "EDP Comercial",
+    "address": "McDonald´s Funchal Rua Nova do Engenho Velho, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 90,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 90,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.903502,
+     32.64756
+    ]
+   },
+   "properties": {
+    "id": "FUN-00032",
+    "ref": "FUN-00032",
+    "name": "Rua Artur de Sousa Pinga",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Artur de Sousa Pinga, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.904943,
+     32.649525
+    ]
+   },
+   "properties": {
+    "id": "FUN-00033",
+    "ref": "FUN-00033",
+    "name": "Rua Do Visconde De Anadia 27",
+    "operator": "Powerdot, S.A",
+    "address": "Rua Do Visconde De Anadia 27, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.89358,
+     32.6606
+    ]
+   },
+   "properties": {
+    "id": "FUN-00036",
+    "ref": "FUN-00036",
+    "name": "COTA 200 LADO A",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Via rápida Cota 200, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.894081,
+     32.66125
+    ]
+   },
+   "properties": {
+    "id": "FUN-00037",
+    "ref": "FUN-00037",
+    "name": "COTA 200 LADO B",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Via rápida Cota 200, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.92621,
+     32.65195
+    ]
+   },
+   "properties": {
+    "id": "FUN-00038",
+    "ref": "FUN-00038",
+    "name": "LEVADA CAVALO B",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Estrada da Liberdade - Levada do Cavalo, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.93608,
+     32.64969
+    ]
+   },
+   "properties": {
+    "id": "FUN-00039",
+    "ref": "FUN-00039",
+    "name": "S. MARTINHO",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Caminho de São Martinho, nº 12 - Nazaré, Funchal",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.765976,
+     32.71843
+    ]
+   },
+   "properties": {
+    "id": "MCH-00001",
+    "ref": "MCH-00001",
+    "name": "Rua da Estacada",
+    "operator": "FactorENERGIA",
+    "address": "Rua da Estacada, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.765717,
+     32.7174
+    ]
+   },
+   "properties": {
+    "id": "MCH-00002",
+    "ref": "MCH-00002",
+    "name": "Praceta 25 de Abril",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Praceta 25 de Abril, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.73668,
+     32.737827
+    ]
+   },
+   "properties": {
+    "id": "MCH-00003",
+    "ref": "MCH-00003",
+    "name": "Rua do Porto",
+    "operator": "FactorENERGIA",
+    "address": "Rua do Porto, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.73668,
+     32.737827
+    ]
+   },
+   "properties": {
+    "id": "MCH-00004",
+    "ref": "MCH-00004",
+    "name": "Rua do Porto",
+    "operator": "FactorENERGIA",
+    "address": "Rua do Porto, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.829931,
+     32.772804
+    ]
+   },
+   "properties": {
+    "id": "MCH-00005",
+    "ref": "MCH-00005",
+    "name": "Caminho Velho do Massapez",
+    "operator": "FactorENERGIA",
+    "address": "Caminho Velho do Massapez, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.829931,
+     32.772804
+    ]
+   },
+   "properties": {
+    "id": "MCH-00006",
+    "ref": "MCH-00006",
+    "name": "Caminho Velho do Massapez",
+    "operator": "FactorENERGIA",
+    "address": "Caminho Velho do Massapez, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.762459,
+     32.718884
+    ]
+   },
+   "properties": {
+    "id": "MCH-00007",
+    "ref": "MCH-00007",
+    "name": "Rua do Leiria",
+    "operator": "FactorENERGIA",
+    "address": "Rua do Leiria, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.803968,
+     32.721962
+    ]
+   },
+   "properties": {
+    "id": "MCH-00008",
+    "ref": "MCH-00008",
+    "name": "Clube de Golf do Santo da Serra",
+    "operator": "FactorENERGIA",
+    "address": "Clube de Golf do Santo da Serra, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.767088,
+     32.714916
+    ]
+   },
+   "properties": {
+    "id": "MCH-00010",
+    "ref": "MCH-00010",
+    "name": "Machico - Centro",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Rua da Árvore, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.766764,
+     32.7079
+    ]
+   },
+   "properties": {
+    "id": "MCH-00011",
+    "ref": "MCH-00011",
+    "name": "Lugares de Estacionamento Público próximo ao Restaurante Franco",
+    "operator": "FactorENERGIA",
+    "address": "Estrada Regional 101, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.768276,
+     32.72046
+    ]
+   },
+   "properties": {
+    "id": "MCH-00012",
+    "ref": "MCH-00012",
+    "name": "Lugares de Estacionamento Público próximo aos Supermercados do Centro de Machico",
+    "operator": "FactorENERGIA",
+    "address": "Rua da Estacada 65, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.816902,
+     32.72436
+    ]
+   },
+   "properties": {
+    "id": "MCH-00013",
+    "ref": "MCH-00013",
+    "name": "Lugares de Estacionamento Público no Enotel Santo da Serra",
+    "operator": "FactorENERGIA",
+    "address": "Estrada Fonte de Santo António nº 67, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.735905,
+     32.742813
+    ]
+   },
+   "properties": {
+    "id": "MCH-00014",
+    "ref": "MCH-00014",
+    "name": "PA Caniçal",
+    "operator": "Galp Power",
+    "address": "Zona Franca Industrial, Plataforma 24, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.735905,
+     32.742813
+    ]
+   },
+   "properties": {
+    "id": "MCH-00015",
+    "ref": "MCH-00015",
+    "name": "PA Caniçal",
+    "operator": "Galp Power",
+    "address": "Zona Franca Industrial, Plataforma 24, Machico",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.166945,
+     32.8675
+    ]
+   },
+   "properties": {
+    "id": "PMZ-00003",
+    "ref": "PMZ-00003",
+    "name": "Rua do Figueiral",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua do Figueiral, Porto Moniz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.171362,
+     32.86541
+    ]
+   },
+   "properties": {
+    "id": "PMZ-00004",
+    "ref": "PMZ-00004",
+    "name": "Praça do Lyra",
+    "operator": "FactorENERGIA",
+    "address": "Praça do Lyra, Porto Moniz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.19074,
+     32.85964
+    ]
+   },
+   "properties": {
+    "id": "PMZ-00005",
+    "ref": "PMZ-00005",
+    "name": "Estrada Regional 101 - Santa",
+    "operator": "FactorENERGIA",
+    "address": "Estrada Regional 101 - Santa, Porto Moniz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.209734,
+     32.85226
+    ]
+   },
+   "properties": {
+    "id": "PMZ-00006",
+    "ref": "PMZ-00006",
+    "name": "Lugares de Estacionamento Público próximo ao Miradouro do Teleférico",
+    "operator": "FactorENERGIA",
+    "address": "Caminho do Teleférico das Achadas da Cruz, Porto Moniz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.33376,
+     33.059414
+    ]
+   },
+   "properties": {
+    "id": "PST-00002",
+    "ref": "PST-00002",
+    "name": "Rua Maximiano Sousa",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua Maximiano Sousa, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.351389,
+     33.05003
+    ]
+   },
+   "properties": {
+    "id": "PST-00003",
+    "ref": "PST-00003",
+    "name": "Sítio do Espírito Santo",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Sítio do Espírito Santo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.351389,
+     33.05003
+    ]
+   },
+   "properties": {
+    "id": "PST-00004",
+    "ref": "PST-00004",
+    "name": "Sítio do Espírito Santo",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Sítio do Espírito Santo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.342869,
+     33.07111
+    ]
+   },
+   "properties": {
+    "id": "PST-00006",
+    "ref": "PST-00006",
+    "name": "Porto Santo - Centro",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Parque Empresarial do Porto Santo, Lote 7, Lo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.336632,
+     33.05842
+    ]
+   },
+   "properties": {
+    "id": "PST-00008",
+    "ref": "PST-00008",
+    "name": "PST-MGP-Este",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua Manuel Gregório Pestana, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.336962,
+     33.058525
+    ]
+   },
+   "properties": {
+    "id": "PST-00009",
+    "ref": "PST-00009",
+    "name": "PST-MGP-Oeste",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua Manuel Gregório Pestana, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.339067,
+     33.05716
+    ]
+   },
+   "properties": {
+    "id": "PST-00010",
+    "ref": "PST-00010",
+    "name": "PST-Fontinha-Este",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Estrada Regional nº111, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.339067,
+     33.05716
+    ]
+   },
+   "properties": {
+    "id": "PST-00011",
+    "ref": "PST-00011",
+    "name": "PST-Fontinha-Oeste",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Estrada Regional nº111, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.341373,
+     33.05405
+    ]
+   },
+   "properties": {
+    "id": "PST-00012",
+    "ref": "PST-00012",
+    "name": "Pé na Água - Porto Santo",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Pé na Água - Porto Santo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.341373,
+     33.05405
+    ]
+   },
+   "properties": {
+    "id": "PST-00013",
+    "ref": "PST-00013",
+    "name": "Pé na Água",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Pé na Água, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.341547,
+     33.05441
+    ]
+   },
+   "properties": {
+    "id": "PST-00014",
+    "ref": "PST-00014",
+    "name": "Pé na Água - Porto Santo",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Pé na Água - Porto Santo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.341547,
+     33.054073
+    ]
+   },
+   "properties": {
+    "id": "PST-00015",
+    "ref": "PST-00015",
+    "name": "Pé na Água - Porto Santo",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Pé na Água - Porto Santo, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.370554,
+     33.05167
+    ]
+   },
+   "properties": {
+    "id": "PST-00016",
+    "ref": "PST-00016",
+    "name": "Sítio das Marinhas",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Sítio das Marinhas, Porto Santo",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.086708,
+     32.679825
+    ]
+   },
+   "properties": {
+    "id": "PTS-00001",
+    "ref": "PTS-00001",
+    "name": "Azinhaga do Poço Barral N 23",
+    "operator": "FactorENERGIA",
+    "address": "Azinhaga do Poço Barral N 23, Ponta do Sol",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.97877,
+     32.649925
+    ]
+   },
+   "properties": {
+    "id": "RAM-CML-00001",
+    "ref": "RAM-CML-00001",
+    "name": "Avenida Nova Cidade",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Avenida Nova Cidade, Câmara de Lobos",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.064121,
+     32.673553
+    ]
+   },
+   "properties": {
+    "id": "RBR-00002",
+    "ref": "RBR-00002",
+    "name": "Rua Comandante Agostinho de Sousa Macedo",
+    "operator": "FactorENERGIA",
+    "address": "Rua Comandante Agostinho de Sousa Macedo, Ribeira Brava",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.053268,
+     32.68244
+    ]
+   },
+   "properties": {
+    "id": "RBR-00003",
+    "ref": "RBR-00003",
+    "name": "RIBEIRA BRAVA",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Estrada Regional n.º 104 - Sítio da Murteira, Ribeira Brava",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.06412,
+     32.673534
+    ]
+   },
+   "properties": {
+    "id": "RBR-00004",
+    "ref": "RBR-00004",
+    "name": "Lugares de estacionamento público situado em frente ao Bar do Clube.",
+    "operator": "FactorENERGIA",
+    "address": "Lugares de estapúblico situado em frente ao B, Ribeira Brava",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.842085,
+     32.653717
+    ]
+   },
+   "properties": {
+    "id": "SCR-00001",
+    "ref": "SCR-00001",
+    "name": "Caniço Shopping Piso -1",
+    "operator": "FactorENERGIA",
+    "address": "Caniço Shopping Piso -1, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.774855,
+     32.69234
+    ]
+   },
+   "properties": {
+    "id": "SCR-00002",
+    "ref": "SCR-00002",
+    "name": "Aeroportos da Madeira",
+    "operator": "FactorENERGIA",
+    "address": "Aeroportos da Madeira, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.774918,
+     32.6923
+    ]
+   },
+   "properties": {
+    "id": "SCR-00003",
+    "ref": "SCR-00003",
+    "name": "Aeroportos da Madeira",
+    "operator": "FactorENERGIA",
+    "address": "Aeroportos da Madeira, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.774918,
+     32.6923
+    ]
+   },
+   "properties": {
+    "id": "SCR-00004",
+    "ref": "SCR-00004",
+    "name": "Aeroportos da Madeira",
+    "operator": "FactorENERGIA",
+    "address": "Aeroportos da Madeira, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.774792,
+     32.692345
+    ]
+   },
+   "properties": {
+    "id": "SCR-00005",
+    "ref": "SCR-00005",
+    "name": "Aeroportos da Madeira",
+    "operator": "FactorENERGIA",
+    "address": "Aeroportos da Madeira, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.825592,
+     32.64633
+    ]
+   },
+   "properties": {
+    "id": "SCR-00006",
+    "ref": "SCR-00006",
+    "name": "Praia Dos Reis Magos",
+    "operator": "Mobiletric",
+    "address": "Praia Dos Reis Magos, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 11,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 11,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.79124,
+     32.68765
+    ]
+   },
+   "properties": {
+    "id": "SCR-00007",
+    "ref": "SCR-00007",
+    "name": "Alameda",
+    "operator": "Município de Santa Cruz",
+    "address": "Alameda, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.793064,
+     32.68707
+    ]
+   },
+   "properties": {
+    "id": "SCR-00009",
+    "ref": "SCR-00009",
+    "name": "Hotel Vila Gale Santa Cruz",
+    "operator": "EDP Comercial",
+    "address": "Hotel Vila Gale Santa Cruz, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.793064,
+     32.68707
+    ]
+   },
+   "properties": {
+    "id": "SCR-00010",
+    "ref": "SCR-00010",
+    "name": "Hotel Vila Galé Santa Cruz",
+    "operator": "EDP Comercial",
+    "address": "Hotel Vila Galé Santa Cruz, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.835524,
+     32.6472
+    ]
+   },
+   "properties": {
+    "id": "SCR-00012",
+    "ref": "SCR-00012",
+    "name": "CANIÇO",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Estrada da Ponta Oliveira - Caniço de Baixo, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.839903,
+     32.651936
+    ]
+   },
+   "properties": {
+    "id": "SCR-00018",
+    "ref": "SCR-00018",
+    "name": "Rua João Paulo II",
+    "operator": "Município de Santa Cruz",
+    "address": "Rua João Paulo II, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.839903,
+     32.651936
+    ]
+   },
+   "properties": {
+    "id": "SCR-00019",
+    "ref": "SCR-00019",
+    "name": "Rua João Paulo II",
+    "operator": "Município de Santa Cruz",
+    "address": "Rua João Paulo II, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.80393,
+     32.670815
+    ]
+   },
+   "properties": {
+    "id": "SCR-00020",
+    "ref": "SCR-00020",
+    "name": "GAULA A",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "E.R. 101 - Sítio da Lombadinha, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.792816,
+     32.68718
+    ]
+   },
+   "properties": {
+    "id": "SCR-00021",
+    "ref": "SCR-00021",
+    "name": "Vila Galé Santa Cruz",
+    "operator": "EDP Comercial",
+    "address": "Rua São Fernando 5, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 7.4,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 7.4,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.85935,
+     32.651516
+    ]
+   },
+   "properties": {
+    "id": "SCR-00022",
+    "ref": "SCR-00022",
+    "name": "Lugares de Estacionamento no Parque Empresarial da Cancela",
+    "operator": "FactorENERGIA",
+    "address": "Rua Canto do Ribeiro nº4.1, Parq Emp Cancela, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.857075,
+     32.646122
+    ]
+   },
+   "properties": {
+    "id": "SCR-00023",
+    "ref": "SCR-00023",
+    "name": "Rua da Quinta - Cancela",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Rua da Quinta - Cancela, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 60,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 60,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.854486,
+     32.644787
+    ]
+   },
+   "properties": {
+    "id": "SCR-00024",
+    "ref": "SCR-00024",
+    "name": "Santa Cruz - Garajau #1",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Sitio da Pedra Mole, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.854486,
+     32.644787
+    ]
+   },
+   "properties": {
+    "id": "SCR-00025",
+    "ref": "SCR-00025",
+    "name": "Santa Cruz - Garajau #2",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Sitio da Pedra Mole, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 300,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 300,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.852972,
+     32.648575
+    ]
+   },
+   "properties": {
+    "id": "SCR-00026",
+    "ref": "SCR-00026",
+    "name": "ES CANCELA",
+    "operator": "REPSOL Portuguesa Lda",
+    "address": "Rua da Olaria, Santa Cruz",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.885319,
+     32.823143
+    ]
+   },
+   "properties": {
+    "id": "STN-00002",
+    "ref": "STN-00002",
+    "name": "Estrada da Quinta do Furão",
+    "operator": "FactorENERGIA",
+    "address": "Estrada da Quinta do Furão, Santana",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.881111,
+     32.803333
+    ]
+   },
+   "properties": {
+    "id": "STN-00003",
+    "ref": "STN-00003",
+    "name": "Sítio do Serrado",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Sítio do Serrado, Santana",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.88491,
+     32.810833
+    ]
+   },
+   "properties": {
+    "id": "STN-00005",
+    "ref": "STN-00005",
+    "name": "Santana - Centro",
+    "operator": "Iberdrola | bp pulse",
+    "address": "Sitio dos Barreiros, Santana",
+    "opening_hours": "24/7",
+    "max_kw": 150,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 150,
+      "tariff": null,
+      "count": 2
+     },
+     {
+      "type": "CHAdeMO",
+      "kw": 80,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.046299,
+     32.8037
+    ]
+   },
+   "properties": {
+    "id": "SVC-00001",
+    "ref": "SVC-00001",
+    "name": "Largo do Municipio",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Largo do Municipio, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.04768,
+     32.80771
+    ]
+   },
+   "properties": {
+    "id": "SVC-00002",
+    "ref": "SVC-00002",
+    "name": "Estrada Regional 104",
+    "operator": "EMACOM - Telecomunicações da Madeira, Unipessoal, Lda",
+    "address": "Estrada Regional 104, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 50,
+    "sockets": [
+     {
+      "type": "CHAdeMO",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "CCS",
+      "kw": 50,
+      "tariff": null,
+      "count": 1
+     },
+     {
+      "type": "Type 2",
+      "kw": 43,
+      "tariff": null,
+      "count": 1
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.97311,
+     32.82011
+    ]
+   },
+   "properties": {
+    "id": "SVC-00003",
+    "ref": "SVC-00003",
+    "name": "Caminho do Cemitério da Boaventura",
+    "operator": "FactorENERGIA",
+    "address": "Caminho do Cemitério da Boaventura, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -16.9902,
+     32.82305
+    ]
+   },
+   "properties": {
+    "id": "SVC-00004",
+    "ref": "SVC-00004",
+    "name": "ER101 nº 110, Ponta Delgada",
+    "operator": "FactorENERGIA",
+    "address": "ER101 nº 110, Ponta Delgada, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.05558,
+     32.808918
+    ]
+   },
+   "properties": {
+    "id": "SVC-00005",
+    "ref": "SVC-00005",
+    "name": "Parque de Estacionamento do Restaurante A Cataplana - Centro do Ouro",
+    "operator": "FactorENERGIA",
+    "address": "Avenida Marcos Marques Rosa nº34, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 22,
+    "sockets": [
+     {
+      "type": "Type 2",
+      "kw": 22,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -17.04683,
+     32.806072
+    ]
+   },
+   "properties": {
+    "id": "SVC-00006",
+    "ref": "SVC-00006",
+    "name": "E.N. 104 - SÃO VICENTE",
+    "operator": "Galp Power OPC",
+    "address": "E.N. 104 - SÃO VICENTE, São Vicente",
+    "opening_hours": "24/7",
+    "max_kw": 120,
+    "sockets": [
+     {
+      "type": "CCS",
+      "kw": 120,
+      "tariff": null,
+      "count": 2
+     }
+    ],
+    "tariff": null,
+    "source": "mobie"
+   }
+  }
+ ]
 }
