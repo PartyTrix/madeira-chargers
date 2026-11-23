@@ -49,7 +49,8 @@ Note the order is `[longitude, latitude]`.
 ## Data and licences
 
 - Chargers and prices: MOBI.E data published on the [National Access Point](https://nap-portugal.imt-ip.pt/) (IMT). Free reuse with attribution, for non-commercial purposes. Credited on the page.
-- Map tiles: OpenStreetMap standard tiles, under their [tile usage policy](https://operations.osmfoundation.org/policies/tiles/). If the site gets heavy traffic, switch the URL in `app.js` to another free tile provider.
+- Map tiles: [CARTO](https://carto.com/attributions) Voyager / Dark Matter basemaps (© OpenStreetMap contributors, © CARTO), free for non-commercial use. If the site ever gets heavy traffic, switch the URL in `app.js`.
+- Font: Manrope, SIL Open Font License (`vendor/fonts/LICENSE-Manrope.txt`).
 - Leaflet: BSD-2-Clause (`vendor/leaflet/LICENSE`).
 - Miio's app data is not scraped.
 

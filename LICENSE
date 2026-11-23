@@ -7,6 +7,7 @@ Required Notice: Copyright PartyTrix (https://github.com/PartyTrix/madeira-charg
 Scope: this licence covers the original code, styles and documentation in this
 repository. It does not cover:
 - vendor/leaflet/ (Leaflet, BSD-2-Clause, see vendor/leaflet/LICENSE);
+- vendor/fonts/ (Manrope, SIL Open Font License 1.1);
 - data/chargers.geojson, which is derived from MOBI.E data published on
   Portugal's National Access Point (IMT): free reuse with source attribution,
   non-commercial only.

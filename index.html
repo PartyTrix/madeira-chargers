@@ -2,66 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.basemaps.cartocdn.com; connect-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Madeira EV Chargers</title>
-  <meta name="description" content="Every public EV charger in Madeira and Porto Santo on one fast map, coloured by price, with one-tap navigation.">
-  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Every public EV charger in Madeira and Porto Santo on one fast map, with prices on the map and one-tap navigation.">
+  <meta name="theme-color" content="#0e5e47" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b241c" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://madeirachargers.com/">
   <meta property="og:title" content="Madeira EV Chargers">
-  <meta property="og:description" content="Every public EV charger in Madeira and Porto Santo on one fast map, coloured by price, with one-tap navigation.">
+  <meta property="og:description" content="Every public EV charger in Madeira and Porto Santo on one fast map, with prices on the map and one-tap navigation.">
   <meta property="og:url" content="https://madeirachargers.com/">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f766e'/%3E%3Cpath d='M18 4 8 18h7l-2 10 11-15h-7z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230e5e47'/%3E%3Cpath d='M18 5 9 18h6l-2 9 10-14h-6z' fill='%23f6c945'/%3E%3C/svg%3E">
+  <link rel="preload" href="vendor/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="bar">
-    <h1>⚡ Madeira EV Chargers</h1>
-    <div class="filters" role="group" aria-label="Filters">
-      <button class="chip" id="labels" aria-pressed="false">€ Prices</button>
-      <button class="chip" data-filter="fast" aria-pressed="false">Fast ≥ 50 kW</button>
-      <button class="chip" data-filter="priced" aria-pressed="false">Has price</button>
-      <button class="chip" data-filter="card" aria-pressed="false">💳 Card</button>
-      <button class="chip icon" id="locate" aria-label="Show my location" title="Show my location">◎</button>
-    </div>
+  <!-- Icon sprite: one 2px stroke set, drawn for this site. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24"><path d="M18 6.5A7 7 0 1 0 18 17.5M4 10h9M4 14h9"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><path d="M3 11 21 3l-8 18-2-8z"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><path d="M8 3v5M16 3v5M5 8h14v3a7 7 0 0 1-14 0zM12 18v3"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9l8-6 8 6M4 15l8 6 8-6"/></symbol>
+  </svg>
+
+  <header class="appbar">
+    <a class="brand" href="./" aria-label="Madeira EV Chargers, home">
+      <span class="brand-mark"><svg><use href="#i-bolt"/></svg></span>
+      <span class="brand-text">Madeira Chargers</span>
+    </a>
+    <button class="icon-btn" id="locate" aria-label="Show my location" title="Show my location">
+      <svg><use href="#i-locate"/></svg>
+    </button>
   </header>
+
+  <nav class="filters" aria-label="Map options">
+    <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Prices on map</button>
+    <button class="chip" data-filter="fast" aria-pressed="false"><svg><use href="#i-bolt"/></svg>Fast 50 kW+</button>
+    <button class="chip" data-filter="card" aria-pressed="false"><svg><use href="#i-card"/></svg>Pay by card</button>
+    <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has a price</button>
+  </nav>
 
   <main id="map" aria-label="Map of chargers"></main>
 
-  <section id="sheet" class="sheet" aria-label="Charger list">
-    <button id="sheet-handle" class="handle" aria-expanded="false">
-      <span class="grip"></span>
-      <span id="sheet-title">Loading chargers…</span>
-    </button>
-    <div class="sheet-tools">
-      <label>Sort
-        <select id="sort">
-          <option value="price">Cheapest first</option>
-          <option value="power">Fastest first</option>
-          <option value="distance">Nearest first</option>
-        </select>
-      </label>
-      <span class="legend" aria-label="Price legend">
-        <i style="--c:var(--p1)"></i>cheap
-        <i style="--c:var(--p2)"></i>
-        <i style="--c:var(--p3)"></i>
-        <i style="--c:var(--p4)"></i>pricey
-        <i style="--c:var(--p0)"></i>no price
-      </span>
-    </div>
-    <ol id="list" class="list"></ol>
-    <footer class="foot">
-      Chargers and operator prices: <a href="https://www.mobie.pt" target="_blank" rel="noopener">MOBI.E</a>, via the
-      <a href="https://nap-portugal.imt-ip.pt/" target="_blank" rel="noopener">National Access Point (IMT)</a>, refreshed daily.
-      Prices are the charger operator's fee only, before VAT, your app's energy price (e.g. Miio) and the MOBI.E fee. Check your app before charging.
-      Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
-      Not an official MOBI.E site.
-    </footer>
-  </section>
+  <section id="panel" class="panel" aria-label="Chargers">
+    <button id="grip" class="grip" aria-label="Show more" aria-expanded="false"><span></span></button>
 
-  <div id="card" class="card" hidden role="dialog" aria-modal="false" aria-labelledby="card-title"></div>
+    <div id="list-view" class="view">
+      <div class="list-head">
+        <h1 id="list-title">Loading chargers…</h1>
+        <div class="seg" role="radiogroup" aria-label="Sort">
+          <button role="radio" aria-checked="true" data-sort="price">Cheapest</button>
+          <button role="radio" aria-checked="false" data-sort="power">Fastest</button>
+          <button role="radio" aria-checked="false" data-sort="distance">Nearest</button>
+        </div>
+        <div class="scale" id="scale" aria-label="Price colours"></div>
+      </div>
+      <ol id="list" class="list" aria-live="polite"></ol>
+      <footer class="foot">
+        <p>Chargers and prices: <a href="https://www.mobie.pt" target="_blank" rel="noopener">MOBI.E</a> via the
+        <a href="https://nap-portugal.imt-ip.pt/" target="_blank" rel="noopener">National Access Point (IMT)</a>, updated daily.
+        Prices are the charger operator's fee before VAT; your app's energy price (e.g. Miio) and the MOBI.E fee come on top.
+        Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>, © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>.
+        Not an official MOBI.E site.</p>
+      </footer>
+    </div>
+
+    <div id="detail-view" class="view" hidden></div>
+  </section>
 
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="app.js"></script>

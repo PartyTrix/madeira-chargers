@@ -4,50 +4,74 @@
 
   const MADEIRA = [[32.62, -17.30], [33.10, -16.25]]; // includes Porto Santo
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
+  const BANDS = ["Cheap for Madeira", "Below average", "Above average", "Expensive for Madeira"];
+  const LABEL_ZOOM = 13; // price tags from street level, dots below it
+  const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(ua);
+  const canHover = matchMedia("(hover: hover)").matches;
+  const dark = matchMedia("(prefers-color-scheme: dark)");
 
   const state = {
     all: [],
+    cuts: [],
     filters: { fast: false, priced: false, card: false },
     sort: "price",
     me: null,
-    layer: null,
     selected: null,
-    labels: load("labels") === "1",
+    labels: load("labels") !== "0", // on by default
+    markers: new Map(),
   };
-  const canHover = matchMedia("(hover: hover)").matches;
-  const isAndroid = /Android/i.test(navigator.userAgent);
 
   // ---------- map ----------
-  // A generous tap tolerance so small pins are easy to hit with a finger.
-  const map = L.map("map", { zoomControl: false, renderer: L.canvas({ tolerance: 12 }) }).fitBounds(MADEIRA);
+  const map = L.map("map", {
+    zoomControl: false,
+    renderer: L.canvas({ tolerance: 12 }), // generous tap target for dots
+  }).fitBounds(MADEIRA, { paddingBottomRight: [0, 120] });
   L.control.zoom({ position: "topright" }).addTo(map);
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  }).addTo(map);
-  state.layer = L.layerGroup().addTo(map);
+  let tiles;
+  function setTiles() {
+    tiles?.remove();
+    const style = dark.matches ? "dark_all" : "rastertiles/voyager";
+    tiles = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`, {
+      maxZoom: 19, subdomains: "abcd",
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    }).addTo(map);
+  }
+  setTiles();
+  dark.addEventListener?.("change", () => { setTiles(); render(); });
+  const layer = L.layerGroup().addTo(map);
 
   // ---------- data ----------
+  $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
   Promise.all([
-    fetch("data/chargers.geojson").then((r) => r.json()),
+    fetch("data/chargers.geojson").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
     fetch("data/tariffs.json").then((r) => r.json()).catch(() => ({})),
   ])
     .then(([geo, tariffs]) => {
       state.all = geo.features.map((f) => enrich(f, tariffs));
       colourByPrice(state.all);
+      renderScale();
       render();
+      const id = decodeURIComponent(location.hash.slice(1));
+      const linked = id && state.all.find((c) => c.id === id);
+      if (linked) select(linked, { fly: true });
     })
     .catch((e) => {
-      document.getElementById("sheet-title").textContent = "Could not load chargers. Please refresh.";
       console.error(e);
+      $("list-title").textContent = "Couldn't load the chargers";
+      $("list").innerHTML = `<li class="empty"><span>Check your connection, then try again.</span>
+        <button class="chip" id="retry">Try again</button></li>`;
+      $("retry").onclick = () => location.reload();
     });
 
   function findTariff(p, tariffs) {
     const st = tariffs.stations || {};
     if (st[p.id]) return st[p.id];
     if (p.ref && st[p.ref]) return st[p.ref];
-    if (p.tariff) return p.tariff; // official MOBI.E operator tariff
+    if (p.tariff) return p.tariff; // official operator price from the NAP feed
     const hay = `${p.operator || ""} ${p.network || ""}`.toLowerCase();
     for (const [key, t] of Object.entries(tariffs.operators || {})) {
       if (key.startsWith("_")) continue;
@@ -75,14 +99,13 @@
     const tariff = findTariff(p, tariffs);
     return {
       ...p,
-      lat, lon,
-      tariff,
+      lat, lon, tariff,
       eff: effectivePerKwh(tariff, p.max_kw),
       fast: (p.max_kw || 0) >= 50,
       mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
       pay: p.pay || {},
       payUnknown: p.source === "mobie" && !p.pay,
-      title: p.name || p.operator || p.network || "EV charger",
+      title: tidyName(p.name || p.operator || p.network || "EV charger"),
       operator: shortOp(p.operator),
     };
   }
@@ -91,52 +114,95 @@
   function colourByPrice(items) {
     const known = items.map((c) => c.eff).filter((v) => v != null).sort((a, b) => a - b);
     const q = (p) => known[Math.min(known.length - 1, Math.floor(p * known.length))];
-    const cuts = known.length ? [q(0.25), q(0.5), q(0.75)] : [];
+    state.cuts = known.length ? [q(0.25), q(0.5), q(0.75)] : [];
+    state.max = known.at(-1);
     for (const c of items) {
-      if (c.eff == null) { c.colourVar = "--p0"; continue; }
+      if (c.eff == null) { c.colourVar = "--p0"; c.band = null; continue; }
       let i = 0;
-      while (i < cuts.length && c.eff > cuts[i]) i++;
+      while (i < state.cuts.length && c.eff > state.cuts[i]) i++;
       c.colourVar = PALETTE[i];
+      c.band = i;
     }
   }
 
-  // ---------- rendering ----------
+  function renderScale() {
+    const [a, b, c] = state.cuts;
+    if (a == null) { $("scale").hidden = true; return; }
+    const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
+    $("scale").innerHTML = ranges.map((r, i) => `<span style="--c:var(${PALETTE[i]})">${r}</span>`).join("")
+      + `<span style="--c:var(--p0)">no price</span>`;
+  }
+
+  // ---------- map rendering ----------
   function visible() {
-    return state.all.filter(
-      (c) => (!state.filters.fast || c.fast) && (!state.filters.priced || c.eff != null) &&
-        (!state.filters.card || c.pay.card)
-    );
+    const f = state.filters;
+    return state.all.filter((c) =>
+      (!f.fast || c.fast) && (!f.priced || c.eff != null) && (!f.card || c.pay.card));
   }
 
   function render() {
+    layer.clearLayers();
+    state.markers.clear();
     const items = visible();
-    state.layer.clearLayers();
-    for (const c of items) {
-      const m = L.circleMarker([c.lat, c.lon], {
-        radius: c.fast ? 10 : 7,
-        color: c.fast ? "#111827" : "#ffffff",
-        weight: c.fast ? 3 : 2,
-        fillColor: css(c.colourVar),
-        fillOpacity: 1,
-        bubblingMouseEvents: false, // otherwise the map's click handler closes the card again
-      });
-      // Labels only from street level, otherwise they pile on top of each other.
-      if (state.labels && c.eff != null && map.getZoom() >= 13) {
-        m.bindTooltip(euro(c.eff), {
-          permanent: true, direction: "top", offset: [0, c.fast ? -10 : -7], className: "price-label",
-        });
-      } else if (canHover) {
-        m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
-      }
-      m.on("click", (e) => { L.DomEvent.stop(e); openCard(c); });
-      m.addTo(state.layer);
-    }
+    const tags = state.labels && map.getZoom() >= LABEL_ZOOM ? placeTags(items) : new Set();
+    // Dots first, tags on top.
+    for (const c of items) if (!tags.has(c.id)) addDot(c);
+    for (const c of items) if (tags.has(c.id)) addTag(c);
     renderList();
   }
 
+  // Greedy label placement: the selected and cheapest chargers get a price tag
+  // first; a tag that would overlap one already placed stays a dot.
+  function placeTags(items) {
+    const placed = [];
+    const out = new Set();
+    const priority = items.filter((c) => c.eff != null).sort((a, b) =>
+      (b.id === state.selected?.id) - (a.id === state.selected?.id) || a.eff - b.eff);
+    for (const c of priority) {
+      const pt = map.latLngToLayerPoint([c.lat, c.lon]);
+      const w = 16 + euro(c.eff).length * 8 + (c.fast ? 12 : 0), h = 26;
+      const box = { l: pt.x - w / 2 - 2, r: pt.x + w / 2 + 2, t: pt.y - h - 8, b: pt.y + 2 };
+      if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
+      placed.push(box);
+      out.add(c.id);
+    }
+    return out;
+  }
+
+  function addTag(c) {
+    const sel = state.selected?.id === c.id;
+    const m = L.marker([c.lat, c.lon], {
+      icon: L.divIcon({
+        className: "pin-wrap", iconSize: null,
+        html: `<span class="pin-tag${sel ? " selected" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${euro(c.eff)}</span>`,
+      }),
+      keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
+    });
+    m.on("click", (e) => { L.DomEvent.stop(e); select(c); });
+    m.addTo(layer);
+    state.markers.set(c.id, m);
+  }
+
+  function addDot(c) {
+    const sel = state.selected?.id === c.id;
+    const m = L.circleMarker([c.lat, c.lon], {
+      radius: sel ? 12 : c.fast ? 9 : 7,
+      color: sel ? css("--focus") : c.fast ? css("--ink") : "#ffffff",
+      weight: sel ? 4 : c.fast ? 3 : 2,
+      fillColor: css(c.colourVar), fillOpacity: 1,
+      bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
+    });
+    if (canHover) m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
+    m.on("click", (e) => { L.DomEvent.stop(e); select(c); });
+    m.addTo(layer);
+    state.markers.set(c.id, m);
+  }
+
+  // ---------- list ----------
   function renderList() {
+    const all = visible();
     const bounds = map.getBounds();
-    const inView = visible().filter((c) => bounds.contains([c.lat, c.lon]));
+    const inView = all.filter((c) => bounds.contains([c.lat, c.lon]));
     const sorters = {
       price: (a, b) => (a.eff ?? 99) - (b.eff ?? 99) || (b.max_kw || 0) - (a.max_kw || 0),
       power: (a, b) => (b.max_kw || 0) - (a.max_kw || 0) || (a.eff ?? 99) - (b.eff ?? 99),
@@ -144,98 +210,151 @@
     };
     inView.sort(sorters[state.sort] || sorters.price);
 
-    const total = visible().length;
-    document.getElementById("sheet-title").textContent =
-      `${inView.length} of ${total} chargers in view`;
+    const what = { price: "Cheapest", power: "Fastest", distance: "Nearest" }[state.sort];
+    $("list-title").textContent = inView.length
+      ? `${what} of ${inView.length} charger${inView.length === 1 ? "" : "s"} in view`
+      : "No chargers in view";
 
-    const list = document.getElementById("list");
-    list.innerHTML = inView
-      .slice(0, 200)
-      .map(
-        (c, i) => `
-        <li data-i="${i}">
-          <span class="dot ${c.fast ? "fast" : ""}" style="--c:var(${c.colourVar})"></span>
-          <div class="li-main">
-            <div class="li-name">${esc(c.title)}</div>
-            <div class="li-sub">${esc(subline(c))}</div>
-          </div>
-          <div class="li-price">${c.eff != null ? "≈ " + euro(c.eff) + "<small>fee per kWh</small>" : "<small>no price</small>"}</div>
-        </li>`
-      )
-      .join("");
-    list.onclick = (e) => {
-      const li = e.target.closest("li");
-      if (!li) return;
-      const c = inView[+li.dataset.i];
-      map.setView([c.lat, c.lon], Math.max(map.getZoom(), 15));
-      openCard(c);
+    const list = $("list");
+    if (!inView.length) {
+      const filtered = Object.values(state.filters).some(Boolean);
+      list.innerHTML = `<li class="empty"><strong>Nothing here${filtered ? " with these filters" : ""}</strong>
+        <span>${filtered ? "Turn a filter off, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
+        <button class="chip" id="zoom-all">Show all of Madeira</button></li>`;
+      $("zoom-all").onclick = () => map.fitBounds(MADEIRA);
+      return;
+    }
+    list.innerHTML = inView.slice(0, 200).map((c, i) => `
+      <li class="row" data-i="${i}" tabindex="0">
+        <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}" style="--c:var(${c.colourVar})">
+          <svg><use href="#${c.fast ? "i-bolt" : "i-plug"}"/></svg>
+        </span>
+        <span class="row-main">
+          <span class="row-name">${esc(c.title)}</span>
+          <span class="row-sub">${esc(subline(c))}</span>
+        </span>
+        ${c.eff != null
+          ? `<span class="row-price">${euro(c.eff)}<small>per kWh</small></span>`
+          : `<span class="row-price none">No price</span>`}
+      </li>`).join("");
+    const pick = (e) => {
+      const li = e.target.closest(".row");
+      if (li) select(inView[+li.dataset.i], { fly: true });
     };
+    list.onclick = pick;
+    list.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(e); } };
   }
 
   function subline(c) {
     const bits = [];
     if (c.max_kw) bits.push(`${fmtKw(c.max_kw)} kW`);
-    if (c.sockets?.length) bits.push(c.sockets.map((s) => s.type).join(", "));
-    if (c.operator && c.operator !== c.title) bits.push(c.operator);
-    if (c.pay.card) bits.push("💳 card");
+    const types = [...new Set((c.sockets || []).map((s) => s.type))];
+    if (types.length) bits.push(types.join(", "));
+    if (c.pay.card) bits.push("card");
     if (state.me) bits.push(`${dist(c).toFixed(1)} km`);
-    return bits.join(" · ") || "Details unknown";
+    return bits.join(" · ") || c.operator || "Details unknown";
   }
 
-  function openCard(c) {
+  // ---------- detail ----------
+  function select(c, { fly = false } = {}) {
     state.selected = c;
+    history.replaceState(null, "", `#${encodeURIComponent(c.id)}`);
+    if (fly) map.setView([c.lat, c.lon], Math.max(map.getZoom(), 15));
+    render();
+    showDetail(c);
+  }
+
+  function navLinks(c) {
+    const dest = `${c.lat},${c.lon}`;
+    const links = {
+      google: ["Google Maps", `https://www.google.com/maps/dir/?api=1&destination=${dest}`],
+      apple: ["Apple Maps", `https://maps.apple.com/?daddr=${dest}`],
+      waze: ["Waze", `https://waze.com/ul?ll=${dest}&navigate=yes`],
+      other: ["Other app", `geo:${dest}?q=${dest}(${encodeURIComponent(c.title)})`],
+    };
+    const order = isIOS ? ["apple", "google", "waze"] : isAndroid ? ["google", "waze", "other"] : ["google", "apple", "waze"];
+    return order.map((k) => links[k]);
+  }
+
+  const MIIO = isAndroid
+    ? "https://play.google.com/store/search?q=miio&c=apps"
+    : "https://apps.apple.com/pt/app/miio/id1462182013";
+
+  function showDetail(c) {
     const t = c.tariff;
     const parts = [];
     if (t?.kwh) parts.push(`${euro(t.kwh)}/kWh`);
     if (t?.min) parts.push(`${euro(t.min)}/min`);
-    if (t?.start) parts.push(`${euro(t.start)} start`);
-    const dest = `${c.lat},${c.lon}`;
-    const card = document.getElementById("card");
-    card.innerHTML = `
-      <button class="close" aria-label="Close">✕</button>
-      <h2 id="card-title">${esc(c.title)}</h2>
-      <div class="meta">${esc([c.operator, c.network, c.ref, c.address].filter(Boolean).join(" · ") || "Operator unknown")}</div>
-      <div class="nav">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=${dest}" target="_blank" rel="noopener">Google Maps</a>
-        <a class="alt" href="https://maps.apple.com/?daddr=${dest}" target="_blank" rel="noopener">Apple Maps</a>
-        <a class="alt" href="https://waze.com/ul?ll=${dest}&navigate=yes" target="_blank" rel="noopener">Waze</a>
-        ${isAndroid ? `<a class="alt wide" href="geo:${dest}?q=${dest}(${encodeURIComponent(c.title)})">Open in another maps app</a>` : ""}
-      </div>
-      <div class="price-big" style="--c:var(${c.colourVar})">
-        ${c.eff != null
-          ? `<strong>≈ ${euro(c.eff)}/kWh</strong><span>${esc(parts.join(" + "))}${t?.updated ? " · checked " + esc(t.updated) : ""}</span>`
-          : `<span>No price on file yet. Check Miio or your charging app.</span>`}
-      </div>
-      ${t?.note ? `<div class="meta">${esc(t.note)}</div>` : ""}
-      ${t?.later ? `<div class="meta">⚠️ ${esc(t.later)}</div>` : ""}
-      ${c.eff != null ? `<details class="meta"><summary>Operator fee, before VAT. What's included?</summary>On top you pay your app's energy price (e.g. Miio) and the MOBI.E fee. Those are about the same at every charger, so this fee is what makes one charger cheaper than another.</details>` : ""}
-      ${payBlock(c)}
-      <ul class="sockets">
-        ${(c.sockets || []).map((s) => `<li>${s.count}× ${esc(s.type)}${s.kw ? " · " + fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</li>`).join("")
-          || (c.max_kw ? `<li>Up to ${fmtKw(c.max_kw)} kW</li>` : "")}
-        ${c.opening_hours ? `<li>🕒 ${esc(c.opening_hours)}</li>` : ""}
-      </ul>
-      <div class="id">${c.mobie ? "MOBI.E code" : "ID"}: ${esc(c.id)}</div>`;
-    card.hidden = false;
-    card.querySelector(".close").onclick = closeCard;
-    document.getElementById("sheet").classList.remove("open");
+    if (t?.start) parts.push(`${euro(t.start)} per session`);
+    const [primary, ...more] = navLinks(c);
+    const place = [c.address, c.operator].filter(Boolean).join(" · ");
+
+    const priceBox = c.eff != null
+      ? `<div class="price-box" style="--c:var(${c.colourVar})">
+           <div class="big">${euro(c.eff)}<small> /kWh</small></div>
+           <div class="band">${BANDS[c.band]}</div>
+           <div class="parts">${esc(parts.join(" + "))}</div>
+         </div>
+         <details class="note"><summary><svg><use href="#i-info"/></svg>What does this price include?</summary>
+           <p>It's the charger operator's fee before VAT, worked out for a typical 20 kWh top-up.
+           Your app's energy price (e.g. Miio) and the MOBI.E fee come on top. Those are about the same at
+           every charger, so this is the part that makes one charger cheaper than another.${t?.later ? ` Note: ${esc(t.later)}.` : ""}</p>
+         </details>`
+      : `<div class="price-box none">No price published for this charger. Check your charging app before you start.</div>`;
+
+    const pay = [];
+    if (c.payUnknown) {
+      pay.push(`<li class="warn"><svg><use href="#i-info"/></svg>Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger.</li>`);
+    } else {
+      if (c.pay.apps) pay.push(`<li><svg><use href="#i-phone"/></svg>Miio or any MOBI.E app or card</li>`);
+      if (c.pay.card) pay.push(`<li><svg><use href="#i-card"/></svg>Bank card at the charger</li>`);
+    }
+
+    const sockets = (c.sockets || []).map((s) =>
+      `<li><svg><use href="#${(s.kw || 0) >= 50 ? "i-bolt" : "i-plug"}"/></svg>${s.count}× ${esc(s.type)}
+        <span class="sub">${s.kw ? fmtKw(s.kw) + " kW" : ""}${socketPrice(s, t)}</span></li>`).join("");
+
+    const v = $("detail-view");
+    v.innerHTML = `
+      <div class="detail">
+        <div class="detail-top">
+          <button class="text-btn" id="back"><svg><use href="#i-back"/></svg>All chargers</button>
+          <button class="text-btn" id="close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+        </div>
+        <h2 id="detail-title">${esc(c.title)}</h2>
+        <div class="place">${esc(place || "Operator unknown")}</div>
+
+        <a class="nav-primary" href="${primary[1]}" target="_blank" rel="noopener">
+          <svg><use href="#i-nav"/></svg>Navigate with ${primary[0]}</a>
+        <div class="nav-more">${more.map(([n, h]) => `<a href="${h}" ${h.startsWith("geo:") ? "" : 'target="_blank" rel="noopener"'}>${n}</a>`).join("")}</div>
+
+        ${priceBox}
+
+        ${pay.length ? `<div class="section-label">How to pay</div><ul class="facts">${pay.join("")}</ul>` : ""}
+        ${c.pay.apps ? `<a class="app-btn" href="${MIIO}" target="_blank" rel="noopener"><svg><use href="#i-phone"/></svg>Open Miio to charge</a>` : ""}
+
+        ${sockets || c.opening_hours ? `<div class="section-label">Plugs</div><ul class="facts">${sockets}
+          ${c.opening_hours ? `<li><svg><use href="#i-clock"/></svg>Open ${esc(c.opening_hours)}</li>` : ""}</ul>` : ""}
+
+        <div class="code">${c.mobie ? "MOBI.E code" : "ID"}: ${esc(c.id)}</div>
+      </div>`;
+    $("list-view").hidden = true;
+    v.hidden = false;
+    v.querySelector(".detail").scrollTop = 0;
+    $("back").onclick = () => closeDetail(true);
+    $("close").onclick = () => closeDetail(false);
+    setPanel(true);
+    $("back").focus({ preventScroll: true });
   }
 
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const MIIO = isIOS || !isAndroid
-    ? "https://apps.apple.com/pt/app/miio/id1462182013"
-    : "https://play.google.com/store/search?q=miio&c=apps";
-
-  // How to pay here: MOBI.E apps (Miio etc.), and/or a bank card at the charger.
-  function payBlock(c) {
-    const p = c.pay;
-    if (c.payUnknown) return `<div class="meta">Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger itself.</div>`;
-    const bits = [];
-    if (p.card) bits.push(`<li>💳 Pay by bank card at the charger</li>`);
-    if (p.apps) bits.push(`<li>📱 Miio or any MOBI.E app / card</li>`);
-    if (!bits.length) return "";
-    return `<ul class="sockets pay">${bits.join("")}</ul>${
-      p.apps ? `<a class="miio" href="${MIIO}" target="_blank" rel="noopener">Charge with Miio ↗</a>` : ""}`;
+  function closeDetail(keepOpen) {
+    if (!state.selected) return;
+    state.selected = null;
+    history.replaceState(null, "", location.pathname + location.search);
+    $("detail-view").hidden = true;
+    $("list-view").hidden = false;
+    setPanel(keepOpen);
+    render();
   }
 
   // Show a socket's own price only when it differs from the headline price.
@@ -249,10 +368,24 @@
     return bits.length ? ` · ${esc(bits.join(" + "))}` : "";
   }
 
-  function closeCard() {
-    document.getElementById("card").hidden = true;
-    state.selected = null;
+  // ---------- panel ----------
+  const panel = $("panel");
+  function setPanel(open) {
+    panel.classList.toggle("open", open);
+    $("grip").setAttribute("aria-expanded", open);
+    $("grip").setAttribute("aria-label", open ? "Show less" : "Show more");
   }
+  $("grip").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
+  $("list-title").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
+  // Swipe the sheet up or down by its handle.
+  let startY = null;
+  $("grip").addEventListener("touchstart", (e) => { startY = e.touches[0].clientY; }, { passive: true });
+  $("grip").addEventListener("touchend", (e) => {
+    if (startY == null) return;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dy) > 30) setPanel(dy < 0);
+    startY = null;
+  });
 
   // ---------- controls ----------
   document.querySelectorAll(".chip[data-filter]").forEach((b) =>
@@ -261,57 +394,57 @@
       state.filters[k] = !state.filters[k];
       b.setAttribute("aria-pressed", state.filters[k]);
       render();
-    })
-  );
-  document.getElementById("sort").addEventListener("change", (e) => {
-    state.sort = e.target.value;
-    if (state.sort === "distance" && !state.me) locate();
-    else renderList();
-  });
-  const sheet = document.getElementById("sheet");
-  document.getElementById("sheet-handle").addEventListener("click", () => {
-    const open = sheet.classList.toggle("open");
-    document.getElementById("sheet-handle").setAttribute("aria-expanded", open);
-    if (open) closeCard();
-  });
-  document.getElementById("locate").addEventListener("click", locate);
-  const labelsBtn = document.getElementById("labels");
+    }));
+  const labelsBtn = $("labels");
   labelsBtn.setAttribute("aria-pressed", state.labels);
   labelsBtn.addEventListener("click", () => {
     state.labels = !state.labels;
     labelsBtn.setAttribute("aria-pressed", state.labels);
     save("labels", state.labels ? "1" : "0");
-    render();
+    if (state.labels && map.getZoom() < LABEL_ZOOM && !state.selected) {
+      map.setZoom(LABEL_ZOOM); // show the tags straight away
+    } else render();
   });
+  document.querySelectorAll(".seg button").forEach((b) =>
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-checked", x === b));
+      state.sort = b.dataset.sort;
+      if (state.sort === "distance" && !state.me) locate();
+      else renderList();
+    }));
+  $("locate").addEventListener("click", locate);
+
   map.on("moveend", renderList);
-  let lastZoomBand = map.getZoom() >= 13;
+  let band = map.getZoom() >= LABEL_ZOOM;
   map.on("zoomend", () => {
-    const band = map.getZoom() >= 13;
-    if (state.labels && band !== lastZoomBand) render();
-    lastZoomBand = band;
+    const now = map.getZoom() >= LABEL_ZOOM;
+    if (now !== band) { band = now; render(); }
   });
-  map.on("click", closeCard);
-  document.addEventListener("keydown", (e) => e.key === "Escape" && closeCard());
+  map.on("click", () => closeDetail(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDetail(false); });
 
   let meMarker;
   function locate() {
     if (!navigator.geolocation) return;
+    const btn = $("locate");
+    btn.setAttribute("aria-busy", "true");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        btn.removeAttribute("aria-busy");
         state.me = [pos.coords.latitude, pos.coords.longitude];
         meMarker?.remove();
         meMarker = L.circleMarker(state.me, {
-          radius: 8, color: "#fff", weight: 3, fillColor: "#2563eb", fillOpacity: 1,
+          radius: 8, color: "#fff", weight: 3, fillColor: "#1c7ed6", fillOpacity: 1, interactive: false,
         }).addTo(map);
         map.setView(state.me, Math.max(map.getZoom(), 13));
         renderList();
       },
-      () => alertLite("Location is off. You can still browse the map."),
+      () => {
+        btn.removeAttribute("aria-busy");
+        $("list-title").textContent = "Location is off. You can still browse the map.";
+      },
       { enableHighAccuracy: true, timeout: 10000 }
     );
-  }
-  function alertLite(msg) {
-    document.getElementById("sheet-title").textContent = msg;
   }
 
   // ---------- helpers ----------
@@ -322,6 +455,12 @@
     for (let i = 0; i < 3; i++)
       out = out?.replace(/[\s,-]+(Unipessoal|Lda\.?|S\.?A\.?|Soluções em .*)$/i, "").replace(/[,\s]+$/, "");
     return out || s;
+  }
+  // "RIBEIRA BRAVA" -> "Ribeira Brava"; leave mixed-case names alone.
+  function tidyName(s) {
+    if (s !== s.toUpperCase()) return s;
+    return s.toLowerCase().replace(/(^|[\s(\-/])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())
+      .replace(/\b(Da|De|Do|Das|Dos|E)\b/g, (w) => w.toLowerCase());
   }
   function dist(c) {
     if (!state.me) return 0;
