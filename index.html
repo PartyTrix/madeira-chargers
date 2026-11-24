@@ -1,18 +1,110 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org https://*.goatcounter.com; connect-src 'self' https://photon.komoot.io https://router.project-osrm.org; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>Madeira EV Chargers</title>
-  <meta name="description" content="Every public EV charger in Madeira, the Azores and mainland Portugal on one fast map, with prices on the map and one-tap navigation.">
+  <title>Madeira EV Charging Map: Prices for Every Charger | Madeira Chargers</title>
+  <meta name="description" content="Find every public EV charger in Madeira with real prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#f4f2ec" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0d1411" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://madeirachargers.com/">
-  <meta property="og:title" content="Madeira EV Chargers">
-  <meta property="og:description" content="Every public EV charger in Madeira, the Azores and mainland Portugal on one fast map, with prices on the map and one-tap navigation.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Madeira Chargers">
+  <meta property="og:title" content="Madeira EV Charging Map: prices for every charger">
+  <meta property="og:description" content="Find every public EV charger in Madeira with real prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.">
   <meta property="og:url" content="https://madeirachargers.com/">
+  <meta property="og:image" content="https://madeirachargers.com/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="EV charging in Madeira: price tags on a map">
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:locale:alternate" content="pt_PT">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <script type="application/ld+json">
+[
+ {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Madeira Chargers",
+  "alternateName": "Madeira EV Chargers",
+  "url": "https://madeirachargers.com/",
+  "inLanguage": "en"
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Madeira EV Charging Map",
+  "url": "https://madeirachargers.com/",
+  "applicationCategory": "TravelApplication",
+  "operatingSystem": "Any (web browser)",
+  "isAccessibleForFree": true,
+  "offers": {
+   "@type": "Offer",
+   "price": "0",
+   "priceCurrency": "EUR"
+  },
+  "description": "Find every public EV charger in Madeira with real prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.",
+  "areaServed": [
+   {
+    "@type": "Place",
+    "name": "Madeira"
+   },
+   {
+    "@type": "Place",
+    "name": "Azores"
+   },
+   {
+    "@type": "Country",
+    "name": "Portugal"
+   }
+  ],
+  "image": "https://madeirachargers.com/img/og.png"
+ },
+ {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+   {
+    "@type": "Question",
+    "name": "How much does it cost to charge an EV in Madeira?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Most public chargers in Madeira cost roughly €0.45 to €1.25 per kWh all-in, most under €1, including the operator fee, your app's energy price, grid access and 22% VAT. The map shows an estimated total for every charger, coloured from cheap to expensive."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "How do I pay at EV chargers in Madeira?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Madeira's public chargers are on the MOBI.E network. Start and pay with a MOBI.E app such as Miio, or a MOBI.E card. In practice the chargers in Madeira do not take bank cards directly."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Where are the fast chargers in Madeira?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Tap “50 kW+” to show only fast DC chargers. Most are along the south coast around Funchal, Câmara de Lobos, Caniço and Machico, with a few in the north and on Porto Santo."
+    }
+   },
+   {
+    "@type": "Question",
+    "name": "Can I find chargers along my route?",
+    "acceptedAnswer": {
+     "@type": "Answer",
+     "text": "Yes. Type a destination in “Where to?” and the map shows the route from your location and every charger within 1 km of the road, in the order you pass them."
+    }
+   }
+  ]
+ }
+]
+  </script>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230e5e47'/%3E%3Cpath d='M18 5 9 18h6l-2 9 10-14h-6z' fill='%23f6c945'/%3E%3C/svg%3E">
   <link rel="preload" href="vendor/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
@@ -65,7 +157,7 @@
 
     <div id="list-view" class="view">
       <div class="list-head">
-        <h1 id="list-title">Loading chargers…</h1>
+        <h2 id="list-title">Loading chargers…</h2>
         <div class="seg" role="radiogroup" aria-label="Sort">
           <button role="radio" aria-checked="true" data-sort="price">Cheapest</button>
           <button role="radio" aria-checked="false" data-sort="power">Fastest</button>
@@ -85,6 +177,16 @@
         <ol id="list" class="list" aria-live="polite"></ol>
         <footer class="foot">
           <a class="tip" href="https://ko-fi.com/madeiracharging" target="_blank" rel="noopener" data-track="ko-fi"><span class="cup" aria-hidden="true">☕</span>Found this useful? Buy me a coffee</a>
+          <section class="about" aria-labelledby="about-title">
+            <h1 id="about-title">EV charging in Madeira</h1>
+            <p>Madeira Chargers shows every public electric car charger in Madeira and Porto Santo on one map, with an estimated all-in price for each: the operator's fee, the energy price in Miio, grid access and 22% VAT. Filter for fast 50 kW+ chargers, sort by cheapest, fastest or nearest, and tap to navigate with Google Maps, Apple Maps or Waze. Chargers in the Azores and mainland Portugal are on the map too.</p>
+            <details><summary>How much does it cost to charge an EV in Madeira?</summary><p>Most public chargers in Madeira cost roughly €0.45 to €1.25 per kWh all-in, most under €1, including the operator fee, your app's energy price, grid access and 22% VAT. The map shows an estimated total for every charger, coloured from cheap to expensive.</p></details>
+            <details><summary>How do I pay at EV chargers in Madeira?</summary><p>Madeira's public chargers are on the MOBI.E network. Start and pay with a MOBI.E app such as Miio, or a MOBI.E card. In practice the chargers in Madeira do not take bank cards directly.</p></details>
+            <details><summary>Where are the fast chargers in Madeira?</summary><p>Tap “50 kW+” to show only fast DC chargers. Most are along the south coast around Funchal, Câmara de Lobos, Caniço and Machico, with a few in the north and on Porto Santo.</p></details>
+            <details><summary>Can I find chargers along my route?</summary><p>Yes. Type a destination in “Where to?” and the map shows the route from your location and every charger within 1 km of the road, in the order you pass them.</p></details>
+            <h2 lang="pt">Carregamento de carros elétricos na Madeira</h2>
+            <p lang="pt">Mapa de todos os postos de carregamento públicos MOBI.E na Madeira, Porto Santo, Açores e Portugal continental, com o preço estimado por kWh (IVA incluído), filtros para carregadores rápidos e navegação com um toque.</p>
+          </section>
           <p>Chargers and prices: <a href="https://www.mobie.pt" target="_blank" rel="noopener">MOBI.E</a> via the
           <a href="https://nap-portugal.imt-ip.pt/" target="_blank" rel="noopener">National Access Point (IMT)</a>, updated daily.
           Prices are estimated totals including VAT, worked out the way Miio bills a session: the operator's fee, Miio's energy price, grid access and electricity tax. Check your app before charging.

@@ -175,7 +175,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .view[hidden] { display: none; }
 
 .list-head { padding: 2px 16px 10px; display: grid; gap: 8px; }
-.list-head h1 { font-size: 17px; }
+.list-head h1, .list-head h2 { font-size: 17px; }
 
 .seg {
   display: grid; grid-template-columns: repeat(3, 1fr); padding: 3px; gap: 3px;
@@ -450,3 +450,12 @@ button, a, input, label, .row, .results li { touch-action: pan-x pan-y; } /* pan
   .filters { padding-top: 6px; }
   .search-box { height: 48px; }
 }
+
+/* About + FAQ: plain readable text at the end of the list (also what search engines index) */
+.about { margin: 4px 0 18px; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+.about h1 { font-size: 17px; color: var(--ink); margin-bottom: 6px; }
+.about h2 { font-size: 15px; color: var(--ink); margin: 16px 0 4px; }
+.about p { margin: 0 0 8px; max-width: 65ch; }
+.about details { border-top: 1px solid var(--line); padding: 8px 0; }
+.about summary { cursor: pointer; color: var(--ink); font-weight: 700; font-size: 14px; }
+.about details p { margin: 6px 0 0; }
