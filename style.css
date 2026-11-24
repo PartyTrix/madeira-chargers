@@ -388,3 +388,4 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
   .chip { font-size: 13px; padding: 0 10px 0 8px; gap: 4px; }
   .chip svg { width: 14px; height: 14px; }
 }
+.limit-clear[hidden] { display: none; }

@@ -9,7 +9,7 @@
   const BBOX = "-17.4,32.3,-16.2,33.2";
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
   const BANDS = ["Cheap for Madeira", "Below average", "Above average", "Expensive for Madeira"];
-  const LABEL_ZOOM = 13;     // price tags from street level, dots below it
+  const LABEL_ZOOM = 9;      // price tags from island level; overlapping ones stay dots (cheapest win)
   const ROUTE_KM = 1.0;      // a charger within this distance of the road counts as "on the route"
   const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
