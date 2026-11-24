@@ -37,8 +37,9 @@
   const map = L.map("map", {
     zoomControl: false,
     renderer: L.canvas({ tolerance: 12 }), // generous tap target for dots
-  }).fitBounds(MADEIRA, { paddingBottomRight: [0, 120] });
-  L.control.zoom({ position: "topright" }).addTo(map);
+  }).fitBounds(MADEIRA, { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
+  // Phones pinch to zoom (like Google Maps); computers get +/- buttons.
+  if (matchMedia("(min-width: 900px)").matches) L.control.zoom({ position: "bottomright" }).addTo(map);
   let tiles;
   // OpenStreetMap's own tiles: no key needed. Dark mode dims them with a CSS filter.
   function setTiles() {
@@ -56,9 +57,9 @@
   // ---------- data ----------
   $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
   Promise.all([
-    fetch("data/chargers.geojson").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-    fetch("data/tariffs.json").then((r) => r.json()).catch(() => ({})),
-    fetch("data/pricing.json").then((r) => r.json()).catch(() => null),
+    fetch("data/chargers.geojson", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    fetch("data/tariffs.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => ({})),
+    fetch("data/pricing.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
   ])
     .then(([geo, tariffs, pricing]) => {
       state.pricing = pricing;
@@ -607,7 +608,7 @@
       L.polyline(coords, { color: css("--ink"), weight: 9, opacity: 0.25, interactive: false }).addTo(routeLayer);
       L.polyline(coords, { color: "#1c7ed6", weight: 5, opacity: 0.95, interactive: false }).addTo(routeLayer);
       L.circleMarker([place.lat, place.lon], { radius: 9, color: "#fff", weight: 3, fillColor: css("--ink"), fillOpacity: 1, interactive: false }).addTo(routeLayer);
-      map.fitBounds(L.latLngBounds(coords), { paddingTopLeft: [30, 30], paddingBottomRight: [30, 200] });
+      map.fitBounds(L.latLngBounds(coords), { paddingTopLeft: [30, 140], paddingBottomRight: [30, 200] });
       state.returnTo = "route";
       render();
       showRouteView({});

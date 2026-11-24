@@ -7,8 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Madeira EV Chargers</title>
   <meta name="description" content="Every public EV charger in Madeira and Porto Santo on one fast map, with prices on the map and one-tap navigation.">
-  <meta name="theme-color" content="#0e5e47" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0b241c" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f2ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1411" media="(prefers-color-scheme: dark)">
   <link rel="canonical" href="https://madeirachargers.com/">
   <meta property="og:title" content="Madeira EV Chargers">
   <meta property="og:description" content="Every public EV charger in Madeira and Porto Santo on one fast map, with prices on the map and one-tap navigation.">
@@ -16,7 +16,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230e5e47'/%3E%3Cpath d='M18 5 9 18h6l-2 9 10-14h-6z' fill='%23f6c945'/%3E%3C/svg%3E">
   <link rel="preload" href="vendor/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=dev">
 </head>
 <body>
   <!-- Icon sprite: one 2px stroke set, drawn for this site. -->
@@ -39,31 +39,26 @@
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9l8-6 8 6M4 15l8 6 8-6"/></symbol>
   </svg>
 
-  <header class="appbar">
-    <a class="brand" href="./" aria-label="Madeira EV Chargers, home">
-      <span class="brand-mark"><svg><use href="#i-bolt"/></svg></span>
-      <span class="brand-text">Madeira Chargers</span>
-    </a>
-    <button class="icon-btn" id="locate" aria-label="Show my location" title="Show my location">
-      <svg><use href="#i-locate"/></svg>
-    </button>
-  </header>
+  <div class="top">
+    <form class="search" id="search" role="search" autocomplete="off">
+      <label class="search-box">
+        <span class="brand-mark" aria-hidden="true"><svg><use href="#i-bolt"/></svg></span>
+        <span class="sr-only">Madeira EV Chargers. Search a destination in Madeira</span>
+        <input id="q" type="search" placeholder="Where to? e.g. Funchal" enterkeyhint="search">
+        <svg class="search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      </label>
+      <ul id="results" class="results" role="listbox" hidden></ul>
+    </form>
 
-  <form class="search" id="search" role="search" autocomplete="off">
-    <label class="search-box">
-      <svg><use href="#i-search"/></svg>
-      <input id="q" type="search" placeholder="Where to? e.g. Funchal" aria-label="Search a destination in Madeira" enterkeyhint="search">
-    </label>
-    <ul id="results" class="results" role="listbox" hidden></ul>
-  </form>
-
-  <nav class="filters" aria-label="Map options">
-    <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Prices on map</button>
-    <button class="chip" data-filter="fast" aria-pressed="false"><svg><use href="#i-bolt"/></svg>Fast 50 kW+</button>
-    <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has a price</button>
-  </nav>
+    <nav class="filters" aria-label="Map options">
+      <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Prices on map</button>
+      <button class="chip" data-filter="fast" aria-pressed="false"><svg><use href="#i-bolt"/></svg>Fast 50 kW+</button>
+      <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has a price</button>
+    </nav>
+  </div>
 
   <main id="map" aria-label="Map of chargers"></main>
+  <button class="fab" id="locate" aria-label="Show my location" title="Show my location"><svg><use href="#i-locate"/></svg></button>
 
   <section id="panel" class="panel" aria-label="Chargers">
     <button id="grip" class="grip" aria-label="Show more" aria-expanded="false"><span></span></button>
@@ -95,6 +90,6 @@
   </section>
 
   <script src="vendor/leaflet/leaflet.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=dev"></script>
 </body>
 </html>
