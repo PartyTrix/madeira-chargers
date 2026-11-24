@@ -35,6 +35,11 @@
     pickingStart: false,
   };
 
+  // iOS Safari ignores touch-action for pinch on some versions: block its page
+  // zoom gestures (the map uses touch events, so map pinch still works).
+  for (const ev of ["gesturestart", "gesturechange"])
+    document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
+
   // ---------- map ----------
   const map = L.map("map", {
     zoomControl: false,
