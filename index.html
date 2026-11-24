@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org https://*.goatcounter.com; connect-src 'self' https://photon.komoot.io https://router.project-osrm.org; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <title>Madeira EV Chargers</title>
   <meta name="description" content="Every public EV charger in Madeira and Porto Santo on one fast map, with prices on the map and one-tap navigation.">
   <meta name="theme-color" content="#f4f2ec" media="(prefers-color-scheme: light)">
@@ -44,7 +44,7 @@
       <label class="search-box">
         <span class="brand-mark" aria-hidden="true"><svg><use href="#i-bolt"/></svg></span>
         <span class="sr-only">Madeira EV Chargers. Search a destination in Madeira</span>
-        <input id="q" type="search" placeholder="Where to? e.g. Funchal" enterkeyhint="search">
+        <input id="q" type="search" autocapitalize="words" autocorrect="off" spellcheck="false" placeholder="Where to? e.g. Funchal" enterkeyhint="search">
         <svg class="search-icon" aria-hidden="true"><use href="#i-search"/></svg>
       </label>
       <ul id="results" class="results" role="listbox" hidden></ul>

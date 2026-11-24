@@ -29,6 +29,7 @@
   --p4: #cf3f2a;
   --radius: 14px;
   --peek: 228px;
+  --sheet: 74vh;            /* fallback; 74dvh below follows Safari's moving toolbar */
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -161,9 +162,10 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 /* ---------- panel: bottom sheet on phones, side panel on desktop ---------- */
 .panel {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 1002;
-  height: 74vh; display: flex; flex-direction: column;
+  height: var(--sheet); display: flex; flex-direction: column;
   background: var(--surface); border-radius: 20px 20px 0 0; box-shadow: var(--shadow);
-  transform: translateY(calc(74vh - var(--peek) - env(safe-area-inset-bottom)));
+  transform: translateY(calc(var(--sheet) - var(--peek) - env(safe-area-inset-bottom)));
+  padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right);
   transition: transform .25s cubic-bezier(.2, .8, .2, 1);
 }
 .panel.open { transform: none; }
@@ -298,7 +300,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .code { margin-top: 18px; font-size: 12px; color: var(--muted); }
 
 /* ---------- desktop ---------- */
-@media (min-width: 900px) {
+@media (min-width: 900px), (orientation: landscape) and (max-height: 520px) and (min-width: 560px) {
   #map { right: 400px; }
   .top { right: 400px; padding-top: 14px; }
   .search { max-width: 520px; padding: 0 16px; }
@@ -342,7 +344,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .search-box input::-webkit-search-cancel-button { filter: grayscale(1); }
 .results {
   position: absolute; left: 12px; right: 12px; top: 62px; margin: 0; padding: 6px; list-style: none; z-index: 2;
-  background: var(--surface); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.2); max-height: 50vh; overflow-y: auto;
+  background: var(--surface); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.2); max-height: min(50vh, calc(var(--vvh, 100dvh) - 130px)); overflow-y: auto; overscroll-behavior: contain;
 }
 .results li { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 14px; cursor: pointer; font-size: 16px; }
 .results li[aria-selected="true"], .results li:hover { background: var(--surface-2); }
@@ -416,4 +418,35 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
   0%, 100% { transform: rotate(0); }
   15% { transform: rotate(-14deg); } 30% { transform: rotate(12deg); }
   45% { transform: rotate(-8deg); } 60% { transform: rotate(5deg); } 75% { transform: rotate(0); }
+}
+
+/* ---------- mobile hardening (iPhone Safari + Android Chrome quirks) ---------- */
+@supports (height: 100dvh) { :root { --sheet: 74dvh; } }
+/* no pull-to-refresh or rubber-band bounce fighting the map and the sheet */
+html, body { overscroll-behavior: none; }
+body { position: fixed; inset: 0; width: 100%; }
+/* notch / rounded corners in landscape */
+.top { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+.fab { right: max(14px, calc(env(safe-area-inset-right) + 8px)); }
+/* no long-press callouts or accidental text selection on map and controls */
+#map, .pin-tag, .chip, .fab, .seg, .grip, .tip, .nav-primary, .nav-more a { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+/* no double-tap zoom (and its tap delay) on anything tappable */
+button, a, input, label, .row, .results li { touch-action: pan-x pan-y; } /* pan only: no double-tap or pinch zoom of the page */
+/* hover colours only where there is a real pointer: on touch they "stick" after a tap */
+@media (hover: none) {
+  .chip:hover { background: var(--surface); }
+  .chip[aria-pressed="true"]:hover { background: var(--brand-soft); }
+  .row:hover, .text-btn:hover, .limit-clear:hover, .results li:hover { background: none; }
+  .results li[aria-selected="true"] { background: var(--surface-2); }
+  .tip:hover { transform: none; box-shadow: 0 4px 14px rgba(255, 94, 91, .35); }
+  .nav-primary:hover { background: var(--brand); }
+  .nav-more a:hover, .btn-quiet:hover { background: var(--surface-2); }
+}
+/* landscape phones: side panel is narrower */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 560px) and (max-width: 899px) {
+  #map, .top { right: min(360px, 45vw); }
+  .panel { width: min(360px, 45vw); padding-bottom: env(safe-area-inset-bottom); }
+  .fab { right: calc(min(360px, 45vw) + 16px); bottom: 16px; }
+  .filters { padding-top: 6px; }
+  .search-box { height: 48px; }
 }

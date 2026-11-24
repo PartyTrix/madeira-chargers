@@ -35,6 +35,23 @@
     pickingStart: false,
   };
 
+  // Side-panel layout (computers, and phones held sideways): matches the CSS.
+  const sideMQ = matchMedia("(min-width: 900px), (orientation: landscape) and (max-height: 520px) and (min-width: 560px)");
+
+  // Keyboard open: keep the search results inside the visible area (iOS
+  // overlays the keyboard instead of resizing the page).
+  const vv = window.visualViewport;
+  if (vv) {
+    const setVvh = () => document.documentElement.style.setProperty("--vvh", vv.height + "px");
+    vv.addEventListener("resize", setVvh);
+    setVvh();
+  }
+  // iOS scrolls the whole page up to reveal a focused input and can leave it
+  // there after the keyboard closes; put it back.
+  document.addEventListener("focusout", () => setTimeout(() => {
+    if (!document.activeElement?.matches?.("input")) window.scrollTo(0, 0);
+  }, 50));
+
   // iOS Safari ignores touch-action for pinch on some versions: block its page
   // zoom gestures (the map uses touch events, so map pinch still works).
   for (const ev of ["gesturestart", "gesturechange"])
@@ -44,7 +61,7 @@
   const map = L.map("map", {
     zoomControl: false,
     renderer: L.canvas({ tolerance: 12 }), // generous tap target for dots
-  }).fitBounds(MADEIRA, { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
+  }).fitBounds(MADEIRA, sideMQ.matches ? { paddingTopLeft: [0, 100] } : { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
   // Phones pinch to zoom (like Google Maps); computers get +/- buttons.
   if (matchMedia("(min-width: 900px)").matches) L.control.zoom({ position: "bottomright" }).addTo(map);
   let tiles;
@@ -58,6 +75,9 @@
   }
   setTiles();
   dark.addEventListener?.("change", () => { setTiles(); render(); });
+  // Rotation, Safari toolbar showing/hiding, keyboard: re-measure the map.
+  addEventListener("resize", () => map.invalidateSize({ pan: false }));
+  sideMQ.addEventListener?.("change", () => { $("panel").classList.remove("open"); $("panel").style.transform = ""; });
   const routeLayer = L.layerGroup().addTo(map);
   const layer = L.layerGroup().addTo(map);
 
@@ -502,7 +522,7 @@
     };
   }, { passive: true });
   panel.addEventListener("touchmove", (e) => {
-    if (!drag || matchMedia("(min-width: 900px)").matches) return;
+    if (!drag || sideMQ.matches) return;
     const dy = e.touches[0].clientY - drag.y0;
     if (!drag.active) {
       const atTop = !drag.scroller || drag.scroller.scrollTop <= 0;
