@@ -108,7 +108,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .chip {
   pointer-events: auto;
   display: inline-flex; align-items: center; gap: 6px; flex: none;
-  min-height: 36px; padding: 0 14px 0 11px; border-radius: 999px;
+  min-height: 36px; padding: 0 13px 0 10px; border-radius: 999px;
   border: 0; background: var(--surface); color: var(--ink);
   box-shadow: 0 1px 3px rgba(0,0,0,.22), 0 2px 6px rgba(0,0,0,.08);
   font-weight: 650; font-size: 14px; white-space: nowrap;
@@ -137,7 +137,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 
 /* Price-tag pins: the site's signature. Colour = price band, text = ≈ €/kWh. */
 .pin-tag {
-  display: inline-flex; align-items: center; gap: 3px; transform: translate(-50%, -100%);
+  display: inline-flex; align-items: center; gap: 3px; transform: translate(-50%, calc(-100% - 7px)); /* arrow tip on the charger */
   padding: 3px 7px; border-radius: 8px; white-space: nowrap;
   background: var(--c); color: #fff; font: 800 12.5px/1.2 "Manrope", system-ui, sans-serif;
   font-variant-numeric: tabular-nums; box-shadow: var(--shadow-sm); position: relative;
@@ -368,4 +368,11 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 @media (prefers-color-scheme: dark) {
   .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.85) saturate(0.6); }
   .leaflet-container { background: #1d2422; }
+}
+
+/* Small phones: keep all three filter chips on screen. */
+@media (max-width: 380px) {
+  .filters { gap: 6px; }
+  .chip { font-size: 13px; padding: 0 10px 0 8px; gap: 4px; }
+  .chip svg { width: 14px; height: 14px; }
 }
