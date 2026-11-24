@@ -1,6 +1,6 @@
 # Madeira EV Chargers
 
-A fast, mobile-first map of every public EV charger in Madeira and Porto Santo.
+A fast, mobile-first map of every public EV charger in Portugal on the MOBI.E network: Madeira (the default view), the Azores and the mainland.
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
@@ -10,7 +10,7 @@ Live at **https://madeirachargers.com**. Plain HTML/CSS/JS, no build step, no np
 
 | What | How |
 |---|---|
-| Chargers + prices | Every day a GitHub Action downloads the official MOBI.E inventory from Portugal's National Access Point (all public chargers, by law under EU AFIR) and the matching price feed, keeps the ones in Madeira and Porto Santo, and commits `data/chargers.geojson` if anything changed. It refuses to save if the count suddenly drops by half, so a feed hiccup can't empty the map. |
+| Chargers + prices | Every day a GitHub Action downloads the official MOBI.E inventory from Portugal's National Access Point (all public chargers, by law under EU AFIR) and the matching price feed, keeps every one in Portugal (about 8,800 sites), and commits `data/chargers.geojson` if anything changed. It refuses to save if the count suddenly drops by half, so a feed hiccup can't empty the map. |
 | Deploys | Every push to `main` (and every data refresh) redeploys the site to GitHub Pages. |
 | Security updates | Dependabot bumps the GitHub Actions weekly and the auto-merge workflow merges them. The site itself has no dependencies except a vendored copy of Leaflet 1.9.4 in `vendor/`. |
 
@@ -18,13 +18,13 @@ Run the refresh by hand any time from **Actions → Refresh data & deploy → Ru
 
 ## Prices
 
-The price shown is the **operator's (OPC) price** published on the National Access Point for the charger's most powerful socket, turned into one comparable **≈ €/kWh** figure: per-minute and start fees are spread over a typical 20 kWh top-up (11 kW on AC, up to 75 kW on DC). Colours are quartiles of the prices in Madeira, so green means "cheap for Madeira".
+The price shown is the **operator's (OPC) price** published on the National Access Point for the charger's most powerful socket, turned into one comparable **≈ €/kWh** figure: per-minute and start fees are spread over a typical 20 kWh top-up (11 kW on AC, up to 75 kW on DC). Colours are quartiles of the prices in the charger's own region, so green means "cheap for Madeira" (or the Azores, or the mainland).
 
 On top of that operator fee the page adds what every driver pays, so the number is close to what Miio charges:
 
 - Miio's energy price (€0.304/kWh in Nov 2026),
 - grid access (€0.078/kWh) and electricity tax (€0.001/kWh),
-- VAT (22% in Madeira).
+- VAT of the charger's region (23% mainland, 22% Madeira, 16% Azores).
 
 These match the itemised session breakdown Miio shows.
 

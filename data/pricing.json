@@ -1,7 +1,7 @@
 {
   "_help": [
     "Used to turn the charger operator's fee into an estimated total, the way Miio bills it.",
-    "total = (operator fee + session kWh x (app energy + grid access + excise) + app activation + MOBI.E fee) x (1 + VAT)",
+    "total = (operator fee + session kWh x (app energy + grid access + excise) + app activation + MOBI.E fee) x (1 + VAT of the charger's region)",
     "Edit the numbers here when they change; the site picks them up on the next deploy."
   ],
   "app_name": "Miio",
@@ -11,8 +11,6 @@
   "grid_access_kwh": 0.078,
   "excise_kwh": 0.001,
   "mobie_fee_session": 0,
-  "vat": 0.22,
-  "vat_label": "VAT (Madeira 22%)",
   "session_kwh": 20,
   "updated": "2026-11-23",
   "sources": {
@@ -21,6 +19,12 @@
     "excise_kwh": "Same Miio breakdown: Special Consumption Tax (IEC) EUR 0.01 for 10 kWh",
     "app_activation": "Miio activation was EUR 0 ('miio offer'); raise it here if Miio starts charging one",
     "mobie_fee_session": "Not shown as a separate line in Miio's breakdown, so 0",
-    "vat": "Madeira standard VAT rate 22%, as shown by Miio"
-  }
+    "vat_by_region": "Portuguese standard VAT: 23% mainland, 22% Madeira, 16% Azores"
+  },
+  "vat_by_region": {
+    "madeira": 0.22,
+    "azores": 0.16,
+    "mainland": 0.23
+  },
+  "grid_access_note": "TAR and IEC values come from a Madeira session; mainland and Azores use the same national ERSE tariffs as an estimate"
 }

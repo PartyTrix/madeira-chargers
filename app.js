@@ -6,9 +6,16 @@
   const GOATCOUNTER = "madeirachargers";
 
   const MADEIRA = [[32.62, -17.30], [33.10, -16.25]]; // includes Porto Santo
-  const BBOX = "-17.4,32.3,-16.2,33.2";
+  const BBOX = "-31.5,32.3,-6.1,42.2"; // all of Portugal: mainland, Madeira, Azores
+  const REGIONS = {
+    madeira: { name: "Madeira", bounds: MADEIRA },
+    azores: { name: "the Azores", bounds: [[36.9, -31.3], [39.8, -24.9]] },
+    mainland: { name: "mainland Portugal", bounds: [[36.9, -9.6], [42.2, -6.1]] },
+  };
+  const regionAt = (lat, lon) => (lat < 33.2 && lon < -16 ? "madeira" : lon < -24.5 ? "azores" : "mainland");
+  const MAX_DOTS = 1500; // more than this on screen: thin them out (cheapest per spot)
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
-  const BANDS = ["Cheap for Madeira", "Below average", "Above average", "Expensive for Madeira"];
+  const BANDS = ["Cheap for {r}", "Below average", "Above average", "Expensive for {r}"];
   const LABEL_ZOOM = 9;      // price tags from island level; overlapping ones stay dots (cheapest win)
   const ROUTE_KM = 1.0;      // a charger within this distance of the road counts as "on the route"
   const $ = (id) => document.getElementById(id);
@@ -110,7 +117,6 @@
   function findTariff(p, tariffs) {
     const st = tariffs.stations || {};
     if (st[p.id]) return st[p.id];
-    if (p.ref && st[p.ref]) return st[p.ref];
     if (p.tariff) return p.tariff; // official operator price from the NAP feed
     const hay = `${p.operator || ""} ${p.network || ""}`.toLowerCase();
     for (const [key, t] of Object.entries(tariffs.operators || {})) {
@@ -137,7 +143,8 @@
   // What a driver actually pays, the way Miio bills it: operator fee + the
   // app's energy price + grid access and excise per kWh + fixed fees, then VAT.
   // Components live in data/pricing.json.
-  function breakdown(opc) {
+  const vatFor = (region) => state.pricing?.vat_by_region?.[region] ?? state.pricing?.vat ?? 0;
+  function breakdown(opc, region) {
     const p = state.pricing;
     if (opc == null || !p) return null;
     const n = sessionKwh();
@@ -145,8 +152,9 @@
     const energy = (p.app_energy_kwh || 0) * n + (p.app_activation || 0);
     const fees = ((p.grid_access_kwh || 0) + (p.excise_kwh || 0)) * n + (p.mobie_fee_session || 0);
     const net = operator + energy + fees;
-    const vat = net * (p.vat || 0);
-    return { n, operator, energy, fees, vat, total: net + vat, perKwh: (net + vat) / n };
+    const rate = vatFor(region);
+    const vat = net * rate;
+    return { n, operator, energy, fees, vat, rate, total: net + vat, perKwh: (net + vat) / n };
   }
 
   function enrich(f, tariffs) {
@@ -154,9 +162,10 @@
     const [lon, lat] = f.geometry.coordinates;
     const tariff = findTariff(p, tariffs);
     const opc = operatorPerKwh(tariff, p.max_kw);
-    const bd = breakdown(opc);
+    const region = p.region || regionAt(lat, lon);
+    const bd = breakdown(opc, region);
     return {
-      ...p,
+      ...p, region,
       lat, lon, tariff, opc, bd,
       eff: bd ? bd.perKwh : opc, // the number shown everywhere
       fast: (p.max_kw || 0) >= 50,
@@ -168,21 +177,34 @@
     };
   }
 
-  // Colour into quartiles of the known prices, so "cheap" is relative to Madeira.
+  // Colour into quartiles of the known prices per region, so "cheap" means
+  // cheap for Madeira, the Azores or the mainland (VAT and prices differ).
   function colourByPrice(items) {
-    const known = items.map((c) => c.eff).filter((v) => v != null).sort((a, b) => a - b);
-    const q = (p) => known[Math.min(known.length - 1, Math.floor(p * known.length))];
-    state.cuts = known.length ? [q(0.25), q(0.5), q(0.75)] : [];
+    state.cutsByRegion = {};
+    for (const r of Object.keys(REGIONS)) {
+      const known = items.filter((c) => c.region === r && c.eff != null).map((c) => c.eff).sort((a, b) => a - b);
+      const q = (p) => known[Math.min(known.length - 1, Math.floor(p * known.length))];
+      state.cutsByRegion[r] = known.length ? [q(0.25), q(0.5), q(0.75)] : [];
+    }
     for (const c of items) {
       if (c.eff == null) { c.colourVar = "--p0"; c.band = null; continue; }
+      const cuts = state.cutsByRegion[c.region];
       let i = 0;
-      while (i < state.cuts.length && c.eff > state.cuts[i]) i++;
+      while (i < cuts.length && c.eff > cuts[i]) i++;
       c.colourVar = PALETTE[i];
       c.band = i;
     }
   }
+  const viewRegion = () => { const m = map.getCenter(); return regionAt(m.lat, m.lng); };
 
+  let scaleKey = "";
   function renderScale() {
+    const region = viewRegion();
+    state.cuts = state.cutsByRegion?.[region] || [];
+    const key = region + state.limits.price;
+    if (key === scaleKey) return;
+    scaleKey = key;
+    $("scale").setAttribute("aria-label", `Price colours for ${REGIONS[region].name}`);
     const [a, b, c] = state.cuts;
     if (a == null) { $("scale").hidden = true; return; }
     const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
@@ -247,9 +269,31 @@
   range.addEventListener("change", () => track("slider-" + state.sort));
   $("limit-clear").addEventListener("click", () => { state.limits[state.sort] = null; syncSlider(); render(); });
 
+  // Only chargers on (or just off) screen are drawn. When thousands are on
+  // screen (all of mainland Portugal), keep the cheapest one per few pixels.
+  function onScreen(items) {
+    const view = map.getBounds().pad(0.2);
+    let out = items.filter((c) => view.contains([c.lat, c.lon]));
+    if (out.length > MAX_DOTS) {
+      const cell = 9, seen = new Map();
+      for (const c of out) {
+        const pt = map.latLngToLayerPoint([c.lat, c.lon]);
+        const k = `${Math.round(pt.x / cell)},${Math.round(pt.y / cell)}`;
+        const prev = seen.get(k);
+        if (!prev || (c.eff ?? 99) < (prev.eff ?? 99) || c.id === state.selected?.id) seen.set(k, c);
+      }
+      out = [...seen.values()];
+    }
+    return out;
+  }
+  const colourCache = {};
+  const colour = (v) => (colourCache[v] ??= css(v));
+
   function render() {
     layer.clearLayers();
-    const items = visible();
+    for (const k in colourCache) delete colourCache[k]; // theme may have changed
+    renderScale();
+    const items = onScreen(visible());
     const tags = state.labels && map.getZoom() >= LABEL_ZOOM ? placeTags(items) : new Set();
     for (const c of items) if (!tags.has(c.id)) addDot(c);
     for (const c of items) if (tags.has(c.id)) addTag(c);
@@ -298,9 +342,9 @@
     const sel = state.selected?.id === c.id;
     const m = L.circleMarker([c.lat, c.lon], {
       radius: sel ? 12 : c.fast ? 9 : 7,
-      color: sel ? css("--focus") : c.fast ? css("--ink") : "#ffffff",
+      color: sel ? colour("--focus") : c.fast ? colour("--ink") : "#ffffff",
       weight: sel ? 4 : c.fast ? 3 : 2,
-      fillColor: css(c.colourVar), fillOpacity: 1,
+      fillColor: colour(c.colourVar), fillOpacity: 1,
       bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
     });
     if (canHover) m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
@@ -329,8 +373,8 @@
       const filtered = Object.values(state.filters).some(Boolean) || Object.values(state.limits).some((v) => v != null);
       $("list").innerHTML = `<li class="empty"><strong>Nothing here${filtered ? " with these filters" : ""}</strong>
         <span>${filtered ? "Loosen the slider or a filter, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
-        <button class="chip" id="zoom-all">Show all of Madeira</button></li>`;
-      $("zoom-all").onclick = () => map.fitBounds(MADEIRA);
+        <button class="chip" id="zoom-all">Show all of ${REGIONS[viewRegion()].name.replace(/^the /, "the ")}</button></li>`;
+      $("zoom-all").onclick = () => map.fitBounds(REGIONS[viewRegion()].bounds);
       return;
     }
     fillRows($("list"), inView.slice(0, 200), (c) => subline(c), "list");
@@ -415,7 +459,7 @@
     return `
       <div class="price-box" style="--c:var(${c.colourVar})">
         <div class="big">${euro(c.eff)}<small> /kWh</small></div>
-        <div class="band">${BANDS[c.band]}</div>
+        <div class="band">${BANDS[c.band].replace("{r}", REGIONS[c.region].name)}</div>
         <div class="parts">${bd ? `≈ ${euro(bd.total)} for ${bd.n} kWh, incl. VAT` : esc(parts.join(" + "))}</div>
       </div>
       ${bd ? `<details class="note"><summary><svg><use href="#i-info"/></svg>Estimated total. How is it worked out?</summary>
@@ -423,7 +467,7 @@
           <tr><td>Charger operator (${esc(parts.join(" + "))})</td><td>${euro(bd.operator)}</td></tr>
           <tr><td>Energy from ${esc(p.app_name || "your app")} (${euro(p.app_energy_kwh)}/kWh${p.app_energy_is_estimate ? ", estimate" : ""})</td><td>${euro(bd.energy)}</td></tr>
           <tr><td>Grid access and electricity tax</td><td>${euro(bd.fees)}</td></tr>
-          <tr><td>${esc(p.vat_label || "VAT")}</td><td>${euro(bd.vat)}</td></tr>
+          <tr><td>VAT (${Math.round(bd.rate * 100)}%, ${esc(REGIONS[c.region].name)})</td><td>${euro(bd.vat)}</td></tr>
           <tr class="total"><td>Total for ${bd.n} kWh</td><td>${euro(bd.total)}</td></tr>
         </table>
         <p>Worked out the way Miio itemises a session. Real costs depend on your car's charging speed, so check the app before charging.${t?.later ? ` Note: ${esc(t.later)}.` : ""}</p>
@@ -672,7 +716,7 @@
     results.hidden = false;
     results.innerHTML = `<li class="r-msg">Searching…</li>`;
     try {
-      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6&bbox=${BBOX}`;
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
       const data = await (await fetch(url)).json();
       if (seq !== searchSeq) return;
       hits = (data.features || []).map((f) => {
@@ -684,7 +728,7 @@
         return { name, sub, lat, lon };
       });
       active = -1;
-      if (!hits.length) { results.innerHTML = `<li class="r-msg">No places found in Madeira for "${esc(text)}"</li>`; return; }
+      if (!hits.length) { results.innerHTML = `<li class="r-msg">No places found in Portugal for "${esc(text)}"</li>`; return; }
       if (pickFirst) return choose(hits[0]);
       results.innerHTML = hits.map((h, i) => `<li role="option" data-i="${i}"><svg><use href="#i-pin"/></svg>
         <span><span class="r-name">${esc(h.name)}</span><br><span class="r-sub">${esc(h.sub)}</span></span></li>`).join("");
@@ -740,12 +784,16 @@
 
   // Every charger within ROUTE_KM of the road, with how far along the route it is.
   function alongRoute(coords) {
-    const k = 111.32, cosLat = Math.cos(32.75 * Math.PI / 180);
+    const k = 111.32, cosLat = Math.cos(coords[Math.floor(coords.length / 2)][0] * Math.PI / 180);
     const xy = coords.map(([lat, lon]) => [lon * k * cosLat, lat * k]);
     const cum = [0];
     for (let i = 1; i < xy.length; i++) cum[i] = cum[i - 1] + Math.hypot(xy[i][0] - xy[i - 1][0], xy[i][1] - xy[i - 1][1]);
     const on = new Map();
+    const lats = coords.map((c) => c[0]), lons = coords.map((c) => c[1]);
+    const pad = 0.02; // ~2 km
+    const box = [Math.min(...lats) - pad, Math.max(...lats) + pad, Math.min(...lons) - pad, Math.max(...lons) + pad];
     for (const c of state.all) {
+      if (c.lat < box[0] || c.lat > box[1] || c.lon < box[2] || c.lon > box[3]) continue;
       const p = [c.lon * k * cosLat, c.lat * k];
       let best = Infinity, along = 0;
       for (let i = 1; i < xy.length; i++) {

@@ -1,5 +1,5 @@
-// Refreshes data/chargers.geojson with every public charger in Madeira and
-// Porto Santo, from the official MOBI.E feed published on Portugal's National
+// Refreshes data/chargers.geojson with every public charger in Portugal
+// (mainland, Madeira, Azores), from the official MOBI.E feed published on Portugal's National
 // Access Point (NAP, AFIR), with each charging point's operator price.
 // No dependencies: needs Node 20+ (built-in fetch).
 //
@@ -15,8 +15,11 @@ const NAP_STATUS_URL = "https://pgm.mobie.pt/integration/nap/evActualStatus";
 const OUT = new URL("../data/chargers.geojson", import.meta.url);
 const EXTRA = new URL("../data/extra.geojson", import.meta.url);
 
-// Madeira + Porto Santo bounding box.
-const BOX = { latMin: 32.3, latMax: 33.2, lonMin: -17.4, lonMax: -16.2 };
+// All of Portugal: mainland, Madeira and the Azores.
+const BOX = { latMin: 32.3, latMax: 42.2, lonMin: -31.5, lonMax: -6.1 };
+// Region decides the VAT rate (22% Madeira, 16% Azores, 23% mainland).
+const region = (lat, lon) =>
+  lat < 33.2 && lon < -16 ? "madeira" : lon < -24.5 ? "azores" : "mainland";
 
 const CONNECTORS = {
   iec62196T2COMBO: "CCS",
@@ -95,7 +98,7 @@ function parseSites(xml) {
       auth: [...new Set([...s.matchAll(/authenticationAndIdentificationMethods>(\w+)</g)].map((x) => x[1]))],
       // Charging-app (CEME) brands accepted, e.g. MOB, EDP, GLP. Any = works with MOBI.E apps like Miio.
       ceme: new Set([...s.matchAll(/brandsAccepted>(\w+)</g)].map((x) => x[1])).size,
-      lat, lon, points,
+      lat, lon, points, region: region(lat, lon),
     });
   }
   return sites;
@@ -133,7 +136,7 @@ const [napArg, statusArg] = process.argv.slice(2);
 console.log("Downloading NAP inventory…");
 const xml = napArg ? await readFile(napArg, "utf8") : await get(NAP_URL);
 const sites = parseSites(xml);
-console.log(`NAP: ${sites.length} sites in Madeira`);
+console.log(`NAP: ${sites.length} sites in Portugal (${sites.filter((s) => s.region === "madeira").length} in Madeira)`);
 
 let rates = {};
 try {
@@ -162,7 +165,7 @@ const features = sites.map((s) => {
     geometry: { type: "Point", coordinates: [+s.lon.toFixed(6), +s.lat.toFixed(6)] },
     properties: {
       id: s.code,
-      ref: s.code,
+      region: s.region,
       // Many sites are named only by their code: show the street instead.
       name: s.name && s.name !== s.code ? s.name : s.street || s.code,
       operator: s.operator,
@@ -194,7 +197,7 @@ if (previous.features.length > 10 && features.length < previous.features.length 
   process.exit(1);
 }
 if (!features.length) {
-  console.error("No Madeira chargers found in the NAP feed; not writing.");
+  console.error("No chargers found in the NAP feed; not writing.");
   process.exit(1);
 }
 
@@ -202,6 +205,6 @@ await writeFile(OUT, JSON.stringify({
   type: "FeatureCollection",
   attribution: "MOBI.E data via NAP Portugal (IMT).",
   features: all,
-}, null, 1) + "\n");
+}) + "\n"); // compact: thousands of chargers, phones download this
 const priced = features.filter((f) => f.properties.tariff).length;
 console.log(`Wrote ${all.length} chargers (${features.length} MOBI.E, ${priced} with price, ${extra.length} manual).`);
