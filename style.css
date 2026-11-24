@@ -200,6 +200,9 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 #limit-range:disabled { opacity: .4; cursor: not-allowed; }
 
 .list { list-style: none; margin: 0; padding: 0 8px; overflow-y: auto; flex: 1; overscroll-behavior: contain; }
+/* list view: the list and its footer scroll as one, so the footer never eats the list's space */
+.scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.scroll > .list { overflow: visible; flex: none; }
 .row {
   display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
   padding: 12px 8px; border-top: 1px solid var(--line); cursor: pointer; border-radius: 10px;

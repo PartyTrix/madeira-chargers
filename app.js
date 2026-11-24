@@ -482,14 +482,48 @@
   }
   $("grip").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
   $("list-title").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
-  let startY = null;
-  $("grip").addEventListener("touchstart", (e) => { startY = e.touches[0].clientY; }, { passive: true });
-  $("grip").addEventListener("touchend", (e) => {
-    if (startY == null) return;
-    const dy = e.changedTouches[0].clientY - startY;
-    if (Math.abs(dy) > 30) setPanel(dy < 0);
-    startY = null;
-  });
+
+  // Drag the sheet like Google Maps: grab it anywhere (or pull a list that is
+  // already scrolled to the top) and one flick snaps it open or closed.
+  let drag = null;
+  const SCROLLERS = ".scroll, .list, .detail, .help";
+  panel.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1 || e.target.closest("input, .seg, .nav-primary, .nav-more")) { drag = null; return; }
+    drag = {
+      y0: e.touches[0].clientY, t0: performance.now(), dy: 0, active: false,
+      open: panel.classList.contains("open"),
+      scroller: e.target.closest(".scroll") || e.target.closest(SCROLLERS),
+      closedOffset: panel.offsetHeight - parseFloat(css("--peek")),
+    };
+  }, { passive: true });
+  panel.addEventListener("touchmove", (e) => {
+    if (!drag || matchMedia("(min-width: 900px)").matches) return;
+    const dy = e.touches[0].clientY - drag.y0;
+    if (!drag.active) {
+      const atTop = !drag.scroller || drag.scroller.scrollTop <= 0;
+      // Open sheet: pull down (from the top of a list). Closed sheet: push up.
+      const wants = drag.open ? dy > 6 && atTop : dy < -6;
+      if (!wants) { if (Math.abs(dy) > 6) drag = null; return; }
+      drag.active = true;
+      panel.style.transition = "none";
+    }
+    e.preventDefault(); // the sheet moves, not the list or the page
+    drag.dy = dy;
+    const base = drag.open ? 0 : drag.closedOffset;
+    const y = Math.min(drag.closedOffset, Math.max(0, base + dy));
+    panel.style.transform = `translateY(${y}px)`;
+  }, { passive: false });
+  const endDrag = () => {
+    if (!drag?.active) { drag = null; return; }
+    const v = drag.dy / Math.max(1, performance.now() - drag.t0); // px per ms
+    panel.style.transition = "";
+    panel.style.transform = "";
+    if (drag.open) setPanel(!(drag.dy > 70 || v > 0.35));
+    else setPanel(drag.dy < -50 || v < -0.35);
+    drag = null;
+  };
+  panel.addEventListener("touchend", endDrag);
+  panel.addEventListener("touchcancel", endDrag);
 
   // ---------- location ----------
   let meMarker;
@@ -797,7 +831,9 @@
       then?.();
       return;
     }
-    closeDetail(false);
+    // Tapping the map: close a charger card, or fold the list away.
+    if (state.selected) closeDetail(false);
+    else setPanel(false);
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDetail(false); });
   document.addEventListener("click", (e) => {
