@@ -238,11 +238,15 @@
     const placed = [];
     const out = new Set();
     const rank = (c) => (c.id === state.selected?.id ? 2 : 0) + (state.route?.on.has(c.id) ? 1 : 0);
-    const priority = items.filter((c) => c.eff != null).sort((a, b) => rank(b) - rank(a) || a.eff - b.eff);
+    const view = map.getBounds().pad(0.1);
+    const priority = items.filter((c) => c.eff != null && view.contains([c.lat, c.lon])).sort((a, b) => rank(b) - rank(a) || a.eff - b.eff);
     for (const c of priority) {
       const pt = map.latLngToLayerPoint([c.lat, c.lon]);
-      const w = 16 + euro(c.eff).length * 8 + (c.fast ? 12 : 0), h = 26;
-      const box = { l: pt.x - w / 2 - 2, r: pt.x + w / 2 + 2, t: pt.y - h - 8, b: pt.y + 2 };
+      // Real tag sizes; zoomed out, tags are compact (smaller, no bolt) so more fit.
+      const compact = map.getZoom() < 13;
+      const w = compact ? 10 + euro(c.eff).length * 6.5 : 16 + euro(c.eff).length * 8 + (c.fast ? 12 : 0);
+      const h = compact ? 19 : 26, tip = compact ? 5 : 7;
+      const box = { l: pt.x - w / 2, r: pt.x + w / 2, t: pt.y - h - tip, b: pt.y };
       if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
       placed.push(box);
       out.add(c.id);
@@ -255,7 +259,9 @@
     const m = L.marker([c.lat, c.lon], {
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
-        html: `<span class="pin-tag${sel ? " selected" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${euro(c.eff)}</span>`,
+        html: map.getZoom() < 13 && !sel
+          ? `<span class="pin-tag compact" style="--c:var(${c.colourVar})">${euro(c.eff)}</span>`
+          : `<span class="pin-tag${sel ? " selected" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${euro(c.eff)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
     });
@@ -778,12 +784,9 @@
     }));
   $("locate").addEventListener("click", () => locate());
 
-  map.on("moveend", renderList);
-  let band = map.getZoom() >= LABEL_ZOOM;
-  map.on("zoomend", () => {
-    const now = map.getZoom() >= LABEL_ZOOM;
-    if (now !== band) { band = now; render(); }
-  });
+  // Tags are re-placed after every zoom or pan: which ones fit depends on the
+  // zoom, and only chargers on screen should compete for space.
+  map.on("moveend", render);
   map.on("click", (e) => {
     if (state.pickingStart) {
       state.pickingStart = false;
@@ -801,6 +804,15 @@
     const a = e.target.closest("[data-track]");
     if (a) track(a.dataset.track);
   });
+
+  // Ko-fi: wiggle the cup once, the first time the link scrolls into view.
+  const tip = document.querySelector(".tip");
+  if (tip && "IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { tip.classList.add("nudge"); io.disconnect(); }
+    }, { threshold: 1 });
+    io.observe(tip);
+  }
 
   // ---------- statistics ----------
   // GoatCounter's documented pixel endpoint: no cookies, no personal data.
