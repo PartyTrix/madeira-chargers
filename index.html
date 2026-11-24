@@ -71,6 +71,14 @@
           <button role="radio" aria-checked="false" data-sort="power">Fastest</button>
           <button role="radio" aria-checked="false" data-sort="distance">Nearest</button>
         </div>
+        <div class="limit" id="limit">
+          <div class="limit-row">
+            <label for="limit-range" id="limit-label">Any price</label>
+            <input type="range" id="limit-range" min="0" max="100" step="1" value="100">
+            <button type="button" class="limit-clear" id="limit-clear" aria-label="Clear this limit" hidden><svg><use href="#i-close"/></svg></button>
+          </div>
+          <div class="limit-also" id="limit-also" hidden></div>
+        </div>
         <div class="scale" id="scale" aria-label="Price colours"></div>
       </div>
       <ol id="list" class="list" aria-live="polite"></ol>

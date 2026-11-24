@@ -24,6 +24,8 @@
     cuts: [],
     pricing: null,
     filters: { fast: false, priced: false },
+    // Slider limits, one per sort tab. null = no limit.
+    limits: { price: null, power: null, distance: null },
     sort: "price",
     me: null,
     selected: null,
@@ -65,7 +67,7 @@
       state.pricing = pricing;
       state.all = geo.features.map((f) => enrich(f, tariffs));
       colourByPrice(state.all);
-      renderScale();
+      syncSlider();
       render();
       const id = decodeURIComponent(location.hash.slice(1));
       const linked = id && state.all.find((c) => c.id === id);
@@ -159,15 +161,66 @@
     const [a, b, c] = state.cuts;
     if (a == null) { $("scale").hidden = true; return; }
     const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
-    $("scale").innerHTML = ranges.map((r, i) => `<span style="--c:var(${PALETTE[i]})">${r}</span>`).join("")
-      + `<span style="--c:var(--p0)">no price</span>`;
+    const lim = state.limits.price, lows = [0, a, b, c];
+    $("scale").innerHTML = ranges.map((r, i) =>
+      `<span class="${lim != null && lows[i] >= lim ? "off" : ""}" style="--c:var(${PALETTE[i]})">${r}</span>`).join("")
+      + `<span class="${lim != null ? "off" : ""}" style="--c:var(--p0)">no price</span>`;
   }
 
   // ---------- map rendering ----------
   function visible() {
-    const f = state.filters;
-    return state.all.filter((c) => (!f.fast || c.fast) && (!f.priced || c.eff != null));
+    const f = state.filters, l = state.limits;
+    return state.all.filter((c) => (!f.fast || c.fast) && (!f.priced || c.eff != null)
+      && (l.price == null || (c.eff != null && c.eff <= l.price + 1e-9))
+      && (l.power == null || (c.max_kw || 0) >= l.power)
+      && (l.distance == null || !state.me || dist(c) <= l.distance));
   }
+
+  // ---------- slider: one per tab (max price, min power, max distance) ----------
+  const POWER_STOPS = [0, 7, 11, 22, 50, 75, 100, 150];
+  const DIST_STOPS = [1, 2, 3, 5, 10, 15, 20, 30, 50, Infinity];
+  const range = $("limit-range");
+  function priceSpan() {
+    const known = state.all.map((c) => c.eff).filter((v) => v != null);
+    return [Math.floor(Math.min(...known) * 100) / 100, Math.ceil(Math.max(...known) * 100) / 100];
+  }
+  function describe(kind, v) {
+    if (kind === "price") return v == null ? "Any price" : `Up to ${euro(v)}/kWh`;
+    if (kind === "power") return v == null ? "Any charging speed" : `At least ${v} kW`;
+    return v == null ? "Any distance" : `Within ${v} km`;
+  }
+  function syncSlider() {
+    const kind = state.sort, v = state.limits[kind];
+    if (kind === "price") {
+      const [lo, hi] = priceSpan();
+      Object.assign(range, { min: Math.round(lo * 100), max: Math.round(hi * 100), step: 1 });
+      range.value = v == null ? range.max : Math.round(v * 100);
+    } else {
+      const stops = kind === "power" ? POWER_STOPS : DIST_STOPS;
+      Object.assign(range, { min: 0, max: stops.length - 1, step: 1 });
+      const i = v == null ? (kind === "power" ? 0 : stops.length - 1) : stops.indexOf(v);
+      range.value = i;
+    }
+    range.disabled = kind === "distance" && !state.me;
+    range.setAttribute("aria-valuetext", describe(kind, v));
+    $("limit-label").textContent = range.disabled ? "Share your location first" : describe(kind, v);
+    $("limit-clear").hidden = v == null;
+    $("limit").classList.toggle("on", v != null);
+    const others = Object.entries(state.limits).filter(([k, x]) => k !== kind && x != null && !(k === "distance" && !state.me));
+    $("limit-also").hidden = !others.length;
+    $("limit-also").textContent = others.length ? "Also: " + others.map(([k, x]) => describe(k, x)).join(", ") : "";
+    renderScale();
+  }
+  range.addEventListener("input", () => {
+    const kind = state.sort, i = +range.value;
+    if (kind === "price") state.limits.price = i >= +range.max ? null : i / 100;
+    else if (kind === "power") state.limits.power = i === 0 ? null : POWER_STOPS[i];
+    else state.limits.distance = DIST_STOPS[i] === Infinity ? null : DIST_STOPS[i];
+    syncSlider();
+    render();
+  });
+  range.addEventListener("change", () => track("slider-" + state.sort));
+  $("limit-clear").addEventListener("click", () => { state.limits[state.sort] = null; syncSlider(); render(); });
 
   function render() {
     layer.clearLayers();
@@ -242,9 +295,9 @@
       : "No chargers in view";
 
     if (!inView.length) {
-      const filtered = Object.values(state.filters).some(Boolean);
+      const filtered = Object.values(state.filters).some(Boolean) || Object.values(state.limits).some((v) => v != null);
       $("list").innerHTML = `<li class="empty"><strong>Nothing here${filtered ? " with these filters" : ""}</strong>
-        <span>${filtered ? "Turn a filter off, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
+        <span>${filtered ? "Loosen the slider or a filter, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
         <button class="chip" id="zoom-all">Show all of Madeira</button></li>`;
       $("zoom-all").onclick = () => map.fitBounds(MADEIRA);
       return;
@@ -441,7 +494,8 @@
       radius: 8, color: "#fff", weight: 3, fillColor: "#1c7ed6", fillOpacity: 1, interactive: false,
     }).addTo(map);
     if (center) map.setView(state.me, Math.max(map.getZoom(), 13));
-    renderList();
+    syncSlider();
+    render();
   }
 
   // Ask for the position. Resolves with [lat, lon], or null when the user
@@ -678,7 +732,7 @@
       ? `${items.length} charger${items.length === 1 ? "" : "s"} along the way`
       : "No chargers along this route";
     if (!items.length) {
-      list.innerHTML = `<li class="empty"><span>${Object.values(state.filters).some(Boolean) ? "Turn a filter off to see more." : "Nothing within 1 km of the road."}</span></li>`;
+      list.innerHTML = `<li class="empty"><span>${Object.values(state.filters).some(Boolean) ? "Turn a filter off to see more." : Object.values(state.limits).some((v) => v != null) ? "Loosen the slider to see more." : "Nothing within 1 km of the road."}</span></li>`;
       return;
     }
     fillRows(list, items, (c) => {
@@ -718,6 +772,7 @@
     b.addEventListener("click", () => {
       document.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-checked", x === b));
       state.sort = b.dataset.sort;
+      syncSlider();
       if (state.sort === "distance" && !state.me) locate();
       else renderList();
     }));

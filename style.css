@@ -28,7 +28,7 @@
   --p3: #d98e0b;
   --p4: #cf3f2a;
   --radius: 14px;
-  --peek: 188px;
+  --peek: 228px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -165,7 +165,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .view { display: flex; flex-direction: column; min-height: 0; flex: 1; }
 .view[hidden] { display: none; }
 
-.list-head { padding: 2px 16px 10px; display: grid; gap: 10px; }
+.list-head { padding: 2px 16px 10px; display: grid; gap: 8px; }
 .list-head h1 { font-size: 17px; }
 
 .seg {
@@ -181,6 +181,20 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .scale { display: flex; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 650; }
 .scale span { flex: 1; display: grid; gap: 3px; text-align: center; }
 .scale span::before { content: ""; height: 5px; border-radius: 3px; background: var(--c); }
+.scale span { transition: opacity .15s; }
+.scale span.off { opacity: .25; }
+
+/* limit slider: max price / min power / max distance, following the tab */
+.limit { display: grid; gap: 2px; }
+.limit-row { display: flex; align-items: center; gap: 10px; min-height: 32px; }
+.limit-row label { flex: 0 0 40%; font-size: 13.5px; font-weight: 700; color: var(--muted); line-height: 1.2; }
+.limit.on .limit-row label { color: var(--ink); }
+.limit-clear { display: grid; place-items: center; flex: none; width: 32px; height: 32px; margin-right: -6px; border: 0; border-radius: 50%; background: none; color: var(--muted); }
+.limit-clear:hover { background: var(--surface-2); }
+.limit-also { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+#limit-range { flex: 1; min-width: 0; height: 32px; margin: 0; accent-color: var(--brand); cursor: pointer; touch-action: pan-x; }
+@media (prefers-color-scheme: dark) { #limit-range { accent-color: var(--brand-strong); } }
+#limit-range:disabled { opacity: .4; cursor: not-allowed; }
 
 .list { list-style: none; margin: 0; padding: 0 8px; overflow-y: auto; flex: 1; overscroll-behavior: contain; }
 .row {
@@ -287,8 +301,6 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
     border-radius: 0; box-shadow: none; border-left: 1px solid var(--line);
   }
   .grip { display: none; }
-  .list-head { padding-top: 14px; }
-}
   .list-head { padding-top: 14px; }
 }
 
