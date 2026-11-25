@@ -59,7 +59,8 @@
     plug: "",
     // Slider limits, one per sort tab. null = no limit.
     limits: { price: null, power: null, distance: null },
-    // Tapped price colour: 0-3 = cheap..expensive band, 4 = no price, null = all.
+    // Tapped price colour: show bands 0..band (cheap up to this one); null = all.
+    // The colours are the price filter: there is no price slider.
     band: null,
     sort: "price",
     me: null,
@@ -152,6 +153,7 @@
       colourByPrice(state.all);
       syncSlider();
       render();
+      hintBands();
       const id = decodeURIComponent(location.hash.slice(1));
       const linked = id && state.all.find((c) => c.id === id);
       if (linked) select(linked, { fly: true });
@@ -330,19 +332,21 @@
   function renderScale() {
     const region = viewRegion();
     state.cuts = state.cutsByRegion?.[region] || [];
-    const key = region + state.limits.price + "|" + state.band;
+    const key = region + "|" + state.band;
     if (key === scaleKey) return;
     scaleKey = key;
     $("scale").setAttribute("aria-label", tr`Price colours for ${REGIONS[region].name}`);
     const [a, b, c] = state.cuts;
     if (a == null) { $("scale").hidden = true; return; }
     const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
-    const lim = state.limits.price, lows = [0, a, b, c, Infinity], sel = state.band;
-    // Each colour is a button: tap one to see only that price band, tap it again for all.
+    const sel = state.band;
+    // Each colour is a button: tap one to see everything up to that price, tap
+    // it again (or "no price") for all.
     $("scale").innerHTML = [...ranges, tr`no price`].map((r, i) => {
-      const off = sel != null ? sel !== i : lim != null && lows[i] >= lim;
+      const off = sel != null && i > sel;
       return `<button type="button" data-band="${i}" aria-pressed="${sel === i}" class="${off ? "off" : ""}${sel === i ? " on" : ""}" style="--c:var(${i < 4 ? PALETTE[i] : "--p0"})">${r}</button>`;
     }).join("");
+    $("scale").classList.toggle("picked", sel != null);
   }
 
   const anyFilter = () => Object.values(state.filters).some(Boolean) || !!state.plug || state.band != null;
@@ -350,18 +354,26 @@
     const b = e.target.closest("[data-band]");
     if (!b) return;
     const i = +b.dataset.band;
-    state.band = state.band === i ? null : i;
+    state.band = state.band === i || i === 4 ? null : i;
     if (state.band != null) track("band-" + i);
+    save("bandTapped", "1");
     render();
   });
+  // Until someone has tapped a colour once, the colours pop briefly after loading.
+  function hintBands() {
+    if (load("bandTapped") || $("scale").hidden) return;
+    setTimeout(() => {
+      $("scale").classList.add("hint");
+      setTimeout(() => $("scale").classList.remove("hint"), 1500);
+    }, 900);
+  }
 
   // ---------- map rendering ----------
   function visible() {
     const f = state.filters, l = state.limits;
     return state.all.filter((c) => (!f.fast || c.fast) && (!f.priced || c.eff != null)
       && (!f.card || c.card) && (!f.free || c.live?.free > 0) && (!f.motorway || c.motorway) && (!state.plug || c.plugs.has(state.plug))
-      && (l.price == null || (c.eff != null && c.eff <= l.price + 1e-9))
-      && (state.band == null || (state.band === 4 ? c.eff == null : c.band === state.band))
+      && (state.band == null || (c.band != null && c.band <= state.band))
       && (l.power == null || (c.max_kw || 0) >= l.power)
       && (l.distance == null || !state.me || dist(c) <= l.distance));
   }
@@ -370,10 +382,6 @@
   const POWER_STOPS = [0, 7, 11, 22, 50, 75, 100, 150];
   const DIST_STOPS = [1, 2, 3, 5, 10, 15, 20, 30, 50, Infinity];
   const range = $("limit-range");
-  function priceSpan() {
-    const known = state.all.map((c) => c.eff).filter((v) => v != null);
-    return [Math.floor(Math.min(...known) * 100) / 100, Math.ceil(Math.max(...known) * 100) / 100];
-  }
   function describe(kind, v) {
     if (kind === "price") return v == null ? tr`Any price` : tr`Up to ${euro(v)}/kWh`;
     if (kind === "power") return v == null ? tr`Any charging speed` : tr`At least ${v} kW`;
@@ -381,11 +389,9 @@
   }
   function syncSlider() {
     const kind = state.sort, v = state.limits[kind];
-    if (kind === "price") {
-      const [lo, hi] = priceSpan();
-      Object.assign(range, { min: Math.round(lo * 100), max: Math.round(hi * 100), step: 1 });
-      range.value = v == null ? range.max : Math.round(v * 100);
-    } else {
+    // Cheapest: the price colours below are the filter, so no slider.
+    $("limit").hidden = kind === "price";
+    {
       const stops = kind === "power" ? POWER_STOPS : DIST_STOPS;
       Object.assign(range, { min: 0, max: stops.length - 1, step: 1 });
       const i = v == null ? (kind === "power" ? 0 : stops.length - 1) : stops.indexOf(v);
@@ -403,8 +409,7 @@
   }
   range.addEventListener("input", () => {
     const kind = state.sort, i = +range.value;
-    if (kind === "price") state.limits.price = i >= +range.max ? null : i / 100;
-    else if (kind === "power") state.limits.power = i === 0 ? null : POWER_STOPS[i];
+    if (kind === "power") state.limits.power = i === 0 ? null : POWER_STOPS[i];
     else state.limits.distance = DIST_STOPS[i] === Infinity ? null : DIST_STOPS[i];
     syncSlider();
     render();
