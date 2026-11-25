@@ -59,6 +59,8 @@
     plug: "",
     // Slider limits, one per sort tab. null = no limit.
     limits: { price: null, power: null, distance: null },
+    // Tapped price colour: 0-3 = cheap..expensive band, 4 = no price, null = all.
+    band: null,
     sort: "price",
     me: null,
     selected: null,
@@ -328,20 +330,30 @@
   function renderScale() {
     const region = viewRegion();
     state.cuts = state.cutsByRegion?.[region] || [];
-    const key = region + state.limits.price;
+    const key = region + state.limits.price + "|" + state.band;
     if (key === scaleKey) return;
     scaleKey = key;
     $("scale").setAttribute("aria-label", tr`Price colours for ${REGIONS[region].name}`);
     const [a, b, c] = state.cuts;
     if (a == null) { $("scale").hidden = true; return; }
     const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
-    const lim = state.limits.price, lows = [0, a, b, c];
-    $("scale").innerHTML = ranges.map((r, i) =>
-      `<span class="${lim != null && lows[i] >= lim ? "off" : ""}" style="--c:var(${PALETTE[i]})">${r}</span>`).join("")
-      + `<span class="${lim != null ? "off" : ""}" style="--c:var(--p0)">${tr`no price`}</span>`;
+    const lim = state.limits.price, lows = [0, a, b, c, Infinity], sel = state.band;
+    // Each colour is a button: tap one to see only that price band, tap it again for all.
+    $("scale").innerHTML = [...ranges, tr`no price`].map((r, i) => {
+      const off = sel != null ? sel !== i : lim != null && lows[i] >= lim;
+      return `<button type="button" data-band="${i}" aria-pressed="${sel === i}" class="${off ? "off" : ""}${sel === i ? " on" : ""}" style="--c:var(${i < 4 ? PALETTE[i] : "--p0"})">${r}</button>`;
+    }).join("");
   }
 
-  const anyFilter = () => Object.values(state.filters).some(Boolean) || !!state.plug;
+  const anyFilter = () => Object.values(state.filters).some(Boolean) || !!state.plug || state.band != null;
+  $("scale").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-band]");
+    if (!b) return;
+    const i = +b.dataset.band;
+    state.band = state.band === i ? null : i;
+    if (state.band != null) track("band-" + i);
+    render();
+  });
 
   // ---------- map rendering ----------
   function visible() {
@@ -349,6 +361,7 @@
     return state.all.filter((c) => (!f.fast || c.fast) && (!f.priced || c.eff != null)
       && (!f.card || c.card) && (!f.free || c.live?.free > 0) && (!f.motorway || c.motorway) && (!state.plug || c.plugs.has(state.plug))
       && (l.price == null || (c.eff != null && c.eff <= l.price + 1e-9))
+      && (state.band == null || (state.band === 4 ? c.eff == null : c.band === state.band))
       && (l.power == null || (c.max_kw || 0) >= l.power)
       && (l.distance == null || !state.me || dist(c) <= l.distance));
   }
@@ -489,6 +502,7 @@
     distance: (a, b) => dist(a) - dist(b),
   };
 
+  const LIST_MAX = 25;
   function renderList() {
     const bounds = map.getBounds();
     const inView = visible().filter((c) => bounds.contains([c.lat, c.lon]));
@@ -508,7 +522,10 @@
       $("zoom-all").onclick = () => map.fitBounds(REGIONS[viewRegion()].bounds);
       return;
     }
-    fillRows($("list"), inView.slice(0, 200), (c) => subline(c), "list");
+    // A short list: the best few, then the coffee link and the FAQ are a short scroll away.
+    fillRows($("list"), inView.slice(0, LIST_MAX), (c) => subline(c), "list");
+    if (n > LIST_MAX) $("list").insertAdjacentHTML("beforeend",
+      `<li class="more">${tr`Showing the top ${LIST_MAX} of ${n}. Zoom in or tap a price colour to narrow it down.`}</li>`);
   }
 
   function fillRows(list, items, sub, from, rowClass = () => "") {
