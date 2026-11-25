@@ -13,8 +13,10 @@ permissions:
   pages: write
   id-token: write
 
+# Its own group: sharing "site" would let a queued status run replace (cancel)
+# a queued daily data refresh. A newer status run replaces an older queued one.
 concurrency:
-  group: site
+  group: status
   cancel-in-progress: false
 
 jobs:
