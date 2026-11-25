@@ -334,7 +334,7 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
   background: var(--brand); color: var(--sun);
 }
 .search-box .brand-mark svg { width: 22px; height: 22px; }
-@media (prefers-color-scheme: dark) { .search-box .brand-mark { background: #0e5e47; } }
+@media (prefers-color-scheme: dark) { .search-box .brand-mark { background: var(--mark, #0e5e47); } }
 .search-box .search-icon { width: 22px; height: 22px; color: var(--muted); }
 .search-box input {
   flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: var(--ink);

@@ -1,4 +1,5 @@
-/* Madeira EV Chargers: static map, no build step, no cookies. */
+/* Madeira Chargers / Charge Portugal: static map, no cookies.
+   One code base, two sites; scripts/build-site.mjs makes each. */
 (() => {
   "use strict";
 
@@ -65,10 +66,25 @@
     document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
 
   // ---------- map ----------
+  // Which region the map opens on. Each site sets its own default on <html
+  // data-start> (madeirachargers.com: Madeira, chargeportugal.com: the
+  // mainland, see sites/). ?view=portugal|azores|madeira overrides it; the
+  // parameter is dropped from the address bar right away so shared links stay
+  // clean, and the canonical URL never has it.
+  const SITE = document.documentElement.dataset.site || "madeira";
+  const startParams = new URLSearchParams(location.search);
+  const viewParam = { portugal: "mainland", mainland: "mainland", azores: "azores", madeira: "madeira" }[(startParams.get("view") || "").toLowerCase()];
+  const startView = viewParam
+    || (REGIONS[document.documentElement.dataset.start] ? document.documentElement.dataset.start : "madeira");
+  if (startParams.has("view")) {
+    startParams.delete("view");
+    const qs = startParams.toString();
+    history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+  }
   const map = L.map("map", {
     zoomControl: false,
     renderer: L.canvas({ tolerance: 12 }), // generous tap target for dots
-  }).fitBounds(MADEIRA, sideMQ.matches ? { paddingTopLeft: [0, 100] } : { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
+  }).fitBounds(REGIONS[startView].bounds, sideMQ.matches ? { paddingTopLeft: [0, 100] } : { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
   // Phones pinch to zoom (like Google Maps); computers get +/- buttons.
   if (matchMedia("(min-width: 900px)").matches) L.control.zoom({ position: "bottomright" }).addTo(map);
   let tiles;
@@ -113,6 +129,7 @@
       $("retry").onclick = () => location.reload();
     });
   track("pageview");
+  if (viewParam) track("start-view", startView);
 
   function findTariff(p, tariffs) {
     const st = tariffs.stations || {};
@@ -929,7 +946,9 @@
     if (!GOATCOUNTER) return;
     const isView = event === "pageview";
     const params = new URLSearchParams({
-      p: isView ? location.pathname : `${event}${detail ? "/" + detail : ""}`,
+      // One GoatCounter dashboard for both sites: chargeportugal.com page
+      // views are counted under /portugal/ so the two can be told apart.
+      p: isView ? (SITE === "madeira" ? "" : "/" + SITE) + location.pathname : `${event}${detail ? "/" + detail : ""}`,
       t: isView ? document.title : event,
       r: isView ? document.referrer : "",
       s: `${screen.width},${screen.height},${devicePixelRatio || 1}`,

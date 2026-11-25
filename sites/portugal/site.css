@@ -1,0 +1,22 @@
+
+/* ---------- Charge Portugal: azulejo blue instead of Madeira green ---------- */
+:root {
+  --ground: #f3f4f1;
+  --line: #dfe1dc;
+  --surface-2: #eceeea;
+  --brand: #1a4f8b;         /* azulejo blue: shell + primary action */
+  --brand-strong: #123c6b;
+  --brand-soft: #dde8f5;
+  --mark: #1a4f8b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #0b121b;
+    --surface: #131b26;
+    --surface-2: #1b2533;
+    --brand: #0d1a2b;
+    --brand-strong: #6fa8e8;
+    --brand-soft: #16304f;
+    --line: #243041;
+  }
+}
