@@ -552,3 +552,26 @@ button, a, input, label, .row, .results li { touch-action: pan-x pan-y; } /* pan
 /* ---------- France: network estimates and the operator's own price text ---------- */
 .price-note { font-size: 13px; color: var(--muted); margin: -6px 0 12px; max-width: 60ch; }
 .note .quote { font-style: italic; overflow-wrap: anywhere; }
+
+/* ---------- trust: estimate labels, data age, live status, plan B ---------- */
+.trust { font-size: 13px; color: var(--muted); margin: -6px 0 10px; line-height: 1.45; max-width: 60ch; }
+.conf { display: inline-block; padding: 1px 8px; margin-right: 4px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+  letter-spacing: .02em; background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+.price-box.none .conf { margin: 0 0 6px; display: table; }
+.live { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0 0; padding: 10px 12px; border-radius: 12px;
+  background: var(--surface-2); font-weight: 600; font-size: 14.5px; }
+.live .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: none; background: var(--p0); }
+.live .sub { display: block; font-weight: 500; font-size: 12.5px; color: var(--muted); }
+.live.ok .dot { background: var(--p1); } .live.busy .dot { background: var(--p3); } .live.bad .dot { background: var(--p4); }
+.live.unknown { color: var(--muted); }
+.live.unknown .dot { background: transparent; border: 2px dashed var(--p0); width: 12px; height: 12px; margin-top: 5px; }
+.alt-list { padding: 0; overflow: visible; flex: none; }
+.alt-list .row { padding-left: 0; padding-right: 0; }
+.data-line { display: flex; align-items: center; gap: 6px; border: 0; background: none; padding: 0; margin-top: -2px;
+  font-size: 12.5px; font-weight: 600; color: var(--muted); text-align: left; }
+.data-line svg { width: 14px; height: 14px; }
+.data-line span { text-decoration: underline dotted; text-underline-offset: 3px; }
+.cov { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 6px 0 4px; }
+.cov th { text-align: right; font-weight: 600; color: var(--muted); font-size: 12px; padding: 4px 0 6px 8px; }
+.cov td { padding: 7px 0 7px 8px; text-align: right; border-top: 1px solid var(--line); font-weight: 600; }
+.cov td:first-child, .cov th:first-child { text-align: left; padding-left: 0; color: var(--ink); }
