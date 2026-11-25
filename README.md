@@ -35,9 +35,9 @@ The build fails if a marker or a `site.json` text can't be found, or if the Port
 
 GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 15 minutes, fetches the live plug status, builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
 
-## France: evchargefrance.com
+## France: fastchargefrance.com
 
-`node scripts/build-site.mjs france _site` builds **evchargefrance.com** (lavender look, English at `/`, French at `/fr/`) from the same code plus `sites/france/`, but with France's own data, which is built rather than committed:
+`node scripts/build-site.mjs france _site` builds **fastchargefrance.com** (lavender look, English at `/`, French at `/fr/`) from the same code plus `sites/france/`, but with France's own data, which is built rather than committed:
 
 | | |
 |---|---|

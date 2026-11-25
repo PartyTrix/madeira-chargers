@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://evchargefrance.com/sitemap.xml
+Sitemap: https://fastchargefrance.com/sitemap.xml

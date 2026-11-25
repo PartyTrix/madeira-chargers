@@ -1,10 +1,10 @@
 {
-  "_help": "How evchargefrance.com differs from madeirachargers.com. scripts/build-site.mjs applies this on top of the shared files; the build fails if a 'replace' text is no longer found in index.html. France has its own data (data: fr, built by scripts/update-france.mjs) and a French page at /fr/.",
-  "domain": "evchargefrance.com",
+  "_help": "How fastchargefrance.com differs from madeirachargers.com. scripts/build-site.mjs applies this on top of the shared files; the build fails if a 'replace' text is no longer found in index.html. France has its own data (data: fr, built by scripts/update-france.mjs) and a French page at /fr/.",
+  "domain": "fastchargefrance.com",
   "data": "fr",
   "replace": [
     ["data-site=\"madeira\" data-start=\"madeira\"", "data-site=\"france\" data-start=\"france\""],
-    ["Madeira EV Chargers. Search a destination in Portugal", "EV Charge France. Search a destination in France"],
+    ["Madeira EV Chargers. Search a destination in Portugal", "Fast Charge France. Search a destination in France"],
     ["placeholder=\"Where to? e.g. Funchal\"", "placeholder=\"Where to? e.g. Lyon\""],
     ["fill='%230e5e47'", "fill='%235b3f8c'"]
   ]
