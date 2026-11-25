@@ -4,7 +4,7 @@ A fast, mobile-first map of every public EV charger in Portugal on the MOBI.E ne
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
-Live at **https://madeirachargers.com**. Plain HTML/CSS/JS, no build step, no npm packages, no cookies. Visit counts go to [GoatCounter](https://madeirachargers.goatcounter.com) (cookie-free, no personal data; set `GOATCOUNTER` in `app.js` to `""` to switch it off). Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
+Live at **https://madeirachargers.com**. `https://madeirachargers.com/?view=portugal` opens on mainland Portugal instead (chargeportugal.com redirects there; `?view=azores` works too). The parameter is removed from the address bar on load and the canonical URL stays `https://madeirachargers.com/`. Plain HTML/CSS/JS, no build step, no npm packages, no cookies. Visit counts go to [GoatCounter](https://madeirachargers.goatcounter.com) (cookie-free, no personal data; set `GOATCOUNTER` in `app.js` to `""` to switch it off). Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
 
 ## How it maintains itself
 

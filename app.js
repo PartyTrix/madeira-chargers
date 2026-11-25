@@ -65,10 +65,20 @@
     document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
 
   // ---------- map ----------
+  // ?view=portugal (chargeportugal.com redirects here with it) opens on the
+  // mainland instead of Madeira. The parameter is dropped from the address bar
+  // right away so shared links stay clean; the canonical URL never has it.
+  const startParams = new URLSearchParams(location.search);
+  const startView = { portugal: "mainland", mainland: "mainland", azores: "azores" }[(startParams.get("view") || "").toLowerCase()] || "madeira";
+  if (startParams.has("view")) {
+    startParams.delete("view");
+    const qs = startParams.toString();
+    history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+  }
   const map = L.map("map", {
     zoomControl: false,
     renderer: L.canvas({ tolerance: 12 }), // generous tap target for dots
-  }).fitBounds(MADEIRA, sideMQ.matches ? { paddingTopLeft: [0, 100] } : { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
+  }).fitBounds(REGIONS[startView].bounds, sideMQ.matches ? { paddingTopLeft: [0, 100] } : { paddingTopLeft: [0, 120], paddingBottomRight: [0, 160] });
   // Phones pinch to zoom (like Google Maps); computers get +/- buttons.
   if (matchMedia("(min-width: 900px)").matches) L.control.zoom({ position: "bottomright" }).addTo(map);
   let tiles;
@@ -113,6 +123,7 @@
       $("retry").onclick = () => location.reload();
     });
   track("pageview");
+  if (startView !== "madeira") track("start-view", startView);
 
   function findTariff(p, tariffs) {
     const st = tariffs.stations || {};
