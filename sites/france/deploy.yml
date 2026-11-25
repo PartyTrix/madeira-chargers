@@ -1,0 +1,65 @@
+# Workflow for the PartyTrix/evchargefrance repository (copy it there as
+# .github/workflows/deploy.yml). That repo holds nothing else: it builds
+# evchargefrance.com from madeira-chargers' code, downloads France's open
+# charger data and publishes the site on its own GitHub Pages.
+# No secrets needed: madeira-chargers is public.
+name: Build & deploy evchargefrance.com
+
+on:
+  schedule:
+    - cron: "11,26,41,56 * * * *"   # every 15 min: live plug status; chargers/prices once a day (cached)
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          repository: PartyTrix/madeira-chargers
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # The national file (130 MB) changes once a night: build it once a day
+      # and reuse the result from the cache for the 15-minute status runs.
+      - id: day
+        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+      - id: cache
+        uses: actions/cache@v4
+        with:
+          path: data/fr
+          key: france-data-${{ steps.day.outputs.day }}-${{ hashFiles('scripts/update-france.mjs', 'scripts/fr-tarif.mjs', 'sites/france/networks.json') }}
+          restore-keys: france-data-
+      - name: Chargers and prices (once a day)
+        if: steps.cache.outputs.cache-hit != 'true'
+        # If the download fails, yesterday's restored data is used.
+        run: node scripts/update-france.mjs || test -f data/fr/chargers.json
+      - name: Live status
+        run: node scripts/update-france-status.mjs || echo "::warning::No live status this time"
+      - run: node scripts/build-site.mjs france _site
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

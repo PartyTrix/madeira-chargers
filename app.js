@@ -1,5 +1,5 @@
-/* Madeira Chargers / Charge Portugal: static map, no cookies.
-   One code base, two sites; scripts/build-site.mjs makes each. */
+/* Madeira Chargers / Charge Portugal / EV Charge France: static map, no cookies.
+   One code base, three sites; scripts/build-site.mjs makes each. */
 (() => {
   "use strict";
 
@@ -8,7 +8,8 @@
   // Texts tagged with tr are looked up there, falling back to the English.
   // scripts/i18n-keys.mjs --check lists anything missing.
   const I18N = window.I18N || {};
-  const LANG = document.documentElement.lang.startsWith("pt") ? "pt" : "en";
+  const LANG = document.documentElement.lang.slice(0, 2) || "en";
+  const LOCALE = { pt: "pt-PT", fr: "fr-FR" }[LANG] || [];
   function tr(strings, ...vals) {
     let key = strings[0];
     vals.forEach((_, i) => { key += `{${i}}` + strings[i + 1]; });
@@ -20,14 +21,23 @@
   // Usage statistics (GoatCounter, cookie-free). Empty = off.
   const GOATCOUNTER = "madeirachargers";
 
+  // Which site this is (set on <html data-site> by scripts/build-site.mjs).
+  // France has its own data (scripts/update-france.mjs) and price model.
+  const SITE = document.documentElement.dataset.site || "madeira";
+  const FR = SITE === "france";
   const MADEIRA = [[32.62, -17.30], [33.10, -16.25]]; // includes Porto Santo
-  const BBOX = "-31.5,32.3,-6.1,42.2"; // all of Portugal: mainland, Madeira, Azores
-  const REGIONS = {
+  // Search area: all of Portugal (mainland, Madeira, Azores), or mainland France and Corsica.
+  const BBOX = FR ? "-5.3,41.3,9.7,51.2" : "-31.5,32.3,-6.1,42.2";
+  const COUNTRY = FR ? tr`France` : tr`Portugal`;
+  const REGIONS = FR ? {
+    france: { name: tr`France`, bounds: [[42.4, -4.8], [51.1, 8.2]] },
+  } : {
     madeira: { name: tr`Madeira`, bounds: MADEIRA },
     azores: { name: tr`the Azores`, bounds: [[36.9, -31.3], [39.8, -24.9]] },
     mainland: { name: tr`mainland Portugal`, bounds: [[36.9, -9.6], [42.2, -6.1]] },
   };
-  const regionAt = (lat, lon) => (lat < 33.2 && lon < -16 ? "madeira" : lon < -24.5 ? "azores" : "mainland");
+  const regionAt = FR ? () => "france"
+    : (lat, lon) => (lat < 33.2 && lon < -16 ? "madeira" : lon < -24.5 ? "azores" : "mainland");
   const MAX_DOTS = 1500; // more than this on screen: thin them out (cheapest per spot)
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
   const BANDS = [(r) => tr`Cheap for ${r}`, () => tr`Below average`, () => tr`Above average`, (r) => tr`Expensive for ${r}`];
@@ -87,11 +97,10 @@
   // mainland, see sites/). ?view=portugal|azores|madeira overrides it; the
   // parameter is dropped from the address bar right away so shared links stay
   // clean, and the canonical URL never has it.
-  const SITE = document.documentElement.dataset.site || "madeira";
   const startParams = new URLSearchParams(location.search);
-  const viewParam = { portugal: "mainland", mainland: "mainland", azores: "azores", madeira: "madeira" }[(startParams.get("view") || "").toLowerCase()];
+  const viewParam = FR ? null : { portugal: "mainland", mainland: "mainland", azores: "azores", madeira: "madeira" }[(startParams.get("view") || "").toLowerCase()];
   const startView = viewParam
-    || (REGIONS[document.documentElement.dataset.start] ? document.documentElement.dataset.start : "madeira");
+    || (REGIONS[document.documentElement.dataset.start] ? document.documentElement.dataset.start : Object.keys(REGIONS)[0]);
   if (startParams.has("view")) {
     startParams.delete("view");
     const qs = startParams.toString();
@@ -123,11 +132,16 @@
 
   // ---------- data ----------
   $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
-  Promise.all([
-    fetch(ROOT + "data/chargers.geojson", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-    fetch(ROOT + "data/tariffs.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => ({})),
-    fetch(ROOT + "data/pricing.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
-    fetch(ROOT + "data/status.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
+  const getJson = (f) => fetch(ROOT + f, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  Promise.all(FR ? [
+    getJson("data/chargers.json").then(decodeFrance),
+    {}, null,
+    getJson("data/status.json").catch(() => null),
+  ] : [
+    getJson("data/chargers.geojson"),
+    getJson("data/tariffs.json").catch(() => ({})),
+    getJson("data/pricing.json").catch(() => null),
+    getJson("data/status.json").catch(() => null),
   ])
     .then(([geo, tariffs, pricing, status]) => {
       state.pricing = pricing;
@@ -139,6 +153,7 @@
       const id = decodeURIComponent(location.hash.slice(1));
       const linked = id && state.all.find((c) => c.id === id);
       if (linked) select(linked, { fly: true });
+      if (FR) loadFranceDetails();
     })
     .catch((e) => {
       console.error(e);
@@ -149,6 +164,40 @@
     });
   track("pageview");
   if (viewParam) track("start-view", startView);
+
+  // France: data/chargers.json is compact (one array per station, shared
+  // tables for operators and tariffs; see scripts/update-france.mjs). Turn it
+  // into the same shape as the Portuguese GeoJSON features.
+  function decodeFrance(d) {
+    const tariff = (i) => (i >= 0 ? d.tariffs[i] : null);
+    return {
+      features: d.stations.map(([id, lon, lat, name, operator, maxKw, pay, t, sockets]) => ({
+        geometry: { coordinates: [lon, lat] },
+        properties: {
+          id, name, operator: d.ops[operator] || null, max_kw: maxKw, region: "france", source: "irve",
+          pay: { card: !!(pay & 1), adhoc: !!(pay & 2), other: !!(pay & 4) }, motorway: !!(pay & 16),
+          tariff: tariff(t),
+          sockets: sockets.map(([type, kw, count, st]) => ({ type, kw, count, tariff: tariff(st) })),
+        },
+      })),
+    };
+  }
+  // Addresses, opening hours and the operators' own price texts come in a
+  // second file after the map is drawn, so the first load stays small.
+  function loadFranceDetails() {
+    getJson("data/details.json").then((d) => {
+      const byId = new Map(state.all.map((c) => [c.id, c]));
+      d.stations.forEach(([id, address, hours, text]) => {
+        const c = byId.get(id);
+        if (!c) return;
+        c.address = address || null;
+        c.opening_hours = hours || null;
+        c.priceText = text >= 0 ? d.texts[text] : null;
+      });
+      state.detailsLoaded = true;
+      if (state.selected) showDetail(state.selected);
+    }).catch(() => {});
+  }
 
   function findTariff(p, tariffs) {
     const st = tariffs.stations || {};
@@ -166,8 +215,9 @@
   // (20 kWh at realistic power: 11 kW on AC, up to 75 kW on DC).
   function operatorPerKwh(t, maxKw) {
     if (!t) return null;
+    if (t.free) return 0;
     const kwh = +t.kwh || 0, min = +t.min || 0, start = +t.start || 0;
-    if (!kwh && !min && !start) return t.free ? 0 : null;
+    if (!kwh && !min && !start) return null;
     const fast = (maxKw || 0) >= 50;
     const rate = fast ? Math.min(maxKw, 75) : Math.min(maxKw || 11, 11);
     const session = sessionKwh();
@@ -208,9 +258,12 @@
       // Bank card at the charger. Not offered in Madeira in practice, whatever
       // the feed says, so only counted elsewhere.
       card: !!p.pay?.card && region !== "madeira",
-      motorway: isMotorway(p),
+      motorway: FR ? p.motorway : isMotorway(p),
       plugs: new Set((p.sockets || []).map((s) => s.type)),
-      mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
+      mobie: !FR && /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
+      // France: a network's usual price, not this charger's own (see sites/france/networks.json).
+      est: !!p.tariff?.est,
+      isFree: !!p.tariff?.free,
       pay: p.pay || {},
       payUnknown: p.source === "mobie" && !p.pay,
       title: tidyName(p.name || p.operator || p.network || "EV charger"),
@@ -240,7 +293,7 @@
     ? (liveTotal(c) === 1 ? tr`1 of 1 plug free` : tr`${c.live.free} of ${liveTotal(c)} plugs free`)
       + (c.live.broken ? " · " + tr`${c.live.broken} out of order` : "")
     : c.live.busy ? tr`All plugs in use` : tr`Out of order`);
-  const hhmm = (d) => d.toLocaleTimeString(LANG === "pt" ? "pt-PT" : [], { hour: "2-digit", minute: "2-digit" });
+  const hhmm = (d) => d.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" });
 
   // Motorway service areas and junctions: the feed has no flag for it, so read
   // the name and address ("Área de Serviço", "(A2) KM 148", "A25 - AS Vilar
@@ -390,7 +443,7 @@
       const pt = map.latLngToLayerPoint([c.lat, c.lon]);
       // Real tag sizes; zoomed out, tags are compact (smaller, no bolt) so more fit.
       const compact = map.getZoom() < 13;
-      const w = compact ? 10 + euro(c.eff).length * 6.5 : 16 + euro(c.eff).length * 8 + (c.fast ? 12 : 0);
+      const w = compact ? 10 + priceTag(c).length * 6.5 : 16 + priceTag(c).length * 8 + (c.fast ? 12 : 0);
       const h = compact ? 19 : 26, tip = compact ? 5 : 7;
       const box = { l: pt.x - w / 2, r: pt.x + w / 2, t: pt.y - h - tip, b: pt.y };
       if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
@@ -406,8 +459,8 @@
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
         html: map.getZoom() < 13 && !sel
-          ? `<span class="pin-tag compact" style="--c:var(${c.colourVar})">${euro(c.eff)}</span>`
-          : `<span class="pin-tag${sel ? " selected" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${euro(c.eff)}</span>`,
+          ? `<span class="pin-tag compact${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
+          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
     });
@@ -424,7 +477,7 @@
       fillColor: colour(c.colourVar), fillOpacity: 1,
       bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
     });
-    if (canHover) m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + euro(c.eff) + "/kWh" : ""}`);
+    if (canHover) m.bindTooltip(`${esc(c.title)}${c.eff != null ? " · " + (c.isFree ? tr`Free` : priceTag(c) + "/kWh") : ""}`);
     m.on("click", (e) => { L.DomEvent.stop(e); select(c); });
     m.addTo(layer);
   }
@@ -469,7 +522,7 @@
           <span class="row-sub">${esc(sub(c))}</span>
         </span>
         ${c.eff != null
-          ? `<span class="row-price">${euro(c.eff)}<small>${tr`per kWh`}</small></span>`
+          ? `<span class="row-price${c.est ? " est" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : tr`per kWh`}</small></span>`
           : `<span class="row-price none">${tr`No price`}</span>`}
       </li>`).join("");
     const pick = (e) => {
@@ -524,7 +577,41 @@
     ? "https://play.google.com/store/search?q=miio&c=apps"
     : "https://apps.apple.com/pt/app/miio/id1462182013";
 
+  // France: the price drivers pay without a subscription (incl. VAT), either
+  // published for this charger or the network's usual price.
+  function priceSectionFrance(c) {
+    const t = c.tariff;
+    const own = c.priceText ? `<details class="note"><summary><svg><use href="#i-info"/></svg>${tr`The operator's price text`}</summary>
+      <p class="quote">${esc(c.priceText)}</p></details>` : "";
+    if (c.eff == null) {
+      return `<div class="price-box none">${tr`No price published for this charger. Check the charger or your app before you start.`}</div>${own}`;
+    }
+    if (c.isFree) {
+      return `<div class="price-box" style="--c:var(${c.colourVar})"><div class="big">${tr`Free`}</div>
+        <div class="parts">${tr`The operator says charging here is free.`}</div></div>
+        <p class="price-note">${tr`Free chargers are often meant for customers of the shop, hotel or car dealer, and may only work in opening hours.`}</p>`;
+    }
+    const parts = [];
+    if (t.kwh) parts.push(`${euro(t.kwh)}/kWh`);
+    if (t.min) parts.push(`${euro(t.min)}/min`);
+    if (t.start) parts.push(tr`${euro(t.start)} per session`);
+    const session = sessionKwh();
+    return `
+      <div class="price-box${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">
+        <div class="big">${priceTag(c)}<small> /kWh</small></div>
+        <div class="band">${BANDS[c.band](REGIONS[c.region].name)}</div>
+        <div class="parts">${c.est
+          ? (t.est[0] === t.est[1] ? tr`Usual ${esc(t.net)} price without subscription: ${euro(t.est[0])}/kWh` : tr`Usual ${esc(t.net)} price without subscription: ${euro(t.est[0])} to ${euro(t.est[1])}/kWh`)
+          : esc(parts.join(" + ")) + (t.min || t.start ? " · " + tr`≈ ${euro(c.eff * session)} for ${session} kWh` : "")}</div>
+      </div>
+      <p class="price-note">${c.est
+        ? tr`This charger doesn't publish its own price, so this is the network's usual pay-as-you-go price, incl. VAT. Check the charger or the app before you start.`
+        : tr`Published by the operator for paying without a subscription, incl. VAT. Prices can change; check the charger or the app before you start.`}</p>
+      ${own}`;
+  }
+
   function priceSection(c) {
+    if (FR) return priceSectionFrance(c);
     const t = c.tariff;
     const p = state.pricing;
     if (c.eff == null) {
@@ -556,10 +643,16 @@
   function showDetail(c) {
     const [primary, ...more] = navLinks(c.lat, c.lon, c.title);
     const place = [c.address, c.operator].filter(Boolean).join(" · ");
+    const hours = c.opening_hours && c.opening_hours !== "24/7" ? c.opening_hours : null;
     const routeInfo = state.route?.on.get(c.id);
 
     const pay = [];
-    if (c.source === "osm") {
+    if (FR) {
+      if (/tesla/i.test(c.operator || "")) pay.push(`<li><svg><use href="#i-phone"/></svg>${tr`Tesla Supercharger: start and pay in the Tesla app (open to all cars at most French sites).`}</li>`);
+      if (c.card) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Bank card at the charger`}</li>`);
+      if (c.pay.adhoc && !c.card) pay.push(`<li><svg><use href="#i-phone"/></svg>${tr`Pay on the spot without a subscription (QR code or app)`}</li>`);
+      if (c.pay.other) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Charging cards and apps (e.g. Chargemap, Freshmile)`}</li>`);
+    } else if (c.source === "osm") {
       pay.push(c.network === "Tesla"
         ? `<li><svg><use href="#i-phone"/></svg>${tr`Tesla Supercharger: start and pay in the Tesla app. Many in Portugal are open to other cars too; the app shows which.`}</li>`
         : `<li class="warn"><svg><use href="#i-info"/></svg>${tr`Not on the MOBI.E network (found on OpenStreetMap), so Miio won't work and there's no price here. Check the operator's app.`}</li>`);
@@ -568,7 +661,7 @@
     } else if (c.pay.apps) {
       pay.push(`<li><svg><use href="#i-phone"/></svg>${tr`Miio, any MOBI.E app or a MOBI.E card`}</li>`);
     }
-    if (c.card) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Bank card at the charger (the operator says so; check on site)`}</li>`);
+    if (!FR && c.card) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Bank card at the charger (the operator says so; check on site)`}</li>`);
 
     const sockets = (c.sockets || []).map((s) =>
       `<li><svg><use href="#${(s.kw || 0) >= 50 ? "i-bolt" : "i-plug"}"/></svg>${s.count}× ${esc(s.type)}
@@ -597,8 +690,8 @@
         ${pay.length ? `<div class="section-label">${tr`How to pay`}</div><ul class="facts">${pay.join("")}</ul>` : ""}
         ${c.pay.apps ? `<a class="app-btn" data-track="open-miio" href="${MIIO}" target="_blank" rel="noopener"><svg><use href="#i-phone"/></svg>${tr`Open Miio to charge`}</a>` : ""}
 
-        ${sockets || c.opening_hours ? `<div class="section-label">${tr`Plugs`}</div><ul class="facts">${sockets}
-          ${c.opening_hours ? `<li><svg><use href="#i-clock"/></svg>${tr`Open ${esc(c.opening_hours)}`}</li>` : ""}</ul>` : ""}
+        ${sockets || hours ? `<div class="section-label">${tr`Plugs`}</div><ul class="facts">${sockets}
+          ${hours ? `<li><svg><use href="#i-clock"/></svg>${tr`Open ${esc(hours)}`}</li>` : ""}</ul>` : ""}
 
         <div class="code">${c.mobie ? tr`MOBI.E code` : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
       </div>`;
@@ -623,11 +716,12 @@
   function socketPrice(s, headline) {
     const t = s.tariff;
     if (!t || JSON.stringify(t) === JSON.stringify(headline)) return "";
+    if (t.free) return " · " + tr`Free`;
     const bits = [];
     if (t.kwh) bits.push(`${euro(t.kwh)}/kWh`);
     if (t.min) bits.push(`${euro(t.min)}/min`);
     if (t.start) bits.push(`${euro(t.start)} start`);
-    return bits.length ? ` · operator ${esc(bits.join(" + "))}` : "";
+    return bits.length ? ` · ${FR ? (t.est ? "~" : "") : "operator "}${esc(bits.join(" + "))}` : "";
   }
 
   // ---------- panel ----------
@@ -804,7 +898,7 @@
     results.hidden = false;
     results.innerHTML = `<li class="r-msg">${tr`Searching…`}</li>`;
     try {
-      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6${LANG === "fr" ? "&lang=fr" : ""}&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
       const data = await (await fetch(url)).json();
       if (seq !== searchSeq) return;
       hits = (data.features || []).map((f) => {
@@ -816,7 +910,7 @@
         return { name, sub, lat, lon };
       });
       active = -1;
-      if (!hits.length) { results.innerHTML = `<li class="r-msg">${tr`No places found in Portugal for "${esc(text)}"`}</li>`; return; }
+      if (!hits.length) { results.innerHTML = `<li class="r-msg">${tr`No places found in ${COUNTRY} for "${esc(text)}"`}</li>`; return; }
       if (pickFirst) return choose(hits[0]);
       results.innerHTML = hits.map((h, i) => `<li role="option" data-i="${i}"><svg><use href="#i-pin"/></svg>
         <span><span class="r-name">${esc(h.name)}</span><br><span class="r-sub">${esc(h.sub)}</span></span></li>`).join("");
@@ -870,26 +964,39 @@
     }
   }
 
-  // Every charger within ROUTE_KM of the road, with how far along the route it is.
+  // Every charger within ROUTE_KM of the road, with how far along the route it
+  // is. Route segments go into a grid of ROUTE_KM cells so each charger only
+  // checks the few segments near it (a Paris-Nice route has ~10,000 points and
+  // France ~45,000 chargers).
   function alongRoute(coords) {
     const k = 111.32, cosLat = Math.cos(coords[Math.floor(coords.length / 2)][0] * Math.PI / 180);
     const xy = coords.map(([lat, lon]) => [lon * k * cosLat, lat * k]);
     const cum = [0];
     for (let i = 1; i < xy.length; i++) cum[i] = cum[i - 1] + Math.hypot(xy[i][0] - xy[i - 1][0], xy[i][1] - xy[i - 1][1]);
+    const cell = ROUTE_KM, grid = new Map();
+    const key = (gx, gy) => gx * 100003 + gy;
+    for (let i = 1; i < xy.length; i++) {
+      const [ax, ay] = xy[i - 1], [bx, by] = xy[i];
+      const x0 = Math.floor(Math.min(ax, bx) / cell), x1 = Math.floor(Math.max(ax, bx) / cell);
+      const y0 = Math.floor(Math.min(ay, by) / cell), y1 = Math.floor(Math.max(ay, by) / cell);
+      for (let gx = x0; gx <= x1; gx++) for (let gy = y0; gy <= y1; gy++) {
+        const g = key(gx, gy);
+        (grid.get(g) || grid.set(g, []).get(g)).push(i);
+      }
+    }
     const on = new Map();
-    const lats = coords.map((c) => c[0]), lons = coords.map((c) => c[1]);
-    const pad = 0.02; // ~2 km
-    const box = [Math.min(...lats) - pad, Math.max(...lats) + pad, Math.min(...lons) - pad, Math.max(...lons) + pad];
     for (const c of state.all) {
-      if (c.lat < box[0] || c.lat > box[1] || c.lon < box[2] || c.lon > box[3]) continue;
       const p = [c.lon * k * cosLat, c.lat * k];
+      const gx = Math.floor(p[0] / cell), gy = Math.floor(p[1] / cell);
       let best = Infinity, along = 0;
-      for (let i = 1; i < xy.length; i++) {
-        const [ax, ay] = xy[i - 1], [bx, by] = xy[i];
-        const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
-        const t = len2 ? Math.max(0, Math.min(1, ((p[0] - ax) * dx + (p[1] - ay) * dy) / len2)) : 0;
-        const d = Math.hypot(p[0] - (ax + t * dx), p[1] - (ay + t * dy));
-        if (d < best) { best = d; along = cum[i - 1] + t * Math.sqrt(len2); }
+      for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+        for (const i of grid.get(key(gx + dx, gy + dy)) || []) {
+          const [ax, ay] = xy[i - 1], [bx, by] = xy[i];
+          const ex = bx - ax, ey = by - ay, len2 = ex * ex + ey * ey;
+          const t = len2 ? Math.max(0, Math.min(1, ((p[0] - ax) * ex + (p[1] - ay) * ey) / len2)) : 0;
+          const d = Math.hypot(p[0] - (ax + t * ex), p[1] - (ay + t * ey));
+          if (d < best) { best = d; along = cum[i - 1] + t * Math.sqrt(len2); }
+        }
       }
       if (best <= ROUTE_KM) on.set(c.id, { along, off: best });
     }
@@ -1143,7 +1250,8 @@
   function tidyName(s) {
     if (s !== s.toUpperCase()) return s;
     return s.toLowerCase().replace(/(^|[\s(\-/])(\p{L})/gu, (m, a, b) => a + b.toUpperCase())
-      .replace(/\b(Da|De|Do|Das|Dos|E)\b/g, (w) => w.toLowerCase());
+      .replace(FR ? /(?<!^)\b(De|Du|Des|La|Le|Les|Et|Sur|En|Aux?)\b/g : /\b(Da|De|Do|Das|Dos|E)\b/g, (w) => w.toLowerCase())
+      .replace(/(?<!^)\b([DL])'(\p{L})/gu, (m, a, b) => a.toLowerCase() + "'" + b.toUpperCase());
   }
   function dist(c) {
     if (!state.me) return 0;
@@ -1154,7 +1262,9 @@
     return 2 * R * Math.asin(Math.sqrt(a));
   }
   function fmtMin(m) { return m < 60 ? `${Math.round(m)} min` : `${Math.floor(m / 60)} h ${Math.round(m % 60)} min`; }
-  function euro(v) { return "€" + v.toFixed(2); }
+  function euro(v) { return LANG === "fr" ? v.toFixed(2).replace(".", ",") + " €" : "€" + v.toFixed(2); }
+  // "~€0.52": a network's usual price rather than this charger's own (France).
+  function priceTag(c) { return (c.est ? "~" : "") + euro(c.eff); }
   function fmtKw(v) { return Number.isInteger(v) ? v : v.toFixed(1); }
   function esc(s) {
     return String(s ?? "").replace(/[&<>"']/g, (ch) =>

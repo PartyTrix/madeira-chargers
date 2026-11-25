@@ -56,6 +56,14 @@ jobs:
         # That site is deployed from PartyTrix/chargeportugal (see
         # sites/portugal/deploy.yml); this catches a broken build here first.
         run: node scripts/build-site.mjs portugal _site_portugal
+      - name: Check evchargefrance.com still builds (sample of France's data)
+        # Deployed from PartyTrix/evchargefrance (see sites/france/deploy.yml).
+        run: |
+          node scripts/test-fr-tarif.mjs
+          node scripts/update-france.mjs scripts/test/fr-sample.csv
+          node scripts/update-france-status.mjs scripts/test/fr-status-sample.csv
+          node scripts/build-site.mjs france _site_france
+          node scripts/i18n-keys.mjs --check
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
