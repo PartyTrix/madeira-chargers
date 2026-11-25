@@ -6,34 +6,13 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: MOBI.E status feed
+      - name: OpenStreetMap chargers in Portugal
         run: |
-          curl -sS -D h.txt -o s.xml -A "madeira-chargers (GitHub Actions)" https://pgm.mobie.pt/integration/nap/evActualStatus
-          cat h.txt; ls -la s.xml
-          head -c 1500 s.xml; echo
-          echo "--- distinct status-ish tags"
-          grep -oE '<(\w+:)?\w*[Ss]tatus\w*' s.xml | sort | uniq -c | sort -rn | head -30
-          echo "--- distinct values in status tags"
-          grep -oE '<(\w+:)?(refillPointStatus|status|operationalStatus|availabilityStatus)>[^<]*<' s.xml | sort | uniq -c | sort -rn | head -20
-          echo "--- publicationTime / lastUpdated"
-          grep -oE '<(\w+:)?(publicationTime|lastUpdated)>[^<]*<' s.xml | sort | uniq -c | sort -rn | head -5
-          echo "--- one full refillPointStatus"
-          python3 - <<'PY'
-          import re
-          s=open('s.xml').read()
-          m=re.search(r'<(\w+:)?refillPointStatus\b[\s\S]*?</\1?refillPointStatus>', s)
-          print(m.group(0)[:4000] if m else 'none')
-          m=list(re.finditer(r'<(\w+:)?energyInfrastructureSiteStatus\b[\s\S]*?</\1?energyInfrastructureSiteStatus>', s))
-          print(len(m)); print(m[0].group(0)[:3000] if m else '')
-          PY
-          sleep 90
-          curl -sS -o s2.xml -A "madeira-chargers (GitHub Actions)" https://pgm.mobie.pt/integration/nap/evActualStatus
-          echo "--- changed after 90s?"; cmp -s s.xml s2.xml && echo same || echo differs
-          diff <(grep -oE '<(\w+:)?\w*[Ss]tatus>[^<]*<' s.xml) <(grep -oE '<(\w+:)?\w*[Ss]tatus>[^<]*<' s2.xml) | head -10
-      - name: OpenStreetMap Tesla / non-MOBI.E chargers in Portugal
-        run: |
-          Q='[out:json][timeout:120];area["ISO3166-1"="PT"][admin_level=2]->.pt;nwr["amenity"="charging_station"](area.pt);out center tags;'
-          curl -sS -A "madeira-chargers (GitHub Actions)" --data-urlencode "data=$Q" https://overpass-api.de/api/interpreter -o osm.json; ls -la osm.json
+          Q='[out:json][timeout:180];area["ISO3166-1"="PT"]["admin_level"="2"]->.pt;nwr["amenity"="charging_station"](area.pt);out center tags;'
+          for u in https://overpass-api.de/api/interpreter https://overpass.private.coffee/api/interpreter https://maps.mail.ru/osm/tools/overpass/api/interpreter; do
+            echo "== $u"; curl -sS -m 200 -A "madeira-chargers/1.0 (+https://github.com/PartyTrix/madeira-chargers)" --data-urlencode "data=$Q" "$u" -o osm.json -w "%{http_code}\n"; ls -la osm.json; head -c 300 osm.json; echo
+            python3 -c "import json;json.load(open('osm.json'))" 2>/dev/null && break
+          done
           python3 - <<'PY'
           import json,collections
           d=json.load(open('osm.json'))['elements']
@@ -42,6 +21,7 @@ jobs:
           print(c.most_common(40))
           t=[e for e in d if 'tesla' in json.dumps(e['tags']).lower()]
           print('tesla',len(t))
-          for e in t[:6]: print(json.dumps(e)[:600])
-          print('with ref:mobie-ish', sum(1 for e in d if any('mobie' in k.lower() or 'mobi.e' in str(v).lower() for k,v in e['tags'].items())))
+          for e in t[:8]: print(json.dumps(e)[:700])
+          keys=collections.Counter(k for e in d for k in e['tags'])
+          print(keys.most_common(60))
           PY
