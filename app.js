@@ -778,7 +778,7 @@
         && !(a.live && !a.live.free && !a.live.busy))
       .map((a) => [a, km(a)]).filter(([, d]) => d > 0.03 && d < 25)
       // a free plug beats a slightly nearer charger that's all in use
-      .sort((x, y) => x[1] + (x[0].live && !x[0].live.free ? 3 : 0) - y[1] - (y[0].live && !y[0].live.free ? 3 : 0)).slice(0, 3);
+      .sort((x, y) => x[1] + (x[0].live && !x[0].live.free ? 3 : 0) - y[1] - (y[0].live && !y[0].live.free ? 3 : 0)).filter(([a], i, arr) => arr.findIndex(([b]) => b.title === a.title) === i).slice(0, 3);
     if (!alts.length) { box.innerHTML = ""; return; }
     box.innerHTML = `<div class="section-label">${tr`If this one doesn't work`}</div><ol class="list alt-list" id="alt-list"></ol>`;
     const d = new Map(alts);
