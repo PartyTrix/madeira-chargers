@@ -2,10 +2,9 @@ name: Live status
 
 # Every 15 minutes: fetch which plugs are free right now and redeploy
 # madeirachargers.com with data/status.json. Nothing is committed.
-# (GitHub may start scheduled runs a few minutes late; the page shows the time.)
+# (Started every 15 min by the Cloudflare Worker "charger-timer"; the page shows the time.)
 on:
-  schedule:
-    - cron: "4,19,34,49 * * * *"
+  # Every 15 min, started by the Cloudflare Worker "charger-timer" (GitHub's own schedules ran hours late).
   workflow_dispatch:
 
 permissions:

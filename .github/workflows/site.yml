@@ -3,8 +3,7 @@ name: Refresh data & deploy
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: "17 4 * * *"   # every day 04:17 UTC
+  # Daily 04:17 UTC, started by the Cloudflare Worker "charger-timer" (GitHub's own schedules ran hours late).
   workflow_dispatch:
 
 permissions:
@@ -18,7 +17,7 @@ concurrency:
 
 jobs:
   refresh:
-    # Only pull new MOBI.E data on the schedule or when started by hand.
+    # Only pull new MOBI.E data when started by the daily timer or by hand.
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     steps:
