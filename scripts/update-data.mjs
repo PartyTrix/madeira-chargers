@@ -135,11 +135,36 @@ const OVERPASS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
   "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+  "https://overpass.private.coffee/api/interpreter",
 ];
-const OSM_QUERY = `[out:json][timeout:180];
-area["ISO3166-1"="PT"]["admin_level"="2"]->.pt;
-nwr["amenity"="charging_station"](area.pt);
+// Bounding boxes (mainland, Madeira, Azores) instead of the country area:
+// the area lookup is slow and busy servers time out on it.
+const OSM_QUERY = `[out:json][timeout:120];
+(
+  nwr["amenity"="charging_station"](36.8,-9.6,42.2,-6.1);
+  nwr["amenity"="charging_station"](32.3,-17.4,33.2,-16.2);
+  nwr["amenity"="charging_station"](36.8,-31.4,39.8,-24.9);
+);
 out center tags;`;
+// Rough outline of mainland Portugal (lat, lon), generous on the coast side.
+// The mainland box above also covers bits of Spain; this keeps them out.
+const MAINLAND = [
+  [41.87, -9.6], [41.87, -8.87], [42.05, -8.65], [42.16, -8.2], [41.9, -8.05], [41.83, -7.9],
+  [41.95, -7.2], [41.99, -6.6], [41.68, -6.18], [41.5, -6.2], [41.38, -6.3], [41.2, -6.6],
+  [41.05, -6.78], [40.95, -6.85], [40.6, -6.8], [40.0, -6.85], [39.66, -7.0], [39.66, -7.53],
+  [39.45, -7.3], [39.05, -7.0], [38.85, -7.02], [38.75, -7.2], [38.45, -7.3], [38.2, -6.93],
+  [38.05, -6.93], [37.95, -7.25], [37.55, -7.45], [37.4, -7.45], [37.17, -7.4], [36.8, -7.4],
+  [36.8, -9.6],
+];
+function inPolygon(lat, lon, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [yi, xi] = poly[i], [yj, xj] = poly[j];
+    if ((yi > lat) !== (yj > lat) && lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+const inPortugal = (lat, lon) => lon < -12 || lat < 34 || inPolygon(lat, lon, MAINLAND);
 const NEAR_MOBIE_M = 150; // an OSM station this close to a MOBI.E site is that site
 const OSM_MIN_KW = 50;    // non-Tesla OSM stations: only fast ones (slow ones are mostly MOBI.E or private)
 
@@ -151,7 +176,7 @@ async function overpass() {
           method: "POST",
           headers: { "User-Agent": "madeira-chargers (GitHub Actions; daily)", "Content-Type": "application/x-www-form-urlencoded" },
           body: "data=" + encodeURIComponent(OSM_QUERY),
-          signal: AbortSignal.timeout(200_000),
+          signal: AbortSignal.timeout(150_000),
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
@@ -193,6 +218,7 @@ function osmFeatures(elements, mobieSites) {
     const t = e.tags || {};
     const lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon;
     if (lat == null || !(lat >= BOX.latMin && lat <= BOX.latMax && lon >= BOX.lonMin && lon <= BOX.lonMax)) continue;
+    if (!inPortugal(lat, lon)) continue;
     if (/^(private|no|customers|permit|delivery)$/.test(t.access || "")) continue;
     if (t["disused:amenity"] || /^(construction|planned|disused)$/.test(t.lifecycle || "")) continue;
     const who = [t.brand, t.operator, t.network, t.name].filter(Boolean).join(" ");
