@@ -154,6 +154,7 @@
       syncSlider();
       render();
       hintBands();
+      startNearMe();
       const id = decodeURIComponent(location.hash.slice(1));
       const linked = id && state.all.find((c) => c.id === id);
       if (linked) select(linked, { fly: true });
@@ -422,13 +423,19 @@
   function onScreen(items) {
     const view = map.getBounds().pad(0.2);
     let out = items.filter((c) => view.contains([c.lat, c.lon]));
-    if (out.length > MAX_DOTS) {
-      const cell = 9, seen = new Map();
+    // Zoomed out, dots would pile into one blob: keep one per spot, the best
+    // for the current tab (cheapest, or fastest), so the map stays readable.
+    const cell = map.getZoom() <= 10 && out.length > 300 ? 22 : out.length > MAX_DOTS ? 12 : 0;
+    if (cell) {
+      const better = state.sort === "power"
+        ? (a, b) => (a.max_kw || 0) > (b.max_kw || 0) || ((a.max_kw || 0) === (b.max_kw || 0) && (a.eff ?? 99) < (b.eff ?? 99))
+        : (a, b) => (a.eff ?? 99) < (b.eff ?? 99) || ((a.eff ?? 99) === (b.eff ?? 99) && (a.max_kw || 0) > (b.max_kw || 0));
+      const seen = new Map();
       for (const c of out) {
         const pt = map.latLngToLayerPoint([c.lat, c.lon]);
         const k = `${Math.round(pt.x / cell)},${Math.round(pt.y / cell)}`;
         const prev = seen.get(k);
-        if (!prev || (c.eff ?? 99) < (prev.eff ?? 99) || c.id === state.selected?.id) seen.set(k, c);
+        if (!prev || c.id === state.selected?.id || (prev.id !== state.selected?.id && better(c, prev))) seen.set(k, c);
       }
       out = [...seen.values()];
     }
@@ -491,7 +498,7 @@
     const m = L.circleMarker([c.lat, c.lon], {
       radius: sel ? 12 : c.fast ? 9 : 7,
       color: sel ? colour("--focus") : c.fast ? colour("--ink") : "#ffffff",
-      weight: sel ? 4 : c.fast ? 3 : 2,
+      weight: sel ? 4 : 2,
       fillColor: colour(c.colourVar), fillOpacity: 1,
       bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
     });
@@ -809,6 +816,21 @@
     if (center) map.setView(state.me, Math.max(map.getZoom(), 13));
     syncSlider();
     render();
+  }
+
+  // Like a map app: if this browser already allows location for the site,
+  // open where the visitor is (only inside this site's area, never prompting).
+  async function startNearMe() {
+    if (location.hash.length > 1 || !navigator.permissions || !navigator.geolocation) return;
+    try {
+      if ((await navigator.permissions.query({ name: "geolocation" })).state !== "granted") return;
+    } catch { return; }
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const here = [pos.coords.latitude, pos.coords.longitude];
+      if (!L.latLngBounds(REGIONS[startView].bounds).pad(0.1).contains(here) || state.selected || state.route) return;
+      setMe(here, { center: false });
+      map.setView(here, 12);
+    }, () => {}, { timeout: 8000, maximumAge: 300000 });
   }
 
   // Ask for the position. Resolves with [lat, lon], or null when the user
@@ -1205,7 +1227,7 @@
       state.sort = b.dataset.sort;
       syncSlider();
       if (state.sort === "distance" && !state.me) locate();
-      else renderList();
+      else render();
     }));
   $("locate").addEventListener("click", () => locate());
 
