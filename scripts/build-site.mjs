@@ -2,7 +2,7 @@
 //
 //   node scripts/build-site.mjs madeira _site    -> madeirachargers.com
 //   node scripts/build-site.mjs portugal _site   -> chargeportugal.com
-//   node scripts/build-site.mjs france _site     -> evchargefrance.com
+//   node scripts/build-site.mjs france _site     -> fastchargefrance.com
 //     (run scripts/update-france.mjs first: France's data is built, not committed)
 //
 // madeira is the repo as it is. Any other site lives in sites/<name>/:

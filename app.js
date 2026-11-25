@@ -1,4 +1,4 @@
-/* Madeira Chargers / Charge Portugal / EV Charge France: static map, no cookies.
+/* Madeira Chargers / Charge Portugal / Fast Charge France: static map, no cookies.
    One code base, three sites; scripts/build-site.mjs makes each. */
 (() => {
   "use strict";

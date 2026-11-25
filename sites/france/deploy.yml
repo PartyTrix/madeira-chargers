@@ -1,9 +1,9 @@
 # Workflow for the PartyTrix/chargefrance repository (copy it there as
 # .github/workflows/deploy.yml). That repo holds nothing else: it builds
-# evchargefrance.com from madeira-chargers' code, downloads France's open
+# fastchargefrance.com from madeira-chargers' code, downloads France's open
 # charger data and publishes the site on its own GitHub Pages.
 # No secrets needed: madeira-chargers is public.
-name: Build & deploy evchargefrance.com
+name: Build & deploy fastchargefrance.com
 
 on:
   schedule:
