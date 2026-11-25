@@ -7,7 +7,7 @@ name: Build & deploy chargeportugal.com
 
 on:
   schedule:
-    - cron: "7 5,11,17,23 * * *"   # every 6 h; 05:07 UTC picks up the 04:17 data refresh
+    - cron: "9,24,39,54 * * * *"   # every 15 min: live plug status (data/status.json); chargers/prices refresh daily at 04:17 UTC
   workflow_dispatch:
   push:
     branches: [main]
@@ -32,6 +32,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      - run: node scripts/update-status.mjs || echo "::warning::No live status this time"
       - run: node scripts/build-site.mjs portugal _site
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5

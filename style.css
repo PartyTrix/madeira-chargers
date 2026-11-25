@@ -128,6 +128,26 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
   .chip[aria-pressed="true"] { background: var(--brand-soft); color: var(--brand-strong); }
   .chip[aria-pressed="true"] svg { color: var(--brand-strong); }
 }
+.chip[hidden] { display: none; }
+/* live status on a charger card */
+.live { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 700; font-size: 15px; margin: 8px 0 2px; }
+.live .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--p1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p1) 25%, transparent); }
+.live.busy .dot { background: var(--p3); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p3) 25%, transparent); }
+.live.bad .dot { background: var(--p4); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p4) 25%, transparent); }
+.live .sub { color: var(--muted); font-weight: 600; font-size: 13px; }
+/* plug type: a native picker dressed as a chip (16px so iPhone doesn't zoom) */
+.chip-select { position: relative; padding-right: 8px; cursor: pointer; }
+.chip-select select {
+  appearance: none; -webkit-appearance: none; border: 0; background: none; color: inherit;
+  font: inherit; font-size: 16px; font-weight: 650; padding: 0 18px 0 0; cursor: pointer; outline: 0;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 6px center, right 1px center; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.chip-select:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
+.chip-select.on { background: var(--brand-soft); color: var(--brand); }
+.chip-select.on svg { color: var(--brand); }
+@media (prefers-color-scheme: dark) { .chip-select.on, .chip-select.on svg { color: var(--brand-strong); } }
+.chip-select select option { color: #13201b; background: #fff; }
 /* the panel's own chips (e.g. "Show all of Madeira") stay flat */
 .panel .chip { box-shadow: none; border: 1px solid var(--line); }
 
@@ -359,6 +379,24 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .route-head .row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .route-head h1 { font-size: 18px; }
 .route-head .meta { color: var(--muted); font-size: 13.5px; font-weight: 600; }
+.range-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 650; font-size: 14px; }
+.range-input { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+.range-input input {
+  width: 92px; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; text-align: right;
+}
+.stops-summary p { margin: 0; }
+.stops-summary .stop-list { padding: 6px 0 0; overflow: visible; flex: none; }
+.stops-summary .row { padding-left: 4px; padding-right: 4px; }
+.stops-summary { font-size: 13.5px; line-height: 1.4; padding: 9px 12px; border-radius: 10px; background: var(--brand-soft); color: var(--ink); }
+.stops-summary.warn { background: color-mix(in srgb, var(--p4) 16%, var(--surface)); }
+.row.stop { background: var(--brand-soft); border-radius: 12px; }
+.row.stop .row-sub { color: var(--ink); font-weight: 650; }
+.stop-pin span {
+  display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--brand); color: #fff; font-weight: 800; font-size: 14px; border: 2.5px solid #fff; box-shadow: var(--shadow-sm);
+}
+@media (prefers-color-scheme: dark) { .stop-pin span { background: var(--brand-strong); color: #07140f; } }
 .route-head .nav-primary { margin-top: 0; min-height: 48px; font-size: 16px; }
 .leg { color: var(--muted); font-size: 12px; font-weight: 700; }
 
