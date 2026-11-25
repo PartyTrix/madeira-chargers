@@ -809,6 +809,7 @@
   let meMarker;
   function setMe(latlng, { center = true } = {}) {
     state.me = latlng;
+    $("near-me")?.remove();
     meMarker?.remove();
     meMarker = L.circleMarker(state.me, {
       radius: 8, color: "#fff", weight: 3, fillColor: "#1c7ed6", fillOpacity: 1, interactive: false,
@@ -820,17 +821,30 @@
 
   // Like a map app: if this browser already allows location for the site,
   // open where the visitor is (only inside this site's area, never prompting).
+  // Otherwise offer a "Chargers near me" button over the map instead.
   async function startNearMe() {
-    if (location.hash.length > 1 || !navigator.permissions || !navigator.geolocation) return;
-    try {
-      if ((await navigator.permissions.query({ name: "geolocation" })).state !== "granted") return;
-    } catch { return; }
+    if (location.hash.length > 1 || !navigator.geolocation) return;
+    let granted = false;
+    try { granted = (await navigator.permissions.query({ name: "geolocation" })).state === "granted"; } catch { /* no Permissions API */ }
+    if (!granted) { showNearMe(); return; }
     navigator.geolocation.getCurrentPosition((pos) => {
       const here = [pos.coords.latitude, pos.coords.longitude];
       if (!L.latLngBounds(REGIONS[startView].bounds).pad(0.1).contains(here) || state.selected || state.route) return;
       setMe(here, { center: false });
       map.setView(here, 12);
     }, () => {}, { timeout: 8000, maximumAge: 300000 });
+  }
+
+  function showNearMe() {
+    if (state.me || state.selected || state.route) return;
+    const b = document.createElement("button");
+    b.className = "near-me"; b.id = "near-me"; b.type = "button";
+    b.innerHTML = `<svg><use href="#i-locate"/></svg>${tr`Chargers near me`}`;
+    b.onclick = async () => { b.setAttribute("aria-busy", "true"); track("near-me"); await locate(); b.remove(); };
+    document.body.append(b);
+    // Gone once the visitor has found their own way in.
+    const done = () => { if (state.me || map.getZoom() >= 10) { b.remove(); map.off("zoomend", done); } };
+    map.on("zoomend", done);
   }
 
   // Ask for the position. Resolves with [lat, lon], or null when the user

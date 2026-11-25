@@ -126,6 +126,7 @@ window.I18N = {
   "1 charger along the way": "1 posto pelo caminho",
   "{0} chargers along the way": "{0} postos pelo caminho",
   "Showing the top {0} of {1}. Zoom in or tap a price colour to narrow it down.": "Os {0} primeiros de {1}. Aproxime o mapa ou toque numa cor de preço para filtrar.",
+  "Chargers near me": "Postos perto de mim",
   "Turn a filter off to see more.": "Desligue um filtro para ver mais.",
   "Loosen the slider to see more.": "Alargue o limite para ver mais.",
   "Nothing within 1 km of the road.": "Nada a menos de 1 km da estrada.",
