@@ -82,6 +82,7 @@ Note the order is `[longitude, latitude]`.
 ## Data and licences
 
 - Chargers and prices: MOBI.E data published on the [National Access Point](https://nap-portugal.imt-ip.pt/) (IMT). Free reuse with attribution, for non-commercial purposes. Credited on the page.
+- Chargers outside MOBI.E (Tesla Superchargers, other fast chargers not on the NAP): OpenStreetMap via the Overpass API, once a day in `scripts/update-data.mjs`. Stations within 150 m of a MOBI.E site are skipped as duplicates; non-Tesla ones only from 50 kW. If Overpass is busy, the previous day's OSM chargers are kept. These features are © OpenStreetMap contributors, under the ODbL.
 - Map tiles: [OpenStreetMap](https://www.openstreetmap.org/copyright) standard tiles (© OpenStreetMap contributors), used under the OSM tile usage policy with attribution; dark mode dims them with a CSS filter. CARTO's basemaps started requiring an API key in Nov 2026. If the site ever gets heavy traffic, switch the URL in `app.js`.
 - Font: Manrope, SIL Open Font License (`vendor/fonts/LICENSE-Manrope.txt`).
 - Leaflet: BSD-2-Clause (`vendor/leaflet/LICENSE`).
