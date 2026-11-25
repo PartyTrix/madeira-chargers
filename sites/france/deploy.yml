@@ -6,8 +6,7 @@
 name: Build & deploy fastchargefrance.com
 
 on:
-  schedule:
-    - cron: "11,26,41,56 * * * *"   # every 15 min: live plug status; chargers/prices once a day (cached)
+  # Every 15 min, started by the Cloudflare Worker "charger-timer" (GitHub's own schedules ran hours late).
   workflow_dispatch:
   push:
     branches: [main]
