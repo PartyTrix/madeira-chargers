@@ -31,7 +31,8 @@
     all: [],
     cuts: [],
     pricing: null,
-    filters: { fast: false, priced: false },
+    filters: { fast: false, priced: false, free: false, card: false, motorway: false },
+    plug: "",
     // Slider limits, one per sort tab. null = no limit.
     limits: { price: null, power: null, distance: null },
     sort: "price",
@@ -40,6 +41,7 @@
     route: null,
     returnTo: "list", // which view "back" goes to from a charger
     labels: load("labels") !== "0",
+    range: +load("range") || 0, // car's real-world range in km, for route stops; 0 = not set
     pickingStart: false,
   };
 
@@ -102,6 +104,7 @@
   addEventListener("resize", () => map.invalidateSize({ pan: false }));
   sideMQ.addEventListener?.("change", () => { $("panel").classList.remove("open"); $("panel").style.transform = ""; });
   const routeLayer = L.layerGroup().addTo(map);
+  const stopLayer = L.layerGroup().addTo(map); // numbered charging stops on a route
   const layer = L.layerGroup().addTo(map);
 
   // ---------- data ----------
@@ -110,10 +113,12 @@
     fetch("data/chargers.geojson", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
     fetch("data/tariffs.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => ({})),
     fetch("data/pricing.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
+    fetch("data/status.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
   ])
-    .then(([geo, tariffs, pricing]) => {
+    .then(([geo, tariffs, pricing, status]) => {
       state.pricing = pricing;
       state.all = geo.features.map((f) => enrich(f, tariffs));
+      applyStatus(status);
       colourByPrice(state.all);
       syncSlider();
       render();
@@ -186,12 +191,45 @@
       lat, lon, tariff, opc, bd,
       eff: bd ? bd.perKwh : opc, // the number shown everywhere
       fast: (p.max_kw || 0) >= 50,
+      // Bank card at the charger. Not offered in Madeira in practice, whatever
+      // the feed says, so only counted elsewhere.
+      card: !!p.pay?.card && region !== "madeira",
+      motorway: isMotorway(p),
+      plugs: new Set((p.sockets || []).map((s) => s.type)),
       mobie: /^([A-Z]{3}-)?[A-Z]{3}-\d{5}$/.test(p.id || ""),
       pay: p.pay || {},
       payUnknown: p.source === "mobie" && !p.pay,
       title: tidyName(p.name || p.operator || p.network || "EV charger"),
       operator: shortOp(p.operator),
     };
+  }
+
+  // Live status from data/status.json (refreshed every 15 min by
+  // .github/workflows/status.yml): [free, in use, out of order] plugs per site.
+  // Older than STATUS_MAX_AGE it is ignored rather than shown as if current.
+  const STATUS_MAX_AGE = 75 * 60 * 1000;
+  function applyStatus(status) {
+    const t = Date.parse(status?.time);
+    if (!status?.sites || !(Date.now() - t < STATUS_MAX_AGE)) return;
+    state.statusTime = new Date(t);
+    for (const c of state.all) {
+      const s = status.sites[c.id];
+      if (s) c.live = { free: s[0], busy: s[1], broken: s[2] };
+    }
+    document.querySelector('.chip[data-filter="free"]').hidden = false;
+  }
+  const liveShort = (c) => !c.live ? null
+    : c.live.free ? `${c.live.free} of ${c.live.free + c.live.busy + c.live.broken} free`
+      : c.live.busy ? "all in use" : "out of order";
+  const hhmm = (d) => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  // Motorway service areas and junctions: the feed has no flag for it, so read
+  // the name and address ("Área de Serviço", "(A2) KM 148", "A25 - AS Vilar
+  // Formoso"). Street addresses are skipped so "Rua ... A 2" doesn't count.
+  const MOTORWAY = /[áa]rea de servi[çc]o|\bautoe?-?strada\b|(?:^|[\s(,-])A0?\d{1,2}(?=[\s),\-]|$)(?!\s*\d)|\bAS\b/;
+  function isMotorway(p) {
+    if (/^(rua|avenida|av\.|travessa|largo|praça|estrada municipal)\b/i.test(p.address || "")) return false;
+    return MOTORWAY.test(`${p.name || ""} | ${p.address || ""}`);
   }
 
   // Colour into quartiles of the known prices per region, so "cheap" means
@@ -231,10 +269,13 @@
       + `<span class="${lim != null ? "off" : ""}" style="--c:var(--p0)">no price</span>`;
   }
 
+  const anyFilter = () => Object.values(state.filters).some(Boolean) || !!state.plug;
+
   // ---------- map rendering ----------
   function visible() {
     const f = state.filters, l = state.limits;
     return state.all.filter((c) => (!f.fast || c.fast) && (!f.priced || c.eff != null)
+      && (!f.card || c.card) && (!f.free || c.live?.free > 0) && (!f.motorway || c.motorway) && (!state.plug || c.plugs.has(state.plug))
       && (l.price == null || (c.eff != null && c.eff <= l.price + 1e-9))
       && (l.power == null || (c.max_kw || 0) >= l.power)
       && (l.distance == null || !state.me || dist(c) <= l.distance));
@@ -387,7 +428,7 @@
       : "No chargers in view";
 
     if (!inView.length) {
-      const filtered = Object.values(state.filters).some(Boolean) || Object.values(state.limits).some((v) => v != null);
+      const filtered = anyFilter() || Object.values(state.limits).some((v) => v != null);
       $("list").innerHTML = `<li class="empty"><strong>Nothing here${filtered ? " with these filters" : ""}</strong>
         <span>${filtered ? "Loosen the slider or a filter, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
         <button class="chip" id="zoom-all">Show all of ${REGIONS[viewRegion()].name.replace(/^the /, "the ")}</button></li>`;
@@ -397,9 +438,9 @@
     fillRows($("list"), inView.slice(0, 200), (c) => subline(c), "list");
   }
 
-  function fillRows(list, items, sub, from) {
+  function fillRows(list, items, sub, from, rowClass = () => "") {
     list.innerHTML = items.map((c, i) => `
-      <li class="row" data-i="${i}" tabindex="0">
+      <li class="row ${rowClass(c)}" data-i="${i}" tabindex="0">
         <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}" style="--c:var(${c.colourVar})">
           <svg><use href="#${c.fast ? "i-bolt" : "i-plug"}"/></svg>
         </span>
@@ -425,6 +466,7 @@
     const types = [...new Set((c.sockets || []).map((s) => s.type))];
     if (types.length) bits.push(types.join(", "));
     if (state.me) bits.push(`${dist(c).toFixed(1)} km away`);
+    if (c.live) bits.push(liveShort(c));
     return bits.join(" · ") || c.operator || "Details unknown";
   }
 
@@ -502,6 +544,7 @@
     } else if (c.pay.apps) {
       pay.push(`<li><svg><use href="#i-phone"/></svg>Miio, any MOBI.E app or a MOBI.E card</li>`);
     }
+    if (c.card) pay.push(`<li><svg><use href="#i-card"/></svg>Bank card at the charger (the operator says so; check on site)</li>`);
 
     const sockets = (c.sockets || []).map((s) =>
       `<li><svg><use href="#${(s.kw || 0) >= 50 ? "i-bolt" : "i-plug"}"/></svg>${s.count}× ${esc(s.type)}
@@ -521,6 +564,10 @@
         ${navLink(primary, "nav-primary")}
         <div class="nav-more">${more.map((l) => navLink(l)).join("")}</div>
 
+        ${c.live ? `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span>${
+          c.live.free ? `${c.live.free} of ${c.live.free + c.live.busy + c.live.broken} plug${c.live.free + c.live.busy + c.live.broken === 1 ? "" : "s"} free`
+            : c.live.busy ? "All plugs in use" : "Out of order"}${c.live.free && c.live.broken ? ` · ${c.live.broken} out of order` : ""}
+          <span class="sub">at ${hhmm(state.statusTime)}</span></div>` : ""}
         ${priceSection(c)}
 
         ${pay.length ? `<div class="section-label">How to pay</div><ul class="facts">${pay.join("")}</ul>` : ""}
@@ -843,9 +890,21 @@
           </div>
           ${navLink(primary, "nav-primary")}
           <div class="nav-more" style="margin-top:0">${more.map((l) => navLink(l)).join("")}</div>
+          <div class="range-row">
+            <label for="range">Your car's range</label>
+            <span class="range-input"><input id="range" type="number" inputmode="numeric" min="50" max="1000" step="10" placeholder="e.g. 300" value="${state.range || ""}"> km</span>
+          </div>
+          <div id="stops-summary" class="stops-summary" hidden></div>
           <h1 id="route-title" style="font-size:16px;margin-top:4px"></h1>
         </div>
         <ol id="route-list" class="list"></ol>`;
+      $("range").addEventListener("change", (e) => {
+        const v = Math.round(+e.target.value);
+        state.range = v >= 50 && v <= 1000 ? v : 0;
+        save("range", String(state.range));
+        if (state.range) track("range");
+        renderRouteList();
+      });
       renderRouteList();
     }
     showView("route-view");
@@ -858,22 +917,75 @@
     if (!list || !state.route) return;
     const on = state.route.on;
     const items = visible().filter((c) => on.has(c.id)).sort((a, b) => on.get(a.id).along - on.get(b.id).along);
+    const plan = planStops(items);
+    showStops(plan);
     $("route-title").textContent = items.length
       ? `${items.length} charger${items.length === 1 ? "" : "s"} along the way`
       : "No chargers along this route";
     if (!items.length) {
-      list.innerHTML = `<li class="empty"><span>${Object.values(state.filters).some(Boolean) ? "Turn a filter off to see more." : Object.values(state.limits).some((v) => v != null) ? "Loosen the slider to see more." : "Nothing within 1 km of the road."}</span></li>`;
+      list.innerHTML = `<li class="empty"><span>${anyFilter() ? "Turn a filter off to see more." : Object.values(state.limits).some((v) => v != null) ? "Loosen the slider to see more." : "Nothing within 1 km of the road."}</span></li>`;
       return;
     }
     fillRows(list, items, (c) => {
       const o = on.get(c.id);
-      return [`km ${o.along.toFixed(0)}`, c.max_kw ? `${fmtKw(c.max_kw)} kW` : null,
-        o.off > 0.15 ? `${(o.off * 1000).toFixed(0)} m off road` : "on the road"].filter(Boolean).join(" · ");
-    }, "route");
+      const n = plan?.stops.indexOf(c);
+      return [n >= 0 ? `Stop ${n + 1}` : null, `km ${o.along.toFixed(0)}`, c.max_kw ? `${fmtKw(c.max_kw)} kW` : null,
+        o.off > 0.15 ? `${(o.off * 1000).toFixed(0)} m off road` : "on the road", liveShort(c)].filter(Boolean).join(" · ");
+    }, "route", (c) => (plan?.stops.includes(c) ? "stop" : ""));
+  }
+
+  // Charging stops for the car's range. Leaves with a full battery and keeps
+  // 10% in reserve (first leg 90% of the range); each fast charge is 10 -> 80%
+  // (70% of the range). In the last stretch of each leg it picks the cheapest
+  // fast charger, so stops are not only placed as far out as possible.
+  const FIRST_LEG = 0.9, NEXT_LEG = 0.7;
+  function planStops(items) {
+    if (!state.range || !state.route) return null;
+    const total = state.route.km, on = state.route.on;
+    const fast = items.filter((c) => c.fast);
+    const stops = [];
+    let pos = 0, leg = state.range * FIRST_LEG, gap = null;
+    while (pos + leg < total) {
+      const reach = fast.filter((c) => { const a = on.get(c.id).along; return a > pos + 1 && a <= pos + leg; });
+      if (!reach.length) { gap = pos; break; }
+      const late = reach.filter((c) => on.get(c.id).along >= pos + leg * 0.6);
+      const pool = late.length ? late : reach;
+      const price = (c) => c.eff ?? Infinity;
+      const pick = pool.reduce((b, c) => (price(c) < price(b) || (price(c) === price(b) && on.get(c.id).along > on.get(b.id).along) ? c : b));
+      stops.push(pick);
+      pos = on.get(pick.id).along;
+      leg = state.range * NEXT_LEG;
+      if (stops.length > 30) break;
+    }
+    return { stops, gap };
+  }
+
+  function showStops(plan) {
+    const box = $("stops-summary");
+    stopLayer.clearLayers();
+    if (!box) return;
+    box.hidden = !plan;
+    if (!plan) return;
+    const { stops, gap } = plan;
+    const n = stops.length;
+    box.className = "stops-summary" + (gap != null ? " warn" : "");
+    const on = state.route.on;
+    box.innerHTML = `<p>${gap != null
+      ? `No fast charger within reach after km ${gap.toFixed(0)}. Plan this trip with your car's own planner${anyFilter() ? ", or turn a filter off" : ""}.`
+      : n
+        ? `${n} charging stop${n === 1 ? "" : "s"} with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
+        : `No charging stop needed with a ${state.range} km range.`}</p>${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
+    if (n) fillRows($("stop-list"), stops, (c) => [`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
+      c.max_kw ? `${fmtKw(c.max_kw)} kW` : null].filter(Boolean).join(" · "), "route");
+    stops.forEach((c, i) => L.marker([c.lat, c.lon], {
+      icon: L.divIcon({ className: "stop-pin", html: `<span>${i + 1}</span>`, iconSize: [26, 26] }),
+      interactive: false, keyboard: false, zIndexOffset: 1000,
+    }).addTo(stopLayer));
   }
 
   function clearRoute() {
     state.route = null;
+    stopLayer.clearLayers();
     state.returnTo = "list";
     routeLayer.clearLayers();
     q.value = "";
@@ -889,6 +1001,21 @@
       b.setAttribute("aria-pressed", state.filters[k]);
       render();
     }));
+  $("plug").addEventListener("change", (e) => {
+    state.plug = e.target.value;
+    $("plug-chip").classList.toggle("on", !!state.plug);
+    if (state.plug) track("plug", state.plug);
+    render();
+  });
+  // Card and motorway chips only where they mean something: not in Madeira
+  // (no card payment in practice, no motorways). An active chip stays visible.
+  function syncChips() {
+    const island = viewRegion() === "madeira";
+    for (const k of ["card", "motorway"])
+      document.querySelector(`.chip[data-filter="${k}"]`).hidden = island && !state.filters[k];
+  }
+  map.on("moveend", syncChips);
+  syncChips();
   const labelsBtn = $("labels");
   labelsBtn.setAttribute("aria-pressed", state.labels);
   labelsBtn.addEventListener("click", () => {

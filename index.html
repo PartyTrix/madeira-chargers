@@ -148,6 +148,17 @@
       <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Show prices</button>
       <button class="chip" data-filter="fast" aria-pressed="false" aria-label="Fast chargers, 50 kW or more"><svg><use href="#i-bolt"/></svg>50 kW+</button>
       <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has price</button>
+      <button class="chip" data-filter="free" aria-pressed="false" hidden><svg><use href="#i-clock"/></svg>Free now</button>
+      <label class="chip chip-select" id="plug-chip"><svg><use href="#i-plug"/></svg><span class="sr-only">Plug type</span>
+        <select id="plug" aria-label="Plug type">
+          <option value="">Any plug</option>
+          <option value="CCS">CCS</option>
+          <option value="Type 2">Type 2</option>
+          <option value="CHAdeMO">CHAdeMO</option>
+        </select>
+      </label>
+      <button class="chip" data-filter="card" aria-pressed="false" hidden><svg><use href="#i-card"/></svg>Pay by card</button>
+      <button class="chip" data-filter="motorway" aria-pressed="false" hidden><svg><use href="#i-route"/></svg>Motorway</button>
     </nav>
   </div>
 

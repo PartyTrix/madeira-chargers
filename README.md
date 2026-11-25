@@ -12,6 +12,7 @@ Live at **https://madeirachargers.com** (opens on Madeira) and **https://chargep
 |---|---|
 | Chargers + prices | Every day a GitHub Action downloads the official MOBI.E inventory from Portugal's National Access Point (all public chargers, by law under EU AFIR) and the matching price feed, keeps every one in Portugal (about 8,800 sites), and commits `data/chargers.geojson` if anything changed. It refuses to save if the count suddenly drops by half, so a feed hiccup can't empty the map. |
 | Deploys | Every push to `main` (and every data refresh) redeploys the site to GitHub Pages. |
+| Live status | Every 15 minutes `.github/workflows/status.yml` runs `scripts/update-status.mjs`, which reads MOBI.E's live feed (refreshed by MOBI.E every few minutes) and redeploys with `data/status.json`: free / in use / out of order plugs per site. The file is deployed, never committed. The page ignores it once it is over 75 minutes old, and shows the time on each charger. |
 | Security updates | Dependabot bumps the GitHub Actions weekly and the auto-merge workflow merges them. The site itself has no dependencies except a vendored copy of Leaflet 1.9.4 in `vendor/`. |
 
 Run the refresh by hand any time from **Actions → Refresh data & deploy → Run workflow**.
@@ -30,7 +31,7 @@ Run the refresh by hand any time from **Actions → Refresh data & deploy → Ru
 
 The build fails if a marker or a `site.json` text can't be found, or if the Portugal page still points its canonical or share tags at another domain, and this repo's workflow builds both sites on every run, so a change here that breaks chargeportugal.com shows up as a red run.
 
-GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 6 hours (05:07 UTC picks up the daily data), builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
+GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 15 minutes, fetches the live plug status, builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
 
 ## Prices
 
@@ -57,9 +58,13 @@ To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 
 `kwh` €/kWh, `min` €/minute, `start` € per session, `free: true` for free chargers. Station keys are the MOBI.E code shown at the bottom of each charger's card.
 
+## Filters
+
+Chips above the map: 50 kW+, has a price, free now (live status), plug type (CCS, Type 2, CHAdeMO), pay by card and motorway. "Pay by card" uses the payment methods operators publish on the NAP and is hidden on Madeira (no card payment there in practice). "Motorway" has no flag in the feed: `isMotorway()` in `app.js` reads names and addresses like "Área de Serviço", "(A2) KM 148" or "A25 - AS Vilar Formoso" (~280 sites).
+
 ## Search and routes
 
-Type a place in the search bar to get a route from your location and the chargers within 1 km of it, in driving order. Place search uses [Photon](https://photon.komoot.io) and routes use the public [OSRM](https://project-osrm.org) demo server, both free and called only when someone searches. If location is blocked, the page explains how to allow it again, or you can tap your position on the map.
+Type a place in the search bar to get a route from your location and the chargers within 1 km of it, in driving order. Enter your car's range in the route panel (remembered on that phone) and it suggests fast-charging stops: leaving full, keeping 10% in reserve, charging 10 to 80% at each stop, and picking the cheapest fast charger in the last stretch of each leg. Place search uses [Photon](https://photon.komoot.io) and routes use the public [OSRM](https://project-osrm.org) demo server, both free and called only when someone searches. If location is blocked, the page explains how to allow it again, or you can tap your position on the map.
 
 ## Adding a charger
 
