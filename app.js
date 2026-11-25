@@ -3,20 +3,34 @@
 (() => {
   "use strict";
 
+  // Language: the Portuguese page (/pt/) loads i18n-pt.js first, which sets
+  // window.I18N = { "English text with {0} placeholders": "Portuguese" }.
+  // Texts tagged with tr are looked up there, falling back to the English.
+  // scripts/i18n-keys.mjs --check lists anything missing.
+  const I18N = window.I18N || {};
+  const LANG = document.documentElement.lang.startsWith("pt") ? "pt" : "en";
+  function tr(strings, ...vals) {
+    let key = strings[0];
+    vals.forEach((_, i) => { key += `{${i}}` + strings[i + 1]; });
+    return (I18N[key] ?? key).replace(/\{(\d+)\}/g, (_, i) => vals[i]);
+  }
+  // Pages live at / and /pt/; data and assets are relative to the site root.
+  const ROOT = document.documentElement.dataset.root || "";
+
   // Usage statistics (GoatCounter, cookie-free). Empty = off.
   const GOATCOUNTER = "madeirachargers";
 
   const MADEIRA = [[32.62, -17.30], [33.10, -16.25]]; // includes Porto Santo
   const BBOX = "-31.5,32.3,-6.1,42.2"; // all of Portugal: mainland, Madeira, Azores
   const REGIONS = {
-    madeira: { name: "Madeira", bounds: MADEIRA },
-    azores: { name: "the Azores", bounds: [[36.9, -31.3], [39.8, -24.9]] },
-    mainland: { name: "mainland Portugal", bounds: [[36.9, -9.6], [42.2, -6.1]] },
+    madeira: { name: tr`Madeira`, bounds: MADEIRA },
+    azores: { name: tr`the Azores`, bounds: [[36.9, -31.3], [39.8, -24.9]] },
+    mainland: { name: tr`mainland Portugal`, bounds: [[36.9, -9.6], [42.2, -6.1]] },
   };
   const regionAt = (lat, lon) => (lat < 33.2 && lon < -16 ? "madeira" : lon < -24.5 ? "azores" : "mainland");
   const MAX_DOTS = 1500; // more than this on screen: thin them out (cheapest per spot)
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
-  const BANDS = ["Cheap for {r}", "Below average", "Above average", "Expensive for {r}"];
+  const BANDS = [(r) => tr`Cheap for ${r}`, () => tr`Below average`, () => tr`Above average`, (r) => tr`Expensive for ${r}`];
   const LABEL_ZOOM = 9;      // price tags from island level; overlapping ones stay dots (cheapest win)
   const ROUTE_KM = 1.0;      // a charger within this distance of the road counts as "on the route"
   const $ = (id) => document.getElementById(id);
@@ -110,10 +124,10 @@
   // ---------- data ----------
   $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
   Promise.all([
-    fetch("data/chargers.geojson", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-    fetch("data/tariffs.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => ({})),
-    fetch("data/pricing.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
-    fetch("data/status.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
+    fetch(ROOT + "data/chargers.geojson", { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+    fetch(ROOT + "data/tariffs.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => ({})),
+    fetch(ROOT + "data/pricing.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
+    fetch(ROOT + "data/status.json", { cache: "no-cache" }).then((r) => r.json()).catch(() => null),
   ])
     .then(([geo, tariffs, pricing, status]) => {
       state.pricing = pricing;
@@ -128,9 +142,9 @@
     })
     .catch((e) => {
       console.error(e);
-      $("list-title").textContent = "Couldn't load the chargers";
-      $("list").innerHTML = `<li class="empty"><span>Check your connection, then try again.</span>
-        <button class="chip" id="retry">Try again</button></li>`;
+      $("list-title").textContent = tr`Couldn't load the chargers`;
+      $("list").innerHTML = `<li class="empty"><span>${tr`Check your connection, then try again.`}</span>
+        <button class="chip" id="retry">${tr`Try again`}</button></li>`;
       $("retry").onclick = () => location.reload();
     });
   track("pageview");
@@ -218,10 +232,15 @@
     }
     document.querySelector('.chip[data-filter="free"]').hidden = false;
   }
+  const liveTotal = (c) => c.live.free + c.live.busy + c.live.broken;
   const liveShort = (c) => !c.live ? null
-    : c.live.free ? `${c.live.free} of ${c.live.free + c.live.busy + c.live.broken} free`
-      : c.live.busy ? "all in use" : "out of order";
-  const hhmm = (d) => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    : c.live.free ? tr`${c.live.free} of ${liveTotal(c)} free`
+      : c.live.busy ? tr`all in use` : tr`out of order`;
+  const liveLong = (c) => (c.live.free
+    ? (liveTotal(c) === 1 ? tr`1 of 1 plug free` : tr`${c.live.free} of ${liveTotal(c)} plugs free`)
+      + (c.live.broken ? " · " + tr`${c.live.broken} out of order` : "")
+    : c.live.busy ? tr`All plugs in use` : tr`Out of order`);
+  const hhmm = (d) => d.toLocaleTimeString(LANG === "pt" ? "pt-PT" : [], { hour: "2-digit", minute: "2-digit" });
 
   // Motorway service areas and junctions: the feed has no flag for it, so read
   // the name and address ("Área de Serviço", "(A2) KM 148", "A25 - AS Vilar
@@ -259,14 +278,14 @@
     const key = region + state.limits.price;
     if (key === scaleKey) return;
     scaleKey = key;
-    $("scale").setAttribute("aria-label", `Price colours for ${REGIONS[region].name}`);
+    $("scale").setAttribute("aria-label", tr`Price colours for ${REGIONS[region].name}`);
     const [a, b, c] = state.cuts;
     if (a == null) { $("scale").hidden = true; return; }
     const ranges = [`≤ ${euro(a)}`, `≤ ${euro(b)}`, `≤ ${euro(c)}`, `> ${euro(c)}`];
     const lim = state.limits.price, lows = [0, a, b, c];
     $("scale").innerHTML = ranges.map((r, i) =>
       `<span class="${lim != null && lows[i] >= lim ? "off" : ""}" style="--c:var(${PALETTE[i]})">${r}</span>`).join("")
-      + `<span class="${lim != null ? "off" : ""}" style="--c:var(--p0)">no price</span>`;
+      + `<span class="${lim != null ? "off" : ""}" style="--c:var(--p0)">${tr`no price`}</span>`;
   }
 
   const anyFilter = () => Object.values(state.filters).some(Boolean) || !!state.plug;
@@ -290,9 +309,9 @@
     return [Math.floor(Math.min(...known) * 100) / 100, Math.ceil(Math.max(...known) * 100) / 100];
   }
   function describe(kind, v) {
-    if (kind === "price") return v == null ? "Any price" : `Up to ${euro(v)}/kWh`;
-    if (kind === "power") return v == null ? "Any charging speed" : `At least ${v} kW`;
-    return v == null ? "Any distance" : `Within ${v} km`;
+    if (kind === "price") return v == null ? tr`Any price` : tr`Up to ${euro(v)}/kWh`;
+    if (kind === "power") return v == null ? tr`Any charging speed` : tr`At least ${v} kW`;
+    return v == null ? tr`Any distance` : tr`Within ${v} km`;
   }
   function syncSlider() {
     const kind = state.sort, v = state.limits[kind];
@@ -308,12 +327,12 @@
     }
     range.disabled = kind === "distance" && !state.me;
     range.setAttribute("aria-valuetext", describe(kind, v));
-    $("limit-label").textContent = range.disabled ? "Share your location first" : describe(kind, v);
+    $("limit-label").textContent = range.disabled ? tr`Share your location first` : describe(kind, v);
     $("limit-clear").hidden = v == null;
     $("limit").classList.toggle("on", v != null);
     const others = Object.entries(state.limits).filter(([k, x]) => k !== kind && x != null && !(k === "distance" && !state.me));
     $("limit-also").hidden = !others.length;
-    $("limit-also").textContent = others.length ? "Also: " + others.map(([k, x]) => describe(k, x)).join(", ") : "";
+    $("limit-also").textContent = others.length ? tr`Also:` + " " + others.map(([k, x]) => describe(k, x)).join(", ") : "";
     renderScale();
   }
   range.addEventListener("input", () => {
@@ -422,16 +441,17 @@
     const inView = visible().filter((c) => bounds.contains([c.lat, c.lon]));
     inView.sort(sorters[state.sort] || sorters.price);
 
-    const what = { price: "Cheapest", power: "Fastest", distance: "Nearest" }[state.sort];
-    $("list-title").textContent = inView.length
-      ? `${what} of ${inView.length} charger${inView.length === 1 ? "" : "s"} in view`
-      : "No chargers in view";
+    const n = inView.length;
+    $("list-title").textContent = !n ? tr`No chargers in view`
+      : state.sort === "power" ? (n === 1 ? tr`Fastest of 1 charger in view` : tr`Fastest of ${n} chargers in view`)
+      : state.sort === "distance" ? (n === 1 ? tr`Nearest of 1 charger in view` : tr`Nearest of ${n} chargers in view`)
+      : n === 1 ? tr`Cheapest of 1 charger in view` : tr`Cheapest of ${n} chargers in view`;
 
     if (!inView.length) {
       const filtered = anyFilter() || Object.values(state.limits).some((v) => v != null);
-      $("list").innerHTML = `<li class="empty"><strong>Nothing here${filtered ? " with these filters" : ""}</strong>
-        <span>${filtered ? "Loosen the slider or a filter, or zoom out to see more of the island." : "Zoom out to see more of the island."}</span>
-        <button class="chip" id="zoom-all">Show all of ${REGIONS[viewRegion()].name.replace(/^the /, "the ")}</button></li>`;
+      $("list").innerHTML = `<li class="empty"><strong>${filtered ? tr`Nothing here with these filters` : tr`Nothing here`}</strong>
+        <span>${filtered ? tr`Loosen the slider or a filter, or zoom out to see more.` : tr`Zoom out to see more.`}</span>
+        <button class="chip" id="zoom-all">${tr`Show all of ${REGIONS[viewRegion()].name}`}</button></li>`;
       $("zoom-all").onclick = () => map.fitBounds(REGIONS[viewRegion()].bounds);
       return;
     }
@@ -449,8 +469,8 @@
           <span class="row-sub">${esc(sub(c))}</span>
         </span>
         ${c.eff != null
-          ? `<span class="row-price">${euro(c.eff)}<small>per kWh</small></span>`
-          : `<span class="row-price none">No price</span>`}
+          ? `<span class="row-price">${euro(c.eff)}<small>${tr`per kWh`}</small></span>`
+          : `<span class="row-price none">${tr`No price`}</span>`}
       </li>`).join("");
     const pick = (e) => {
       const li = e.target.closest(".row");
@@ -465,9 +485,9 @@
     if (c.max_kw) bits.push(`${fmtKw(c.max_kw)} kW`);
     const types = [...new Set((c.sockets || []).map((s) => s.type))];
     if (types.length) bits.push(types.join(", "));
-    if (state.me) bits.push(`${dist(c).toFixed(1)} km away`);
+    if (state.me) bits.push(tr`${dist(c).toFixed(1)} km away`);
     if (c.live) bits.push(liveShort(c));
-    return bits.join(" · ") || c.operator || "Details unknown";
+    return bits.join(" · ") || c.operator || tr`Details unknown`;
   }
 
   // ---------- views ----------
@@ -492,13 +512,13 @@
       google: ["Google Maps", `https://www.google.com/maps/dir/?api=1&destination=${dest}`],
       apple: ["Apple Maps", `https://maps.apple.com/?daddr=${dest}`],
       waze: ["Waze", `https://waze.com/ul?ll=${dest}&navigate=yes`],
-      other: ["Other app", `geo:${dest}?q=${dest}(${encodeURIComponent(label)})`],
+      other: [tr`Other app`, `geo:${dest}?q=${dest}(${encodeURIComponent(label)})`],
     };
     const order = isIOS ? ["apple", "google", "waze"] : isAndroid ? ["google", "waze", "other"] : ["google", "apple", "waze"];
     return order.map((k) => [...links[k], k]);
   }
   const navLink = ([name, href, key], cls = "") =>
-    `<a class="${cls}" data-track="navigate-${key}" href="${href}" ${href.startsWith("geo:") ? "" : 'target="_blank" rel="noopener"'}>${cls === "nav-primary" ? '<svg><use href="#i-nav"/></svg>Navigate with ' : ""}${name}</a>`;
+    `<a class="${cls}" data-track="navigate-${key}" href="${href}" ${href.startsWith("geo:") ? "" : 'target="_blank" rel="noopener"'}>${cls === "nav-primary" ? '<svg><use href="#i-nav"/></svg>' + tr`Navigate with ${name}` : name}</a>`;
 
   const MIIO = isAndroid
     ? "https://play.google.com/store/search?q=miio&c=apps"
@@ -508,28 +528,28 @@
     const t = c.tariff;
     const p = state.pricing;
     if (c.eff == null) {
-      return `<div class="price-box none">No price published for this charger. Check your charging app before you start.</div>`;
+      return `<div class="price-box none">${tr`No price published for this charger. Check your charging app before you start.`}</div>`;
     }
     const parts = [];
     if (t?.kwh) parts.push(`${euro(t.kwh)}/kWh`);
     if (t?.min) parts.push(`${euro(t.min)}/min`);
-    if (t?.start) parts.push(`${euro(t.start)} per session`);
+    if (t?.start) parts.push(tr`${euro(t.start)} per session`);
     const bd = c.bd;
     return `
       <div class="price-box" style="--c:var(${c.colourVar})">
         <div class="big">${euro(c.eff)}<small> /kWh</small></div>
-        <div class="band">${BANDS[c.band].replace("{r}", REGIONS[c.region].name)}</div>
-        <div class="parts">${bd ? `≈ ${euro(bd.total)} for ${bd.n} kWh, incl. VAT` : esc(parts.join(" + "))}</div>
+        <div class="band">${BANDS[c.band](REGIONS[c.region].name)}</div>
+        <div class="parts">${bd ? tr`≈ ${euro(bd.total)} for ${bd.n} kWh, incl. VAT` : esc(parts.join(" + "))}</div>
       </div>
-      ${bd ? `<details class="note"><summary><svg><use href="#i-info"/></svg>Estimated total. How is it worked out?</summary>
+      ${bd ? `<details class="note"><summary><svg><use href="#i-info"/></svg>${tr`Estimated total. How is it worked out?`}</summary>
         <table class="breakdown">
-          <tr><td>Charger operator (${esc(parts.join(" + "))})</td><td>${euro(bd.operator)}</td></tr>
-          <tr><td>Energy from ${esc(p.app_name || "your app")} (${euro(p.app_energy_kwh)}/kWh${p.app_energy_is_estimate ? ", estimate" : ""})</td><td>${euro(bd.energy)}</td></tr>
-          <tr><td>Grid access and electricity tax</td><td>${euro(bd.fees)}</td></tr>
-          <tr><td>VAT (${Math.round(bd.rate * 100)}%, ${esc(REGIONS[c.region].name)})</td><td>${euro(bd.vat)}</td></tr>
-          <tr class="total"><td>Total for ${bd.n} kWh</td><td>${euro(bd.total)}</td></tr>
+          <tr><td>${tr`Charger operator (${esc(parts.join(" + "))})`}</td><td>${euro(bd.operator)}</td></tr>
+          <tr><td>${tr`Energy from ${esc(p.app_name || "Miio")} (${euro(p.app_energy_kwh)}/kWh)`}</td><td>${euro(bd.energy)}</td></tr>
+          <tr><td>${tr`Grid access and electricity tax`}</td><td>${euro(bd.fees)}</td></tr>
+          <tr><td>${tr`VAT (${Math.round(bd.rate * 100)}%, ${esc(REGIONS[c.region].name)})`}</td><td>${euro(bd.vat)}</td></tr>
+          <tr class="total"><td>${tr`Total for ${bd.n} kWh`}</td><td>${euro(bd.total)}</td></tr>
         </table>
-        <p>Worked out the way Miio itemises a session. Real costs depend on your car's charging speed, so check the app before charging.${t?.later ? ` Note: ${esc(t.later)}.` : ""}</p>
+        <p>${tr`Worked out the way Miio itemises a session. Real costs depend on your car's charging speed, so check the app before charging.`}${t?.later ? " " + esc(t.later) : ""}</p>
       </details>` : ""}`;
   }
 
@@ -541,46 +561,46 @@
     const pay = [];
     if (c.source === "osm") {
       pay.push(c.network === "Tesla"
-        ? `<li><svg><use href="#i-phone"/></svg>Tesla Supercharger: start and pay in the Tesla app. Many in Portugal are open to other cars too; the app shows which.</li>`
-        : `<li class="warn"><svg><use href="#i-info"/></svg>Not on the MOBI.E network (found on OpenStreetMap), so Miio won't work and there's no price here. Check the operator's app.</li>`);
+        ? `<li><svg><use href="#i-phone"/></svg>${tr`Tesla Supercharger: start and pay in the Tesla app. Many in Portugal are open to other cars too; the app shows which.`}</li>`
+        : `<li class="warn"><svg><use href="#i-info"/></svg>${tr`Not on the MOBI.E network (found on OpenStreetMap), so Miio won't work and there's no price here. Check the operator's app.`}</li>`);
     } else if (c.payUnknown) {
-      pay.push(`<li class="warn"><svg><use href="#i-info"/></svg>Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger.</li>`);
+      pay.push(`<li class="warn"><svg><use href="#i-info"/></svg>${tr`Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger.`}</li>`);
     } else if (c.pay.apps) {
-      pay.push(`<li><svg><use href="#i-phone"/></svg>Miio, any MOBI.E app or a MOBI.E card</li>`);
+      pay.push(`<li><svg><use href="#i-phone"/></svg>${tr`Miio, any MOBI.E app or a MOBI.E card`}</li>`);
     }
-    if (c.card) pay.push(`<li><svg><use href="#i-card"/></svg>Bank card at the charger (the operator says so; check on site)</li>`);
+    if (c.card) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Bank card at the charger (the operator says so; check on site)`}</li>`);
 
     const sockets = (c.sockets || []).map((s) =>
       `<li><svg><use href="#${(s.kw || 0) >= 50 ? "i-bolt" : "i-plug"}"/></svg>${s.count}× ${esc(s.type)}
         <span class="sub">${s.kw ? fmtKw(s.kw) + " kW" : ""}${socketPrice(s, c.tariff)}</span></li>`).join("");
 
-    const back = state.returnTo === "route" && state.route ? "Route" : "All chargers";
+    const back = state.returnTo === "route" && state.route ? tr`Route` : tr`All chargers`;
     $("detail-view").innerHTML = `
       <div class="detail">
         <div class="detail-top">
           <button class="text-btn" id="back"><svg><use href="#i-back"/></svg>${back}</button>
-          <button class="text-btn" id="close" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+          <button class="text-btn" id="close" aria-label="${tr`Close`}"><svg><use href="#i-close"/></svg></button>
         </div>
         <h2 id="detail-title">${esc(c.title)}</h2>
-        <div class="place">${esc(place || "Operator unknown")}</div>
-        ${routeInfo ? `<div class="leg">On your route: ${routeInfo.along.toFixed(0)} km from the start${routeInfo.off > 0.15 ? `, ${(routeInfo.off * 1000).toFixed(0)} m off the road` : ""}</div>` : ""}
+        <div class="place">${esc(place || tr`Operator unknown`)}</div>
+        ${routeInfo ? `<div class="leg">${routeInfo.off > 0.15
+          ? tr`On your route: ${routeInfo.along.toFixed(0)} km from the start, ${(routeInfo.off * 1000).toFixed(0)} m off the road`
+          : tr`On your route: ${routeInfo.along.toFixed(0)} km from the start`}</div>` : ""}
 
         ${navLink(primary, "nav-primary")}
         <div class="nav-more">${more.map((l) => navLink(l)).join("")}</div>
 
-        ${c.live ? `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span>${
-          c.live.free ? `${c.live.free} of ${c.live.free + c.live.busy + c.live.broken} plug${c.live.free + c.live.busy + c.live.broken === 1 ? "" : "s"} free`
-            : c.live.busy ? "All plugs in use" : "Out of order"}${c.live.free && c.live.broken ? ` · ${c.live.broken} out of order` : ""}
-          <span class="sub">at ${hhmm(state.statusTime)}</span></div>` : ""}
+        ${c.live ? `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span>${liveLong(c)}
+          <span class="sub">${tr`at ${hhmm(state.statusTime)}`}</span></div>` : ""}
         ${priceSection(c)}
 
-        ${pay.length ? `<div class="section-label">How to pay</div><ul class="facts">${pay.join("")}</ul>` : ""}
-        ${c.pay.apps ? `<a class="app-btn" data-track="open-miio" href="${MIIO}" target="_blank" rel="noopener"><svg><use href="#i-phone"/></svg>Open Miio to charge</a>` : ""}
+        ${pay.length ? `<div class="section-label">${tr`How to pay`}</div><ul class="facts">${pay.join("")}</ul>` : ""}
+        ${c.pay.apps ? `<a class="app-btn" data-track="open-miio" href="${MIIO}" target="_blank" rel="noopener"><svg><use href="#i-phone"/></svg>${tr`Open Miio to charge`}</a>` : ""}
 
-        ${sockets || c.opening_hours ? `<div class="section-label">Plugs</div><ul class="facts">${sockets}
-          ${c.opening_hours ? `<li><svg><use href="#i-clock"/></svg>Open ${esc(c.opening_hours)}</li>` : ""}</ul>` : ""}
+        ${sockets || c.opening_hours ? `<div class="section-label">${tr`Plugs`}</div><ul class="facts">${sockets}
+          ${c.opening_hours ? `<li><svg><use href="#i-clock"/></svg>${tr`Open ${esc(c.opening_hours)}`}</li>` : ""}</ul>` : ""}
 
-        <div class="code">${c.mobie ? "MOBI.E code" : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
+        <div class="code">${c.mobie ? tr`MOBI.E code` : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
       </div>`;
     showView("detail-view");
     $("detail-view").querySelector(".detail").scrollTop = 0;
@@ -615,7 +635,7 @@
   function setPanel(open) {
     panel.classList.toggle("open", open);
     $("grip").setAttribute("aria-expanded", open);
-    $("grip").setAttribute("aria-label", open ? "Show less" : "Show more");
+    $("grip").setAttribute("aria-label", open ? tr`Show less` : tr`Show more`);
   }
   $("grip").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
   $("list-title").addEventListener("click", () => setPanel(!panel.classList.contains("open")));
@@ -700,30 +720,30 @@
   }
 
   function showLocationHelp(reason) {
-    const title = reason === "denied" ? "Location is blocked for this site"
-      : reason === "unsupported" ? "This browser can't share your location"
-      : "Couldn't find your location";
-    const steps = reason !== "denied" ? `<p>Make sure Location Services are on for your browser, then try again.</p>` : `
-      <p>Your browser remembers the "Don't allow". Switch it back on like this, then tap Try again:</p>
+    const title = reason === "denied" ? tr`Location is blocked for this site`
+      : reason === "unsupported" ? tr`This browser can't share your location`
+      : tr`Couldn't find your location`;
+    const steps = reason !== "denied" ? `<p>${tr`Make sure Location Services are on for your browser, then try again.`}</p>` : `
+      <p>${tr`Your browser remembers the "Don't allow". Switch it back on like this, then tap Try again:`}</p>
       ${isIOS ? `<h3>iPhone (Safari)</h3><ol>
-        <li>Tap <b>aA</b> in the address bar, then <b>Website Settings</b>.</li>
-        <li>Set <b>Location</b> to <b>Ask</b> or <b>Allow</b>.</li>
-        <li>Still blocked? Settings → Privacy &amp; Security → Location Services → Safari Websites → <b>While Using</b>.</li></ol>`
+        <li>${tr`Tap <b>aA</b> in the address bar, then <b>Website Settings</b>.`}</li>
+        <li>${tr`Set <b>Location</b> to <b>Ask</b> or <b>Allow</b>.`}</li>
+        <li>${tr`Still blocked? Settings → Privacy &amp; Security → Location Services → Safari Websites → <b>While Using</b>.`}</li></ol>`
       : isAndroid ? `<h3>Android (Chrome)</h3><ol>
-        <li>Tap the <b>settings icon</b> left of the address.</li>
-        <li>Tap <b>Permissions</b> → <b>Location</b> → <b>Allow</b>.</li>
-        <li>Reload the page.</li></ol>`
-      : `<h3>On a computer</h3><ol>
-        <li>Click the <b>icon left of the address</b> (padlock or sliders).</li>
-        <li>Set <b>Location</b> to <b>Allow</b>, then reload the page.</li></ol>`}`;
+        <li>${tr`Tap the <b>settings icon</b> left of the address.`}</li>
+        <li>${tr`Tap <b>Permissions</b> → <b>Location</b> → <b>Allow</b>.`}</li>
+        <li>${tr`Reload the page.`}</li></ol>`
+      : `<h3>${tr`On a computer`}</h3><ol>
+        <li>${tr`Click the <b>icon left of the address</b> (padlock or sliders).`}</li>
+        <li>${tr`Set <b>Location</b> to <b>Allow</b>, then reload the page.`}</li></ol>`}`;
     $("help-view").innerHTML = `
       <div class="help">
-        <div class="detail-top"><button class="text-btn" id="help-back"><svg><use href="#i-back"/></svg>Back</button></div>
+        <div class="detail-top"><button class="text-btn" id="help-back"><svg><use href="#i-back"/></svg>${tr`Back`}</button></div>
         <h2>${title}</h2>
         ${steps}
         <div class="actions">
-          <button class="nav-primary" id="help-retry"><svg><use href="#i-locate"/></svg>Try again</button>
-          <button class="btn-quiet" id="help-pick"><svg><use href="#i-pin"/></svg>Set my location on the map</button>
+          <button class="nav-primary" id="help-retry"><svg><use href="#i-locate"/></svg>${tr`Try again`}</button>
+          <button class="btn-quiet" id="help-pick"><svg><use href="#i-pin"/></svg>${tr`Set my location on the map`}</button>
         </div>
       </div>`;
     showView("help-view");
@@ -751,7 +771,7 @@
     afterPick = typeof then === "function" ? then : null;
     showView(state.route ? "route-view" : "list-view");
     setPanel(false);
-    toast("Tap the map where you are");
+    toast(tr`Tap the map where you are`);
     map.getContainer().style.cursor = "crosshair";
   }
 
@@ -782,7 +802,7 @@
   async function search(text, pickFirst = false) {
     const seq = ++searchSeq;
     results.hidden = false;
-    results.innerHTML = `<li class="r-msg">Searching…</li>`;
+    results.innerHTML = `<li class="r-msg">${tr`Searching…`}</li>`;
     try {
       const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
       const data = await (await fetch(url)).json();
@@ -796,13 +816,13 @@
         return { name, sub, lat, lon };
       });
       active = -1;
-      if (!hits.length) { results.innerHTML = `<li class="r-msg">No places found in Portugal for "${esc(text)}"</li>`; return; }
+      if (!hits.length) { results.innerHTML = `<li class="r-msg">${tr`No places found in Portugal for "${esc(text)}"`}</li>`; return; }
       if (pickFirst) return choose(hits[0]);
       results.innerHTML = hits.map((h, i) => `<li role="option" data-i="${i}"><svg><use href="#i-pin"/></svg>
         <span><span class="r-name">${esc(h.name)}</span><br><span class="r-sub">${esc(h.sub)}</span></span></li>`).join("");
       results.onclick = (e) => { const li = e.target.closest("li[data-i]"); if (li) choose(hits[+li.dataset.i]); };
     } catch {
-      if (seq === searchSeq) results.innerHTML = `<li class="r-msg">Search isn't reachable right now. Try again in a moment.</li>`;
+      if (seq === searchSeq) results.innerHTML = `<li class="r-msg">${tr`Search isn't reachable right now. Try again in a moment.`}</li>`;
     }
   }
 
@@ -813,7 +833,7 @@
     track("search");
     let from = state.me;
     if (!from) {
-      toast("Finding your location…");
+      toast(tr`Finding your location…`);
       from = await locate();
       toast();
     }
@@ -880,23 +900,23 @@
     const r = state.route;
     const v = $("route-view");
     if (loading || error) {
-      v.innerHTML = `<div class="route-head"><div class="row-top"><h1>To ${esc(place.name)}</h1>
-        <button class="text-btn" id="route-clear" aria-label="Clear route"><svg><use href="#i-close"/></svg></button></div>
-        <div class="meta">${loading ? "Finding the route…" : "Couldn't get a route right now. Try again in a moment."}</div></div>`;
+      v.innerHTML = `<div class="route-head"><div class="row-top"><h1>${tr`To ${esc(place.name)}`}</h1>
+        <button class="text-btn" id="route-clear" aria-label="${tr`Clear route`}"><svg><use href="#i-close"/></svg></button></div>
+        <div class="meta">${loading ? tr`Finding the route…` : tr`Couldn't get a route right now. Try again in a moment.`}</div></div>`;
     } else {
       const [primary, ...more] = navLinks(r.place.lat, r.place.lon, r.place.name);
       v.innerHTML = `
         <div class="route-head">
           <div class="row-top">
-            <div><h1>To ${esc(r.place.name)}</h1>
-              <div class="meta">${r.km.toFixed(0)} km · about ${fmtMin(r.min)} by car</div></div>
-            <button class="text-btn" id="route-clear" aria-label="Clear route"><svg><use href="#i-close"/></svg></button>
+            <div><h1>${tr`To ${esc(r.place.name)}`}</h1>
+              <div class="meta">${tr`${r.km.toFixed(0)} km · about ${fmtMin(r.min)} by car`}</div></div>
+            <button class="text-btn" id="route-clear" aria-label="${tr`Clear route`}"><svg><use href="#i-close"/></svg></button>
           </div>
           ${navLink(primary, "nav-primary")}
           <div class="nav-more" style="margin-top:0">${more.map((l) => navLink(l)).join("")}</div>
           <div class="range-row">
-            <label for="range">Your car's range</label>
-            <span class="range-input"><input id="range" type="number" inputmode="numeric" min="50" max="1000" step="10" placeholder="e.g. 300" value="${state.range || ""}"> km</span>
+            <label for="range">${tr`Your car's range`}</label>
+            <span class="range-input"><input id="range" type="number" inputmode="numeric" min="50" max="1000" step="10" placeholder="${tr`e.g. 300`}" value="${state.range || ""}"> km</span>
           </div>
           <div id="stops-summary" class="stops-summary" hidden></div>
           <h1 id="route-title" style="font-size:16px;margin-top:4px"></h1>
@@ -923,18 +943,17 @@
     const items = visible().filter((c) => on.has(c.id)).sort((a, b) => on.get(a.id).along - on.get(b.id).along);
     const plan = planStops(items);
     showStops(plan);
-    $("route-title").textContent = items.length
-      ? `${items.length} charger${items.length === 1 ? "" : "s"} along the way`
-      : "No chargers along this route";
+    $("route-title").textContent = !items.length ? tr`No chargers along this route`
+      : items.length === 1 ? tr`1 charger along the way` : tr`${items.length} chargers along the way`;
     if (!items.length) {
-      list.innerHTML = `<li class="empty"><span>${anyFilter() ? "Turn a filter off to see more." : Object.values(state.limits).some((v) => v != null) ? "Loosen the slider to see more." : "Nothing within 1 km of the road."}</span></li>`;
+      list.innerHTML = `<li class="empty"><span>${anyFilter() ? tr`Turn a filter off to see more.` : Object.values(state.limits).some((v) => v != null) ? tr`Loosen the slider to see more.` : tr`Nothing within 1 km of the road.`}</span></li>`;
       return;
     }
     fillRows(list, items, (c) => {
       const o = on.get(c.id);
       const n = plan?.stops.indexOf(c);
-      return [n >= 0 ? `Stop ${n + 1}` : null, `km ${o.along.toFixed(0)}`, c.max_kw ? `${fmtKw(c.max_kw)} kW` : null,
-        o.off > 0.15 ? `${(o.off * 1000).toFixed(0)} m off road` : "on the road", liveShort(c)].filter(Boolean).join(" · ");
+      return [n >= 0 ? tr`Stop ${n + 1}` : null, `km ${o.along.toFixed(0)}`, c.max_kw ? `${fmtKw(c.max_kw)} kW` : null,
+        o.off > 0.15 ? tr`${(o.off * 1000).toFixed(0)} m off road` : tr`on the road`, liveShort(c)].filter(Boolean).join(" · ");
     }, "route", (c) => (plan?.stops.includes(c) ? "stop" : ""));
   }
 
@@ -975,11 +994,11 @@
     box.className = "stops-summary" + (gap != null ? " warn" : "");
     const on = state.route.on;
     box.innerHTML = `<p>${gap != null
-      ? `No fast charger within reach after km ${gap.toFixed(0)}. Plan this trip with your car's own planner${anyFilter() ? ", or turn a filter off" : ""}.`
-      : n
-        ? `${n} charging stop${n === 1 ? "" : "s"} with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
-        : `No charging stop needed with a ${state.range} km range.`}</p>${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
-    if (n) fillRows($("stop-list"), stops, (c) => [`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
+      ? tr`No fast charger within reach after km ${gap.toFixed(0)}. Plan this trip with your car's own planner, or turn a filter off.`
+      : n === 1 ? tr`1 charging stop with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
+        : n ? tr`${n} charging stops with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
+        : tr`No charging stop needed with a ${state.range} km range.`}</p>${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
+    if (n) fillRows($("stop-list"), stops, (c) => [tr`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
       c.max_kw ? `${fmtKw(c.max_kw)} kW` : null].filter(Boolean).join(" · "), "route");
     stops.forEach((c, i) => L.marker([c.lat, c.lon], {
       icon: L.divIcon({ className: "stop-pin", html: `<span>${i + 1}</span>`, iconSize: [26, 26] }),

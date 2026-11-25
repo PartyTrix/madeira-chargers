@@ -29,6 +29,8 @@ Run the refresh by hand any time from **Actions → Refresh data & deploy → Ru
 | `site.css` | Blue colours, appended to `style.css` |
 | `files/` | Icons, share image, manifest, robots.txt, sitemap.xml |
 
+chargeportugal.com also has a Portuguese page at `/pt/`, built from `sites/portugal/pt/` (head with Portuguese SEO and FAQ, about, credits), `sites/pt-ui.json` (static texts in `index.html`) and `i18n-pt.js` (texts made by `app.js`, which are wrapped in `` tr`...` ``). Both pages link to each other with `hreflang`. After changing a text in `app.js`, run `node scripts/i18n-keys.mjs --check` to list what still needs a Portuguese version (untranslated texts fall back to English).
+
 The build fails if a marker or a `site.json` text can't be found, or if the Portugal page still points its canonical or share tags at another domain, and this repo's workflow builds both sites on every run, so a change here that breaks chargeportugal.com shows up as a red run.
 
 GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 15 minutes, fetches the live plug status, builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
