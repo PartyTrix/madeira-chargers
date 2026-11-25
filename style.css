@@ -237,10 +237,14 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
 .seg button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
 
 .scale { display: flex; gap: 4px; font-size: 12px; color: var(--muted); font-weight: 650; }
-.scale span { flex: 1; display: grid; gap: 3px; text-align: center; }
-.scale span::before { content: ""; height: 5px; border-radius: 3px; background: var(--c); }
-.scale span { transition: opacity .15s; }
-.scale span.off { opacity: .25; }
+.scale button { flex: 1; display: grid; gap: 3px; text-align: center; font: inherit; color: inherit; background: none; border: 0;
+  padding: 4px 0 6px; margin: -4px 0 -6px; border-radius: 8px; cursor: pointer; transition: opacity .15s; -webkit-tap-highlight-color: transparent; }
+.scale button::before { content: ""; height: 5px; border-radius: 3px; background: var(--c); transition: height .15s; }
+.scale button.off { opacity: .3; }
+.scale button.on { color: var(--ink); }
+.scale button.on::before { height: 8px; margin-top: -3px; }
+.scale button:focus-visible { outline: 2px solid var(--focus); }
+.list .more { padding: 14px 16px 4px; text-align: center; color: var(--muted); font-size: 13px; }
 
 /* limit slider: max price / min power / max distance, following the tab */
 .limit { display: grid; gap: 2px; }
