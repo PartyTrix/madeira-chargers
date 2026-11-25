@@ -62,7 +62,7 @@ To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 
 ## Filters
 
-Chips above the map: 50 kW+, has a price, free now (live status), plug type (CCS, Type 2, CHAdeMO), pay by card and motorway. "Pay by card" uses the payment methods operators publish on the NAP and is hidden on Madeira (no card payment there in practice). "Motorway" has no flag in the feed: `isMotorway()` in `app.js` reads names and addresses like "Área de Serviço", "(A2) KM 148" or "A25 - AS Vilar Formoso" (~280 sites).
+Above the map: "Show prices" and "50 kW+", plus a "Filters" button (with a count of active ones) that opens a menu with free now (live status), has a price, pay by card, motorway service areas and plug type (CCS, Type 2, CHAdeMO). Only three chips sit on the map, so the row fits even a 320 px phone; under 360 px "Show prices" shortens to "Prices". "Pay by card" uses the payment methods operators publish on the NAP and is hidden on Madeira (no card payment there in practice). "Motorway" has no flag in the feed: `isMotorway()` in `app.js` reads names and addresses like "Área de Serviço", "(A2) KM 148" or "A25 - AS Vilar Formoso" (~280 sites).
 
 ## Search and routes
 

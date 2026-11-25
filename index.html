@@ -130,6 +130,7 @@
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
     <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9l8-6 8 6M4 15l8 6 8-6"/></symbol>
   </svg>
 
@@ -145,11 +146,16 @@
     </form>
 
     <nav class="filters" aria-label="Map options">
-      <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg>Show prices</button>
+      <button class="chip" id="labels" aria-pressed="true"><svg><use href="#i-tag"/></svg><span class="long">Show prices</span><span class="short">Prices</span></button>
       <button class="chip" data-filter="fast" aria-pressed="false" aria-label="Fast chargers, 50 kW or more"><svg><use href="#i-bolt"/></svg>50 kW+</button>
-      <button class="chip" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has price</button>
-      <button class="chip" data-filter="free" aria-pressed="false" hidden><svg><use href="#i-clock"/></svg>Free now</button>
-      <label class="chip chip-select" id="plug-chip"><svg><use href="#i-plug"/></svg><span class="sr-only">Plug type</span>
+      <button class="chip" id="more" aria-expanded="false" aria-controls="filter-menu"><svg><use href="#i-sliders"/></svg>Filters<span class="count" id="filter-count" hidden></span></button>
+    </nav>
+    <div class="filter-menu" id="filter-menu" role="group" aria-label="More filters" hidden>
+      <button class="opt" data-filter="free" aria-pressed="false" hidden><svg><use href="#i-clock"/></svg>Free now<span class="tick"></span></button>
+      <button class="opt" data-filter="priced" aria-pressed="false"><svg><use href="#i-euro"/></svg>Has price<span class="tick"></span></button>
+      <button class="opt" data-filter="card" aria-pressed="false" hidden><svg><use href="#i-card"/></svg>Pay by card<span class="tick"></span></button>
+      <button class="opt" data-filter="motorway" aria-pressed="false" hidden><svg><use href="#i-route"/></svg>Motorway service areas<span class="tick"></span></button>
+      <label class="opt plug-opt" id="plug-chip"><svg><use href="#i-plug"/></svg><span>Plug</span>
         <select id="plug" aria-label="Plug type">
           <option value="">Any plug</option>
           <option value="CCS">CCS</option>
@@ -157,9 +163,8 @@
           <option value="CHAdeMO">CHAdeMO</option>
         </select>
       </label>
-      <button class="chip" data-filter="card" aria-pressed="false" hidden><svg><use href="#i-card"/></svg>Pay by card</button>
-      <button class="chip" data-filter="motorway" aria-pressed="false" hidden><svg><use href="#i-route"/></svg>Motorway</button>
-    </nav>
+      <button class="opt done" id="filters-done">Done</button>
+    </div>
   </div>
 
   <main id="map" aria-label="Map of chargers"></main>
