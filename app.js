@@ -539,7 +539,11 @@
     const routeInfo = state.route?.on.get(c.id);
 
     const pay = [];
-    if (c.payUnknown) {
+    if (c.source === "osm") {
+      pay.push(c.network === "Tesla"
+        ? `<li><svg><use href="#i-phone"/></svg>Tesla Supercharger: start and pay in the Tesla app. Many in Portugal are open to other cars too; the app shows which.</li>`
+        : `<li class="warn"><svg><use href="#i-info"/></svg>Not on the MOBI.E network (found on OpenStreetMap), so Miio won't work and there's no price here. Check the operator's app.</li>`);
+    } else if (c.payUnknown) {
       pay.push(`<li class="warn"><svg><use href="#i-info"/></svg>Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger.</li>`);
     } else if (c.pay.apps) {
       pay.push(`<li><svg><use href="#i-phone"/></svg>Miio, any MOBI.E app or a MOBI.E card</li>`);
@@ -576,7 +580,7 @@
         ${sockets || c.opening_hours ? `<div class="section-label">Plugs</div><ul class="facts">${sockets}
           ${c.opening_hours ? `<li><svg><use href="#i-clock"/></svg>Open ${esc(c.opening_hours)}</li>` : ""}</ul>` : ""}
 
-        <div class="code">${c.mobie ? "MOBI.E code" : "ID"}: ${esc(c.id)}</div>
+        <div class="code">${c.mobie ? "MOBI.E code" : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
       </div>`;
     showView("detail-view");
     $("detail-view").querySelector(".detail").scrollTop = 0;

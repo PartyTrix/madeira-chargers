@@ -127,6 +127,109 @@ function parseRates(xml, codes) {
   return out;
 }
 
+// ---------- OpenStreetMap: chargers outside MOBI.E ----------
+// Tesla Superchargers (many open to all cars) and other fast chargers that
+// aren't on MOBI.E, so the NAP doesn't list them. No prices. OSM data is ODbL
+// (© OpenStreetMap contributors); credited on the page and in the README.
+const OVERPASS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+];
+const OSM_QUERY = `[out:json][timeout:180];
+area["ISO3166-1"="PT"]["admin_level"="2"]->.pt;
+nwr["amenity"="charging_station"](area.pt);
+out center tags;`;
+const NEAR_MOBIE_M = 150; // an OSM station this close to a MOBI.E site is that site
+const OSM_MIN_KW = 50;    // non-Tesla OSM stations: only fast ones (slow ones are mostly MOBI.E or private)
+
+async function overpass() {
+  for (let round = 0; round < 3; round++) {
+    for (const url of OVERPASS) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "User-Agent": "madeira-chargers (GitHub Actions; daily)", "Content-Type": "application/x-www-form-urlencoded" },
+          body: "data=" + encodeURIComponent(OSM_QUERY),
+          signal: AbortSignal.timeout(200_000),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        if (!Array.isArray(json.elements)) throw new Error("no elements");
+        return json.elements;
+      } catch (e) {
+        console.warn(`Overpass ${url}: ${e}`);
+      }
+    }
+    await new Promise((r) => setTimeout(r, 30_000 * (round + 1)));
+  }
+  throw new Error("all Overpass servers failed");
+}
+
+const OSM_SOCKETS = {
+  type2_combo: "CCS", chademo: "CHAdeMO", type2: "Type 2", type2_cable: "Type 2",
+  tesla_supercharger: "Tesla", tesla_supercharger_ccs: "CCS", type1_combo: "CCS1",
+};
+const kwOf = (v) => {
+  const m = String(v || "").match(/([\d.]+)\s*(kW|W)?/i);
+  if (!m) return null;
+  const n = parseFloat(m[1]);
+  return /^W$/i.test(m[2] || "") || n > 2000 ? n / 1000 : n;
+};
+
+function osmFeatures(elements, mobieSites) {
+  // Grid of MOBI.E sites for a quick "is there one nearby" check.
+  const cell = (lat, lon) => `${Math.floor(lat * 100)}:${Math.floor(lon * 100)}`;
+  const grid = new Map();
+  for (const s of mobieSites) (grid.get(cell(s.lat, s.lon)) || grid.set(cell(s.lat, s.lon), []).get(cell(s.lat, s.lon))).push(s);
+  const nearMobie = (lat, lon) => {
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++)
+      for (const s of grid.get(cell(lat + dy / 100, lon + dx / 100)) || [])
+        if (Math.hypot((s.lat - lat) * 111_320, (s.lon - lon) * 111_320 * Math.cos(lat * Math.PI / 180)) < NEAR_MOBIE_M) return true;
+    return false;
+  };
+  const out = [];
+  for (const e of elements) {
+    const t = e.tags || {};
+    const lat = e.lat ?? e.center?.lat, lon = e.lon ?? e.center?.lon;
+    if (lat == null || !(lat >= BOX.latMin && lat <= BOX.latMax && lon >= BOX.lonMin && lon <= BOX.lonMax)) continue;
+    if (/^(private|no|customers|permit|delivery)$/.test(t.access || "")) continue;
+    if (t["disused:amenity"] || /^(construction|planned|disused)$/.test(t.lifecycle || "")) continue;
+    const who = [t.brand, t.operator, t.network, t.name].filter(Boolean).join(" ");
+    const tesla = /tesla/i.test(who);
+    const sockets = [];
+    for (const [k, v] of Object.entries(t)) {
+      const m = k.match(/^socket:([a-z0-9_]+)$/);
+      if (!m || !OSM_SOCKETS[m[1]]) continue;
+      const count = parseInt(v, 10) || 1;
+      sockets.push({ type: OSM_SOCKETS[m[1]], kw: kwOf(t[`socket:${m[1]}:output`]) || null, tariff: null, count });
+    }
+    const maxKw = Math.max(0, ...sockets.map((s) => s.kw || 0), kwOf(t["charging_station:output"]) || 0) || (tesla ? 150 : null);
+    if (!tesla && !(maxKw >= OSM_MIN_KW)) continue;
+    if (nearMobie(lat, lon)) continue;
+    if (tesla && !sockets.length) sockets.push({ type: "Tesla", kw: maxKw, tariff: null, count: parseInt(t.capacity, 10) || 1 });
+    out.push({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [+lon.toFixed(6), +lat.toFixed(6)] },
+      properties: {
+        id: `osm-${e.type[0]}${e.id}`,
+        region: region(lat, lon),
+        name: t.name || (tesla ? "Tesla Supercharger" : t.operator || t.brand || "EV charger"),
+        operator: t.operator || t.brand || t.network || null,
+        address: [t["addr:street"] && `${t["addr:street"]}${t["addr:housenumber"] ? " " + t["addr:housenumber"] : ""}`, t["addr:city"]].filter(Boolean).join(", ") || null,
+        opening_hours: t.opening_hours === "24/7" ? "24/7" : null,
+        pay: null,
+        max_kw: maxKw,
+        sockets,
+        tariff: null,
+        network: tesla ? "Tesla" : null,
+        source: "osm",
+      },
+    });
+  }
+  return out;
+}
+
 // ---------- build ----------
 async function readJson(url, fallback) {
   try { return JSON.parse(await readFile(url, "utf8")); } catch { return fallback; }
@@ -185,14 +288,26 @@ const features = sites.map((s) => {
   };
 });
 
+const previous = await readJson(OUT, { features: [] });
+let osm;
+try {
+  console.log("Downloading OpenStreetMap chargers…");
+  osm = osmFeatures(await overpass(), sites);
+  console.log(`OSM: ${osm.length} chargers outside MOBI.E (${osm.filter((f) => f.properties.network === "Tesla").length} Tesla)`);
+} catch (e) {
+  // Overpass is often busy: keep yesterday's OSM chargers rather than none.
+  osm = previous.features.filter((f) => f.properties.source === "osm");
+  console.warn(`OSM unavailable (${e}); keeping ${osm.length} from the last run.`);
+}
+
 const extra = (await readJson(EXTRA, { features: [] })).features.map((f) => ({
   ...f, properties: { ...f.properties, source: "manual" },
 }));
-const all = [...features, ...extra].sort((a, b) => String(a.properties.id).localeCompare(String(b.properties.id)));
+const all = [...features, ...osm, ...extra].sort((a, b) => String(a.properties.id).localeCompare(String(b.properties.id)));
 
 // Safety net: never wipe the map because a feed hiccuped.
-const previous = await readJson(OUT, { features: [] });
-if (previous.features.length > 10 && features.length < previous.features.length * 0.5) {
+const prevMobie = previous.features.filter((f) => f.properties.source === "mobie").length;
+if (prevMobie > 10 && features.length < prevMobie * 0.5) {
   console.error(`Refusing to write: only ${features.length} chargers vs ${previous.features.length} before.`);
   process.exit(1);
 }
@@ -203,8 +318,8 @@ if (!features.length) {
 
 await writeFile(OUT, JSON.stringify({
   type: "FeatureCollection",
-  attribution: "MOBI.E data via NAP Portugal (IMT).",
+  attribution: "MOBI.E data via NAP Portugal (IMT). Chargers outside MOBI.E: © OpenStreetMap contributors (ODbL).",
   features: all,
 }) + "\n"); // compact: thousands of chargers, phones download this
 const priced = features.filter((f) => f.properties.tariff).length;
-console.log(`Wrote ${all.length} chargers (${features.length} MOBI.E, ${priced} with price, ${extra.length} manual).`);
+console.log(`Wrote ${all.length} chargers (${features.length} MOBI.E, ${priced} with price, ${osm.length} OpenStreetMap, ${extra.length} manual).`);
