@@ -1,0 +1,10 @@
+{
+  "_help": "How chargeportugal.com differs from madeirachargers.com. scripts/build-site.mjs applies this on top of the shared files; the build fails if a 'replace' text is no longer found in index.html, so the two sites can't drift apart silently.",
+  "domain": "chargeportugal.com",
+  "replace": [
+    ["data-site=\"madeira\" data-start=\"madeira\"", "data-site=\"portugal\" data-start=\"mainland\""],
+    ["Madeira EV Chargers. Search a destination in Portugal", "Charge Portugal. Search a destination in Portugal"],
+    ["placeholder=\"Where to? e.g. Funchal\"", "placeholder=\"Where to? e.g. Porto\""],
+    ["fill='%230e5e47'", "fill='%231a4f8b'"]
+  ]
+}

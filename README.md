@@ -4,7 +4,7 @@ A fast, mobile-first map of every public EV charger in Portugal on the MOBI.E ne
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
-Live at **https://madeirachargers.com**. `https://madeirachargers.com/?view=portugal` opens on mainland Portugal instead (chargeportugal.com redirects there; `?view=azores` works too). The parameter is removed from the address bar on load and the canonical URL stays `https://madeirachargers.com/`. Plain HTML/CSS/JS, no build step, no npm packages, no cookies. Visit counts go to [GoatCounter](https://madeirachargers.goatcounter.com) (cookie-free, no personal data; set `GOATCOUNTER` in `app.js` to `""` to switch it off). Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
+Live at **https://madeirachargers.com** (opens on Madeira) and **https://chargeportugal.com** (the same map with its own name, blue look, Portugal-wide text and FAQ, opening on the mainland). `?view=portugal`, `?view=azores` or `?view=madeira` overrides where either site opens; the parameter is removed from the address bar on load. Plain HTML/CSS/JS, no build step, no npm packages, no cookies. Visit counts go to [GoatCounter](https://madeirachargers.goatcounter.com) (cookie-free, no personal data; set `GOATCOUNTER` in `app.js` to `""` to switch it off). Hosted free on GitHub Pages; the domain is registered at Cloudflare (auto-renew on).
 
 ## How it maintains itself
 
@@ -15,6 +15,22 @@ Live at **https://madeirachargers.com**. `https://madeirachargers.com/?view=port
 | Security updates | Dependabot bumps the GitHub Actions weekly and the auto-merge workflow merges them. The site itself has no dependencies except a vendored copy of Leaflet 1.9.4 in `vendor/`. |
 
 Run the refresh by hand any time from **Actions → Refresh data & deploy → Run workflow**.
+
+## Two sites, one code base
+
+`node scripts/build-site.mjs madeira _site` builds madeirachargers.com, which is the repo as it is. `node scripts/build-site.mjs portugal _site` builds chargeportugal.com from the same files plus `sites/portugal/`:
+
+| File | What it changes |
+|---|---|
+| `site.json` | Small text swaps in `index.html` (start view, search hint, favicon colour) |
+| `head.html` | Everything between `<!-- site:head -->` markers: title, description, canonical, share tags, JSON-LD |
+| `about.html` | The visible About/FAQ between `<!-- site:about -->` markers (keep it in sync with the FAQ JSON-LD in `head.html`) |
+| `site.css` | Blue colours, appended to `style.css` |
+| `files/` | Icons, share image, manifest, robots.txt, sitemap.xml |
+
+The build fails if a marker or a `site.json` text can't be found, or if the Portugal page still points its canonical or share tags at another domain, and this repo's workflow builds both sites on every run, so a change here that breaks chargeportugal.com shows up as a red run.
+
+GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 6 hours (05:07 UTC picks up the daily data), builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
 
 ## Prices
 

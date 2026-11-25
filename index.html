@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="en" prefix="og: https://ogp.me/ns#">
+<html lang="en" prefix="og: https://ogp.me/ns#" data-site="madeira" data-start="madeira">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org https://*.goatcounter.com; connect-src 'self' https://photon.komoot.io https://router.project-osrm.org; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <!-- site:head (each site has its own; see sites/) -->
   <title>Madeira EV Charging Map: Prices for Every Charger | Madeira Chargers</title>
   <meta name="description" content="Find every public EV charger in Madeira with real prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.">
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -105,6 +106,7 @@
  }
 ]
   </script>
+  <!-- /site:head -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230e5e47'/%3E%3Cpath d='M18 5 9 18h6l-2 9 10-14h-6z' fill='%23f6c945'/%3E%3C/svg%3E">
   <link rel="preload" href="vendor/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
@@ -177,6 +179,7 @@
         <ol id="list" class="list" aria-live="polite"></ol>
         <footer class="foot">
           <a class="tip" href="https://ko-fi.com/madeiracharging" target="_blank" rel="noopener" data-track="ko-fi"><span class="cup" aria-hidden="true">☕</span>Found this useful? Buy me a coffee</a>
+          <!-- site:about -->
           <section class="about" aria-labelledby="about-title">
             <h1 id="about-title">EV charging in Madeira</h1>
             <p>Madeira Chargers shows every public electric car charger in Madeira and Porto Santo on one map, with an estimated all-in price for each: the operator's fee, the energy price in Miio, grid access and 22% VAT. Filter for fast 50 kW+ chargers, sort by cheapest, fastest or nearest, and tap to navigate with Google Maps, Apple Maps or Waze. Chargers in the Azores and mainland Portugal are on the map too.</p>
@@ -186,7 +189,9 @@
             <details><summary>Can I find chargers along my route?</summary><p>Yes. Type a destination in “Where to?” and the map shows the route from your location and every charger within 1 km of the road, in the order you pass them.</p></details>
             <h2 lang="pt">Carregamento de carros elétricos na Madeira</h2>
             <p lang="pt">Mapa de todos os postos de carregamento públicos MOBI.E na Madeira, Porto Santo, Açores e Portugal continental, com o preço estimado por kWh (IVA incluído), filtros para carregadores rápidos e navegação com um toque.</p>
+            <p class="sister">Driving on the mainland or in the Azores? <a href="https://chargeportugal.com/">Charge Portugal</a> is the same map, opening on all of Portugal.</p>
           </section>
+          <!-- /site:about -->
           <p>Chargers and prices: <a href="https://www.mobie.pt" target="_blank" rel="noopener">MOBI.E</a> via the
           <a href="https://nap-portugal.imt-ip.pt/" target="_blank" rel="noopener">National Access Point (IMT)</a>, updated daily.
           Prices are estimated totals including VAT, worked out the way Miio bills a session: the operator's fee, Miio's energy price, grid access and electricity tax. Check your app before charging.
