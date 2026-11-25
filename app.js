@@ -459,8 +459,8 @@
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
         html: map.getZoom() < 13 && !sel
-          ? `<span class="pin-tag compact${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
-          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
+          ? `<span class="pin-tag compact${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
+          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
     });
@@ -522,7 +522,7 @@
           <span class="row-sub">${esc(sub(c))}</span>
         </span>
         ${c.eff != null
-          ? `<span class="row-price${c.est ? " est" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : tr`per kWh`}</small></span>`
+          ? `<span class="row-price${c.est ? " approx" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : tr`per kWh`}</small></span>`
           : `<span class="row-price none">${tr`No price`}</span>`}
       </li>`).join("");
     const pick = (e) => {
@@ -597,7 +597,7 @@
     if (t.start) parts.push(tr`${euro(t.start)} per session`);
     const session = sessionKwh();
     return `
-      <div class="price-box${c.est ? " est" : ""}" style="--c:var(${c.colourVar})">
+      <div class="price-box${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">
         <div class="big">${priceTag(c)}<small> /kWh</small></div>
         <div class="band">${BANDS[c.band](REGIONS[c.region].name)}</div>
         <div class="parts">${c.est
