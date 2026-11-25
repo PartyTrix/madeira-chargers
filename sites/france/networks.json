@@ -1,0 +1,25 @@
+{
+  "_help": "Usual pay-as-you-go prices (no subscription, incl. VAT) of the big French networks, used only for chargers whose operator publishes no readable price in the national IRVE file. Shown with a ~ and the range, never as the charger's own price. Ranges are low-high across the sources checked; dc applies from 50 kW (or dc_fast from 100 kW when given), ac below. 'public': the network's stations are open to all even when the file says 'Accès réservé'. Re-check every few months: sources below.",
+  "checked": "2026-11-25",
+  "sources": {
+    "BE": "https://bornes-electrique.fr/prix-recharge-kwh.html (survey of 10 Oct 2026)",
+    "MC": "https://www.meilleurecharge.fr/operateur",
+    "PA": "https://palac.fr/blog/comparatif-reseaux-recharge-electrique (July 2026)"
+  },
+  "networks": [
+    { "name": "Tesla Supercharger", "match": "\\btesla\\b", "public": true, "dc": [0.42, 0.62], "src": "MC, BE", "note": "Set per station and time of day in the Tesla app." },
+    { "name": "Ionity", "match": "\\bionity\\b", "public": true, "dc": [0.55, 0.69], "src": "BE, MC, PA" },
+    { "name": "Electra", "match": "\\belectra\\b", "public": true, "dc": [0.49, 0.64], "src": "MC, BE", "note": "Cheaper in the Electra app at quiet times; €0.64 paying by card." },
+    { "name": "Fastned", "match": "\\bfastned\\b", "public": true, "dc": [0.59, 0.61], "src": "MC, BE, PA" },
+    { "name": "TotalEnergies", "match": "totalenergies|total ev charge", "public": true, "dc": [0.52, 0.55], "dc_fast": [0.62, 0.65], "src": "BE" },
+    { "name": "Power Dot", "match": "power ?dot", "public": true, "dc": [0.39, 0.55], "src": "MC, PA", "note": "Varies from one charger to another." },
+    { "name": "Lidl", "match": "\\blidl\\b", "public": true, "dc": [0.39, 0.39], "ac": [0.29, 0.29], "src": "BE" },
+    { "name": "Engie Vianeo", "match": "vianeo", "public": true, "dc": [0.60, 0.69], "src": "MC" },
+    { "name": "Izivia", "match": "\\bizivia\\b", "public": true, "dc": [0.40, 0.55], "src": "MC, BE" },
+    { "name": "Allego", "match": "^allego\\b", "public": true, "dc": [0.49, 0.49], "dc_fast": [0.59, 0.59], "ac": [0.39, 0.39], "src": "BE" },
+    { "name": "Atlante", "match": "\\batlante\\b", "public": true, "dc": [0.36, 0.54], "src": "MC" },
+    { "name": "Bump", "match": "^bump\\b", "public": true, "dc": [0.39, 0.49], "src": "MC" },
+    { "name": "E.Leclerc", "match": "leclerc", "ac": [0.19, 0.19], "src": "BE", "note": "AC price from 9 July 2026." },
+    { "name": "Zunder", "match": "\\bzunder\\b", "public": true }
+  ]
+}

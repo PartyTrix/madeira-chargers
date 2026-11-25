@@ -29,11 +29,23 @@ Run the refresh by hand any time from **Actions → Refresh data & deploy → Ru
 | `site.css` | Blue colours, appended to `style.css` |
 | `files/` | Icons, share image, manifest, robots.txt, sitemap.xml |
 
-chargeportugal.com also has a Portuguese page at `/pt/`, built from `sites/portugal/pt/` (head with Portuguese SEO and FAQ, about, credits), `sites/pt-ui.json` (static texts in `index.html`) and `i18n-pt.js` (texts made by `app.js`, which are wrapped in `` tr`...` ``). Both pages link to each other with `hreflang`. After changing a text in `app.js`, run `node scripts/i18n-keys.mjs --check` to list what still needs a Portuguese version (untranslated texts fall back to English).
+chargeportugal.com also has a Portuguese page at `/pt/`, built from `sites/portugal/pt/` (head with Portuguese SEO and FAQ, about, credits), `sites/pt-ui.json` (static texts in `index.html`) and `i18n-pt.js` (texts made by `app.js`, which are wrapped in `` tr`...` ``). Both pages link to each other with `hreflang`. After changing a text in `app.js`, run `node scripts/i18n-keys.mjs --check` to list what still needs a Portuguese or French version (`i18n-fr.js`) (untranslated texts fall back to English).
 
 The build fails if a marker or a `site.json` text can't be found, or if the Portugal page still points its canonical or share tags at another domain, and this repo's workflow builds both sites on every run, so a change here that breaks chargeportugal.com shows up as a red run.
 
 GitHub Pages serves one custom domain per repo, so chargeportugal.com is published by the separate **PartyTrix/chargeportugal** repo. It contains only `sites/portugal/deploy.yml` (as `.github/workflows/deploy.yml`), which checks out this repo every 15 minutes, fetches the live plug status, builds the Portugal site and deploys it. Nothing to maintain there; run it by hand from its Actions tab to publish a change straight away. Each site's About section links to the other. GoatCounter counts both in one dashboard; chargeportugal.com page views show under `/portugal/`.
+
+## France: evchargefrance.com
+
+`node scripts/build-site.mjs france _site` builds **evchargefrance.com** (lavender look, English at `/`, French at `/fr/`) from the same code plus `sites/france/`, but with France's own data, which is built rather than committed:
+
+| | |
+|---|---|
+| Chargers + prices | `node scripts/update-france.mjs` downloads France's national charging-point base (IRVE, consolidated and de-duplicated by [transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/base-nationale-des-irve-infrastructures-de-recharge-pour-vehicules-electriques), Licence Ouverte 2.0, 130 MB, refreshed nightly), keeps mainland France and Corsica (about 46,000 stations), and writes `data/fr/chargers.json` (what the map needs, about 1.2 MB gzipped) and `data/fr/details.json` (addresses, hours and the operators' own price texts, loaded after the map). Stations marked "reserved access" are left out, except for public networks that mark everything reserved (Ionity, Electra). |
+| Prices | Until the national schema gets structured prices (2027), operators write prices as free text. `scripts/fr-tarif.mjs` reads what it can (€/kWh, €/min, session fee, HT or TTC; idle and night fees ignored) into one price per kWh incl. VAT for a 20 kWh top-up; `node scripts/test-fr-tarif.mjs` checks it on real examples. About 13% of stations publish a readable price. For the big networks that publish none (Tesla, Ionity, Power Dot, Lidl, TotalEnergies, Electra, Fastned, ...) `sites/france/networks.json` holds their usual pay-as-you-go price from public price surveys; the map shows those with a ~ and the range. Re-check that file every few months. |
+| Live status | `node scripts/update-france-status.mjs` reads the national live-status file and writes `data/fr/status.json` (free / in use / out of order per station, from reports less than 2 hours old). |
+
+**PartyTrix/evchargefrance** publishes it: it holds only `sites/france/deploy.yml` (as `.github/workflows/deploy.yml`). Every 15 minutes it checks out this repo, rebuilds the charger data once a day (cached in between), fetches the live status, builds and deploys. This repo's own workflow checks that the France site still builds, using a small sample in `scripts/test/`. GoatCounter page views for France show under `/france/`.
 
 ## Prices
 

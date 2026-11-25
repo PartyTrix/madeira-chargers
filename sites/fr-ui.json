@@ -1,0 +1,117 @@
+{
+  "_help": "French texts for the static parts of index.html, used when a site has a sites/<site>/fr/ folder (builds /fr/index.html). The build fails if an English text is no longer found, so update this when index.html changes. Texts made by app.js are in i18n-fr.js.",
+  "replace": [
+    [
+      "Search a destination in France",
+      "Recherchez une destination en France"
+    ],
+    [
+      "placeholder=\"Where to? e.g. Lyon\"",
+      "placeholder=\"Où allez-vous ? ex. Lyon\""
+    ],
+    [
+      "aria-label=\"Map options\"",
+      "aria-label=\"Options de la carte\""
+    ],
+    [
+      "aria-label=\"Fast chargers, 50 kW or more\"",
+      "aria-label=\"Bornes rapides, 50 kW ou plus\""
+    ],
+    [
+      "aria-label=\"Plug type\"",
+      "aria-label=\"Type de prise\""
+    ],
+    [
+      "<option value=\"\">Any plug</option>",
+      "<option value=\"\">Toutes les prises</option>"
+    ],
+    [
+      "aria-label=\"Map of chargers\"",
+      "aria-label=\"Carte des bornes\""
+    ],
+    [
+      "aria-label=\"Show my location\" title=\"Show my location\"",
+      "aria-label=\"Afficher ma position\" title=\"Afficher ma position\""
+    ],
+    [
+      "aria-label=\"Chargers\"",
+      "aria-label=\"Bornes\""
+    ],
+    [
+      "aria-label=\"Show more\"",
+      "aria-label=\"Afficher plus\""
+    ],
+    [
+      ">Loading chargers…<",
+      ">Chargement des bornes…<"
+    ],
+    [
+      "aria-label=\"Sort\"",
+      "aria-label=\"Trier\""
+    ],
+    [
+      "data-sort=\"price\">Cheapest<",
+      "data-sort=\"price\">Moins chère<"
+    ],
+    [
+      "data-sort=\"power\">Fastest<",
+      "data-sort=\"power\">Plus rapide<"
+    ],
+    [
+      "data-sort=\"distance\">Nearest<",
+      "data-sort=\"distance\">Plus proche<"
+    ],
+    [
+      "id=\"limit-label\">Any price<",
+      "id=\"limit-label\">Tous les prix<"
+    ],
+    [
+      "aria-label=\"Clear this limit\"",
+      "aria-label=\"Effacer cette limite\""
+    ],
+    [
+      "aria-label=\"Price colours\"",
+      "aria-label=\"Couleurs des prix\""
+    ],
+    [
+      "</span>Found this useful? Buy me a coffee</a>",
+      "</span>Utile ? Offrez-moi un café</a>"
+    ],
+    [
+      "<span class=\"long\">Show prices</span><span class=\"short\">Prices</span>",
+      "<span class=\"long\">Voir les prix</span><span class=\"short\">Prix</span>"
+    ],
+    [
+      "</svg>Filters<span",
+      "</svg>Filtres<span"
+    ],
+    [
+      "aria-label=\"More filters\"",
+      "aria-label=\"Plus de filtres\""
+    ],
+    [
+      "</svg>Free now<span",
+      "</svg>Libre maintenant<span"
+    ],
+    [
+      "</svg>Has price<span",
+      "</svg>Avec prix<span"
+    ],
+    [
+      "</svg>Pay by card<span",
+      "</svg>Paiement par carte<span"
+    ],
+    [
+      "</svg>Motorway service areas<span",
+      "</svg>Aires d’autoroute<span"
+    ],
+    [
+      "<span>Plug</span>",
+      "<span>Prise</span>"
+    ],
+    [
+      "id=\"filters-done\">Done<",
+      "id=\"filters-done\">OK<"
+    ]
+  ]
+}

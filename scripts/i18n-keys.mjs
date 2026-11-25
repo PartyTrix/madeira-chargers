@@ -1,5 +1,5 @@
 // Lists every tr`...` string in app.js as its I18N key ("text with {0}"), and
-// with --check fails if i18n-pt.js is missing any. Run after changing texts:
+// with --check fails if i18n-pt.js or i18n-fr.js is missing any. Run after changing texts:
 //   node scripts/i18n-keys.mjs --check
 import { readFileSync } from "node:fs";
 const root = new URL("..", import.meta.url);
@@ -27,19 +27,23 @@ for (let i = src.indexOf("tr`"); i !== -1; i = src.indexOf("tr`", i + 1)) {
   keys.add(key);
 }
 if (process.argv.includes("--check")) {
-  globalThis.window = {};
-  new Function(readFileSync(new URL("i18n-pt.js", root), "utf8"))();
-  const dict = window.I18N;
-  const missing = [...keys].filter((k) => !(k in dict));
-  const unused = Object.keys(dict).filter((k) => !keys.has(k));
-  for (const k of missing) console.error("missing:", JSON.stringify(k));
-  for (const k of unused) console.warn("unused:", JSON.stringify(k));
-  for (const k of keys) if (k in dict) {
-    const want = (k.match(/\{\d+\}/g) || []).sort().join(), got = (dict[k].match(/\{\d+\}/g) || []).sort().join();
-    if (want !== got) { console.error("placeholders differ:", JSON.stringify(k)); missing.push(k); }
+  let bad = 0;
+  for (const file of ["i18n-pt.js", "i18n-fr.js"]) {
+    globalThis.window = {};
+    new Function(readFileSync(new URL(file, root), "utf8"))();
+    const dict = window.I18N;
+    const missing = [...keys].filter((k) => !(k in dict));
+    const unused = Object.keys(dict).filter((k) => !keys.has(k));
+    for (const k of missing) console.error(`${file} missing:`, JSON.stringify(k));
+    for (const k of unused) console.warn(`${file} unused:`, JSON.stringify(k));
+    for (const k of keys) if (k in dict) {
+      const want = (k.match(/\{\d+\}/g) || []).sort().join(), got = (dict[k].match(/\{\d+\}/g) || []).sort().join();
+      if (want !== got) { console.error(`${file} placeholders differ:`, JSON.stringify(k)); missing.push(k); }
+    }
+    console.log(`${file}: ${keys.size} strings, ${missing.length} missing`);
+    bad += missing.length;
   }
-  console.log(`${keys.size} strings, ${missing.length} missing`);
-  process.exit(missing.length ? 1 : 0);
+  process.exit(bad ? 1 : 0);
 } else {
   for (const k of keys) console.log(JSON.stringify(k));
 }

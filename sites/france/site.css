@@ -1,0 +1,22 @@
+
+/* ---------- EV Charge France: Provence lavender instead of Madeira green ---------- */
+:root {
+  --ground: #f4f3f6;
+  --line: #e0dde6;
+  --surface-2: #eeecf2;
+  --brand: #5b3f8c;         /* lavender: shell + primary action */
+  --brand-strong: #46306e;
+  --brand-soft: #e9e2f5;
+  --mark: #5b3f8c;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #110e17;
+    --surface: #19151f;
+    --surface-2: #231d2c;
+    --brand: #1c1528;
+    --brand-strong: #b9a1e8;
+    --brand-soft: #2f2445;
+    --line: #2f2939;
+  }
+}
