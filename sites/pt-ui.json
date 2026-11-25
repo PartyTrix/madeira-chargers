@@ -1,0 +1,30 @@
+{
+  "_help": "Portuguese texts for the static parts of index.html, used when a site has a sites/<site>/pt/ folder (builds /pt/index.html). The build fails if an English text is no longer found, so update this when index.html changes. Texts made by app.js are in i18n-pt.js.",
+  "replace": [
+    ["Search a destination in Portugal", "Pesquise um destino em Portugal"],
+    ["placeholder=\"Where to? e.g. Porto\"", "placeholder=\"Para onde? ex. Porto\""],
+    ["aria-label=\"Map options\"", "aria-label=\"Opções do mapa\""],
+    ["</svg>Show prices</button>", "</svg>Mostrar preços</button>"],
+    ["aria-label=\"Fast chargers, 50 kW or more\"", "aria-label=\"Carregadores rápidos, 50 kW ou mais\""],
+    ["</svg>Has price</button>", "</svg>Com preço</button>"],
+    ["</svg>Free now</button>", "</svg>Livre agora</button>"],
+    ["<span class=\"sr-only\">Plug type</span>", "<span class=\"sr-only\">Tipo de tomada</span>"],
+    ["aria-label=\"Plug type\"", "aria-label=\"Tipo de tomada\""],
+    ["<option value=\"\">Any plug</option>", "<option value=\"\">Qualquer tomada</option>"],
+    ["</svg>Pay by card</button>", "</svg>Paga com cartão</button>"],
+    ["</svg>Motorway</button>", "</svg>Autoestrada</button>"],
+    ["aria-label=\"Map of chargers\"", "aria-label=\"Mapa dos postos\""],
+    ["aria-label=\"Show my location\" title=\"Show my location\"", "aria-label=\"Mostrar a minha localização\" title=\"Mostrar a minha localização\""],
+    ["aria-label=\"Chargers\"", "aria-label=\"Postos\""],
+    ["aria-label=\"Show more\"", "aria-label=\"Mostrar mais\""],
+    [">Loading chargers…<", ">A carregar os postos…<"],
+    ["aria-label=\"Sort\"", "aria-label=\"Ordenar\""],
+    ["data-sort=\"price\">Cheapest<", "data-sort=\"price\">Mais barato<"],
+    ["data-sort=\"power\">Fastest<", "data-sort=\"power\">Mais rápido<"],
+    ["data-sort=\"distance\">Nearest<", "data-sort=\"distance\">Mais perto<"],
+    ["id=\"limit-label\">Any price<", "id=\"limit-label\">Qualquer preço<"],
+    ["aria-label=\"Clear this limit\"", "aria-label=\"Limpar este limite\""],
+    ["aria-label=\"Price colours\"", "aria-label=\"Cores de preço\""],
+    ["</span>Found this useful? Buy me a coffee</a>", "</span>Foi útil? Pague-me um café</a>"]
+  ]
+}
