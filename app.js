@@ -230,7 +230,7 @@
       const s = status.sites[c.id];
       if (s) c.live = { free: s[0], busy: s[1], broken: s[2] };
     }
-    document.querySelector('.chip[data-filter="free"]').hidden = false;
+    document.querySelector('[data-filter="free"]').hidden = false;
   }
   const liveTotal = (c) => c.live.free + c.live.busy + c.live.broken;
   const liveShort = (c) => !c.live ? null
@@ -1017,25 +1017,47 @@
   }
 
   // ---------- controls ----------
-  document.querySelectorAll(".chip[data-filter]").forEach((b) =>
+  // Two quick chips on the map (prices, 50 kW+) plus "Filters", which opens a
+  // small menu with the rest, so the row always fits a phone screen.
+  document.querySelectorAll("[data-filter]").forEach((b) =>
     b.addEventListener("click", () => {
       const k = b.dataset.filter;
       state.filters[k] = !state.filters[k];
       b.setAttribute("aria-pressed", state.filters[k]);
+      if (state.filters[k]) track("filter-" + k);
+      syncFilterCount();
       render();
     }));
   $("plug").addEventListener("change", (e) => {
     state.plug = e.target.value;
     $("plug-chip").classList.toggle("on", !!state.plug);
     if (state.plug) track("plug", state.plug);
+    syncFilterCount();
     render();
   });
-  // Card and motorway chips only where they mean something: not in Madeira
-  // (no card payment in practice, no motorways). An active chip stays visible.
+  const menu = $("filter-menu"), moreBtn = $("more");
+  function setMenu(open) {
+    menu.hidden = !open;
+    moreBtn.setAttribute("aria-expanded", open);
+    document.body.classList.toggle("menu-open", open); // lifts the menu above the bottom sheet
+  }
+  moreBtn.addEventListener("click", (e) => { e.stopPropagation(); setMenu(menu.hidden); });
+  $("filters-done").addEventListener("click", () => setMenu(false));
+  document.addEventListener("click", (e) => { if (!menu.hidden && !menu.contains(e.target)) setMenu(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) { setMenu(false); moreBtn.focus(); } });
+  // Number of filters switched on inside the menu, shown on the Filters chip.
+  function syncFilterCount() {
+    const n = ["free", "priced", "card", "motorway"].filter((k) => state.filters[k]).length + (state.plug ? 1 : 0);
+    $("filter-count").textContent = n;
+    $("filter-count").hidden = !n;
+    moreBtn.setAttribute("aria-pressed", n > 0);
+  }
+  // Card and motorway only where they mean something: not in Madeira
+  // (no card payment in practice, no motorways). An active one stays visible.
   function syncChips() {
     const island = viewRegion() === "madeira";
     for (const k of ["card", "motorway"])
-      document.querySelector(`.chip[data-filter="${k}"]`).hidden = island && !state.filters[k];
+      document.querySelector(`[data-filter="${k}"]`).hidden = island && !state.filters[k];
   }
   map.on("moveend", syncChips);
   syncChips();

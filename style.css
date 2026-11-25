@@ -129,25 +129,54 @@ h1, h2, h3 { margin: 0; font-weight: 750; letter-spacing: -0.01em; }
   .chip[aria-pressed="true"] svg { color: var(--brand-strong); }
 }
 .chip[hidden] { display: none; }
-/* live status on a charger card */
-.live { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 700; font-size: 15px; margin: 8px 0 2px; }
-.live .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--p1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p1) 25%, transparent); }
-.live.busy .dot { background: var(--p3); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p3) 25%, transparent); }
-.live.bad .dot { background: var(--p4); box-shadow: 0 0 0 3px color-mix(in srgb, var(--p4) 25%, transparent); }
-.live .sub { color: var(--muted); font-weight: 600; font-size: 13px; }
-/* plug type: a native picker dressed as a chip (16px so iPhone doesn't zoom) */
-.chip-select { position: relative; padding-right: 8px; cursor: pointer; }
-.chip-select select {
-  appearance: none; -webkit-appearance: none; border: 0; background: none; color: inherit;
-  font: inherit; font-size: 16px; font-weight: 650; padding: 0 18px 0 0; cursor: pointer; outline: 0;
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
-  background-position: right 6px center, right 1px center; background-size: 5px 5px; background-repeat: no-repeat;
+.chip .short { display: none; }
+@media (max-width: 359px) { .chip .long { display: none; } .chip .short { display: inline; } }
+.chip .count {
+  display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; margin-left: 2px;
+  border-radius: 10px; background: var(--brand); color: #fff; font-size: 12px; font-weight: 800;
 }
-.chip-select:focus-within { outline: 2px solid var(--focus); outline-offset: 2px; }
-.chip-select.on { background: var(--brand-soft); color: var(--brand); }
-.chip-select.on svg { color: var(--brand); }
-@media (prefers-color-scheme: dark) { .chip-select.on, .chip-select.on svg { color: var(--brand-strong); } }
-.chip-select select option { color: #13201b; background: #fff; }
+.chip .count[hidden] { display: none; }
+@media (prefers-color-scheme: dark) { .chip .count { background: var(--brand-strong); color: #07140f; } }
+
+/* "Filters" menu: a floating card under the chips */
+.filter-menu {
+  position: absolute; right: 12px; top: calc(100% + 2px); width: min(300px, calc(100vw - 24px));
+  display: grid; gap: 2px; padding: 8px; border-radius: 18px; background: var(--surface);
+  box-shadow: 0 2px 6px rgba(0,0,0,.2), 0 10px 30px rgba(0,0,0,.18);
+}
+.filter-menu[hidden] { display: none; }
+.menu-open .top { z-index: 1003; }
+.filter-menu { max-height: calc(var(--vvh, 100vh) - 130px); overflow-y: auto; overscroll-behavior: contain; }
+.filter-menu .opt {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 46px; padding: 0 12px;
+  border: 0; border-radius: 12px; background: none; color: var(--ink); font: inherit; font-size: 16px; font-weight: 650;
+  text-align: left; cursor: pointer;
+}
+.filter-menu .opt[hidden] { display: none; }
+.filter-menu .opt:hover { background: var(--surface-2); }
+.filter-menu .opt svg { width: 20px; height: 20px; color: var(--muted); flex: none; }
+.filter-menu .tick {
+  margin-left: auto; width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--line); flex: none;
+}
+.filter-menu .opt[aria-pressed="true"] { background: var(--brand-soft); }
+.filter-menu .opt[aria-pressed="true"] .tick {
+  border-color: var(--brand); background: var(--brand)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat;
+}
+.filter-menu .plug-opt select {
+  margin-left: auto; appearance: none; -webkit-appearance: none; font: inherit; font-size: 16px; font-weight: 650;
+  color: var(--ink); background: var(--surface-2); border: 0; border-radius: 10px; padding: 7px 30px 7px 12px; cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 14px center, right 9px center; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.filter-menu .plug-opt.on { background: var(--brand-soft); }
+.filter-menu .plug-opt select option { color: #13201b; background: #fff; }
+.filter-menu .done { justify-content: center; margin-top: 4px; background: var(--brand); color: #fff; }
+.filter-menu .done:hover { background: var(--brand-strong); }
+@media (prefers-color-scheme: dark) {
+  .filter-menu .opt[aria-pressed="true"] .tick { border-color: var(--brand-strong); background-color: var(--brand-strong); }
+  .filter-menu .done { background: var(--brand-strong); color: #07140f; }
+}
 /* the panel's own chips (e.g. "Show all of Madeira") stay flat */
 .panel .chip { box-shadow: none; border: 1px solid var(--line); }
 
