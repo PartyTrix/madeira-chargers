@@ -568,7 +568,7 @@
           <span class="row-sub">${esc(sub(c))}</span>
         </span>
         ${c.eff != null
-          ? `<span class="row-price${c.est ? " approx" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : tr`est. /kWh`}</small></span>`
+          ? `<span class="row-price${c.est ? " approx" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : FR ? tr`per kWh` : tr`est. /kWh`}</small></span>`
           : `<span class="row-price none">${tr`No price data`}</span>`}
       </li>`).join("");
     const pick = (e) => {
@@ -760,10 +760,10 @@
     if (c.live) {
       const stale = Date.now() - state.statusTime > STATUS_STALE;
       return `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span><span>${liveLong(c)}
-        <span class="sub">${tr`Live from MOBI.E, updated ${ago(state.statusTime)}`}${stale ? " · " + tr`may have changed` : ""}</span></span></div>`;
+        <span class="sub">${FR ? tr`Updated ${ago(state.statusTime)}` : tr`Live from MOBI.E, updated ${ago(state.statusTime)}`}${stale ? " · " + tr`may have changed` : ""}</span></span></div>`;
     }
     return `<div class="live unknown"><span class="dot"></span><span>${tr`Status unknown`}
-      <span class="sub">${c.source === "osm" ? tr`Not on MOBI.E, so no live data` : state.statusTime ? tr`This charger doesn't report live status` : tr`Live status isn't available right now`}</span></span></div>`;
+      <span class="sub">${c.source === "osm" && !FR ? tr`Not on MOBI.E, so no live data` : state.statusTime ? tr`This charger doesn't report live status` : tr`Live status isn't available right now`}</span></span></div>`;
   }
 
   // Plan B: the nearest chargers with a matching plug (and fast if this one is),
@@ -817,6 +817,8 @@
   function renderDataLine() {
     const el = $("data-line");
     if (!el) return;
+    // The coverage page describes the Portuguese data (MOBI.E, Miio).
+    if (FR) { el.hidden = true; return; }
     const bits = [tr`Prices are estimates`];
     if (state.statusTime) bits.push(tr`status ${ago(state.statusTime)}`);
     el.innerHTML = `<svg><use href="#i-info"/></svg><span>${bits.join(" · ")}</span>`;
