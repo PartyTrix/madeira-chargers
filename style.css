@@ -425,6 +425,20 @@ h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: 0; }
 .results .r-msg:hover { background: none; }
 
 /* ---------- route ---------- */
+.from-box { position: relative; }
+.from-row {
+  display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--surface-2); cursor: text;
+}
+.from-row:focus-within { border-color: var(--brand); background: var(--surface); }
+.from-label { color: var(--muted); font-weight: 600; font-size: 14px; flex: none; }
+.from-row input {
+  flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; color: var(--ink);
+  font: inherit; font-size: 16px; font-weight: 600;
+}
+.from-row input::placeholder { color: #1c7ed6; opacity: 1; }
+.from-row input::-webkit-search-cancel-button { cursor: pointer; }
+.results.from-results { left: 0; right: 0; top: 50px; z-index: 5; }
 .route-head { padding: 2px 16px 12px; display: grid; gap: 10px; border-bottom: 1px solid var(--line); }
 .route-head .row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .route-head h1 { font-size: 18px; }

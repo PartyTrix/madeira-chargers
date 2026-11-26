@@ -183,4 +183,6 @@ window.I18N = {
   "Part {0}: stop {1} to the end": "Parte {0}: paragem {1} até ao destino",
   "Part 1: start to stop {0}": "Parte 1: partida até à paragem {0}",
   "Part {0}: stop {1} to {2}": "Parte {0}: paragem {1} a {2}",
+  "From": "De",
+  "Your location": "A sua localização",
 };

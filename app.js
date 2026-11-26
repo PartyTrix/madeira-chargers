@@ -614,11 +614,12 @@
     track("charger", c.id);
   }
 
-  function navLinks(lat, lon, label) {
+  function navLinks(lat, lon, label, from) {
     const dest = `${lat},${lon}`;
+    const origin = from ? `${(+from[0]).toFixed(6)},${(+from[1]).toFixed(6)}` : null;
     const links = {
-      google: ["Google Maps", `https://www.google.com/maps/dir/?api=1&destination=${dest}`],
-      apple: ["Apple Maps", `https://maps.apple.com/?daddr=${dest}`],
+      google: ["Google Maps", `https://www.google.com/maps/dir/?api=1${origin ? `&origin=${origin}` : ""}&destination=${dest}`],
+      apple: ["Apple Maps", `https://maps.apple.com/?${origin ? `saddr=${origin}&` : ""}daddr=${dest}`],
       waze: ["Waze", `https://waze.com/ul?ll=${dest}&navigate=yes`],
       other: [tr`Other app`, `geo:${dest}?q=${dest}(${encodeURIComponent(label)})`],
     };
@@ -1060,27 +1061,34 @@
   });
   document.addEventListener("click", (e) => { if (!$("search").contains(e.target)) results.hidden = true; });
 
+  // Places from Photon (OpenStreetMap search), nearest to the map view first.
+  async function findPlaces(text) {
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6${LANG === "fr" ? "&lang=fr" : ""}&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
+    const data = await (await fetch(url)).json();
+    return (data.features || []).map((f) => {
+      const p = f.properties || {};
+      const [lon, lat] = f.geometry.coordinates;
+      const name = p.name || [p.street, p.housenumber].filter(Boolean).join(" ") || text;
+      const sub = [p.street && p.name ? p.street : null, p.city || p.county, p.state].filter(Boolean)
+        .filter((v, i, a) => a.indexOf(v) === i && v !== name).join(", ");
+      return { name, sub, lat, lon };
+    });
+  }
+  const placeRows = (list) => list.map((h, i) => `<li role="option" data-i="${i}"><svg><use href="#i-pin"/></svg>
+    <span><span class="r-name">${esc(h.name)}</span><br><span class="r-sub">${esc(h.sub)}</span></span></li>`).join("");
+
   async function search(text, pickFirst = false) {
     const seq = ++searchSeq;
     results.hidden = false;
     results.innerHTML = `<li class="r-msg">${tr`Searching…`}</li>`;
     try {
-      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(text)}&limit=6${LANG === "fr" ? "&lang=fr" : ""}&bbox=${BBOX}&lat=${map.getCenter().lat.toFixed(3)}&lon=${map.getCenter().lng.toFixed(3)}`;
-      const data = await (await fetch(url)).json();
+      const found = await findPlaces(text);
       if (seq !== searchSeq) return;
-      hits = (data.features || []).map((f) => {
-        const p = f.properties || {};
-        const [lon, lat] = f.geometry.coordinates;
-        const name = p.name || [p.street, p.housenumber].filter(Boolean).join(" ") || text;
-        const sub = [p.street && p.name ? p.street : null, p.city || p.county, p.state].filter(Boolean)
-          .filter((v, i, a) => a.indexOf(v) === i && v !== name).join(", ");
-        return { name, sub, lat, lon };
-      });
+      hits = found;
       active = -1;
       if (!hits.length) { results.innerHTML = `<li class="r-msg">${tr`No places found in ${COUNTRY} for "${esc(text)}"`}</li>`; return; }
       if (pickFirst) return choose(hits[0]);
-      results.innerHTML = hits.map((h, i) => `<li role="option" data-i="${i}"><svg><use href="#i-pin"/></svg>
-        <span><span class="r-name">${esc(h.name)}</span><br><span class="r-sub">${esc(h.sub)}</span></span></li>`).join("");
+      results.innerHTML = placeRows(hits);
       results.onclick = (e) => { const li = e.target.closest("li[data-i]"); if (li) choose(hits[+li.dataset.i]); };
     } catch {
       if (seq === searchSeq) results.innerHTML = `<li class="r-msg">${tr`Search isn't reachable right now. Try again in a moment.`}</li>`;
@@ -1092,6 +1100,7 @@
     q.value = place.name;
     q.blur();
     track("search");
+    if (state.start) return planRoute([state.start.lat, state.start.lon], place);
     let from = state.me;
     if (!from) {
       toast(tr`Finding your location…`);
@@ -1115,11 +1124,12 @@
       const r = data.routes?.[0];
       if (data.code !== "Ok" || !r) throw new Error(data.code);
       const coords = r.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
-      state.route = { place, from, coords, km: r.distance / 1000, min: r.duration / 60, on: alongRoute(coords) };
+      state.route = { place, from, start: state.start, coords, km: r.distance / 1000, min: r.duration / 60, on: alongRoute(coords) };
       routeLayer.clearLayers();
       L.polyline(coords, { color: css("--ink"), weight: 9, opacity: 0.25, interactive: false }).addTo(routeLayer);
       L.polyline(coords, { color: "#1c7ed6", weight: 5, opacity: 0.95, interactive: false }).addTo(routeLayer);
       L.circleMarker([place.lat, place.lon], { radius: 9, color: "#fff", weight: 3, fillColor: css("--ink"), fillOpacity: 1, interactive: false }).addTo(routeLayer);
+      if (state.start) L.circleMarker(from, { radius: 8, color: "#fff", weight: 3, fillColor: "#1c7ed6", fillOpacity: 1, interactive: false }).addTo(routeLayer);
       map.fitBounds(L.latLngBounds(coords), { paddingTopLeft: [30, 140], paddingBottomRight: [30, 200] });
       state.returnTo = "route";
       render();
@@ -1176,9 +1186,10 @@
     if (loading || error) {
       v.innerHTML = `<div class="route-head"><div class="row-top"><h1>${tr`To ${esc(place.name)}`}</h1>
         <button class="text-btn" id="route-clear" aria-label="${tr`Clear route`}"><svg><use href="#i-close"/></svg></button></div>
+        ${fromField()}
         <div class="meta">${loading ? tr`Finding the route…` : tr`Couldn't get a route right now. Try again in a moment.`}</div></div>`;
     } else {
-      const [primary, ...more] = navLinks(r.place.lat, r.place.lon, r.place.name);
+      const [primary, ...more] = navLinks(r.place.lat, r.place.lon, r.place.name, r.start ? r.from : null);
       v.innerHTML = `
         <div class="route-head">
           <div class="row-top">
@@ -1186,6 +1197,7 @@
               <div class="meta">${tr`${r.km.toFixed(0)} km · about ${fmtMin(r.min)} by car`}</div></div>
             <button class="text-btn" id="route-clear" aria-label="${tr`Clear route`}"><svg><use href="#i-close"/></svg></button>
           </div>
+          ${fromField()}
           ${navLink(primary, "nav-primary")}
           <div class="nav-more" style="margin-top:0">${more.map((l) => navLink(l)).join("")}</div>
           <div class="range-row">
@@ -1208,6 +1220,55 @@
     showView("route-view");
     setPanel(true);
     $("route-clear").onclick = clearRoute;
+    wireFrom(place || r.place);
+  }
+
+  // Where the route starts: the visitor's location, or any place they search.
+  const fromField = () => `<div class="from-box">
+      <label class="from-row" for="from-q"><span class="from-label">${tr`From`}</span>
+        <input id="from-q" type="search" enterkeyhint="search" autocomplete="off" placeholder="${tr`Your location`}" value="${esc(state.start?.name || "")}"></label>
+      <ul id="from-results" class="results from-results" role="listbox" hidden></ul></div>`;
+  function wireFrom(place) {
+    const input = $("from-q"), box = $("from-results");
+    let timer, seq = 0, found = [];
+    const startFrom = async (start) => {
+      box.hidden = true;
+      input.blur();
+      if (start) { state.start = start; track("route-from"); return planRoute([start.lat, start.lon], place); }
+      state.start = null;
+      let from = state.me;
+      if (!from) { toast(tr`Finding your location…`); from = await locate(); toast(); }
+      if (from) planRoute(from, place);
+    };
+    const show = async (text) => {
+      const mine = `<li role="option" data-me="1"><svg><use href="#i-locate"/></svg><span class="r-name">${tr`Your location`}</span></li>`;
+      box.hidden = false;
+      if (text.length < 3) { found = []; box.innerHTML = mine; return; }
+      const n = ++seq;
+      box.innerHTML = `<li class="r-msg">${tr`Searching…`}</li>`;
+      try {
+        const list = await findPlaces(text);
+        if (n !== seq) return;
+        found = list;
+        box.innerHTML = mine + (list.length ? placeRows(list) : `<li class="r-msg">${tr`No places found in ${COUNTRY} for "${esc(text)}"`}</li>`);
+      } catch {
+        if (n === seq) box.innerHTML = `<li class="r-msg">${tr`Search isn't reachable right now. Try again in a moment.`}</li>`;
+      }
+    };
+    input.addEventListener("focus", () => { if (!input.value) show(""); });
+    input.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => show(input.value.trim()), 350); });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") box.hidden = true;
+      if (e.key === "Enter") { e.preventDefault(); if (found.length) startFrom(found[0]); else if (!input.value.trim()) startFrom(null); }
+    });
+    box.addEventListener("click", (e) => {
+      const li = e.target.closest("li[data-i], li[data-me]");
+      if (li) startFrom(li.dataset.me ? null : found[+li.dataset.i]);
+    });
+    document.addEventListener("click", function off(e) {
+      if (!input.isConnected) return document.removeEventListener("click", off);
+      if (!e.target.closest(".from-box")) box.hidden = true;
+    });
   }
 
   function renderRouteList() {
@@ -1305,6 +1366,7 @@
 
   function clearRoute() {
     state.route = null;
+    state.start = null;
     stopLayer.clearLayers();
     state.returnTo = "list";
     routeLayer.clearLayers();
