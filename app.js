@@ -42,7 +42,8 @@
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
   const BANDS = [(r) => tr`Cheap for ${r}`, () => tr`Below average`, () => tr`Above average`, (r) => tr`Expensive for ${r}`];
   const LABEL_ZOOM = 9;      // price tags from island level; overlapping ones stay dots (cheapest win)
-  const ROUTE_KM = 1.0;      // a charger within this distance of the road counts as "on the route"
+  const ROUTE_KM = 1.0;
+  const ULTRA_NET = /\b(ionity|tesla|supercharger|fastned)\b/i;      // a charger within this distance of the road counts as "on the route"
   const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const ua = navigator.userAgent;
@@ -137,11 +138,22 @@
   $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
   const getJson = (f) => fetch(ROOT + f, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
   Promise.all(FR ? [
-    getJson("data/chargers.json").then(decodeFrance),
+    fetch(ROOT + "data/chargers.json", { cache: "no-cache" }).then((r) => {
+      if (!r.ok) throw new Error(r.status);
+      const lm = Date.parse(r.headers.get("last-modified"));
+      if (lm) state.dataTime = new Date(lm);
+      return r.json();
+    }).then(decodeFrance),
     {}, null,
     getJson("data/status.json").catch(() => null),
   ] : [
-    getJson("data/chargers.geojson"),
+    fetch(ROOT + "data/chargers.geojson", { cache: "no-cache" }).then((r) => {
+      if (!r.ok) throw new Error(r.status);
+      // When the daily price update last ran (GitHub Pages sends Last-Modified).
+      const lm = Date.parse(r.headers.get("last-modified"));
+      if (lm) state.dataTime = new Date(lm);
+      return r.json();
+    }),
     getJson("data/tariffs.json").catch(() => ({})),
     getJson("data/pricing.json").catch(() => null),
     getJson("data/status.json").catch(() => null),
@@ -260,6 +272,8 @@
       lat, lon, tariff, opc, bd,
       eff: bd ? bd.perKwh : opc, // the number shown everywhere
       fast: (p.max_kw || 0) >= 50,
+      // Ultra-fast: 200 kW+, or a network built for motorway trips (Ionity, Tesla, Fastned).
+      ultra: (p.max_kw || 0) >= 200 || ((p.max_kw || 0) >= 100 && ULTRA_NET.test(`${p.operator || ""} ${p.network || ""} ${p.name || ""}`)),
       // Bank card at the charger. Not offered in Madeira in practice, whatever
       // the feed says, so only counted elsewhere.
       card: !!p.pay?.card && region !== "madeira",
@@ -299,6 +313,16 @@
       + (c.live.broken ? " · " + tr`${c.live.broken} out of order` : "")
     : c.live.busy ? tr`All plugs in use` : tr`Out of order`);
   const hhmm = (d) => d.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" });
+  // "4 min ago", "2 h ago"; older: "today 04:17", "24 Nov".
+  function ago(d) {
+    const m = Math.round((Date.now() - d) / 60000);
+    if (m < 1) return tr`just now`;
+    if (m < 60) return tr`${m} min ago`;
+    if (m < 180) return tr`${Math.round(m / 60)} h ago`;
+    return new Date().toDateString() === d.toDateString() ? tr`today ${hhmm(d)}`
+      : d.toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
+  }
+  const STATUS_STALE = 20 * 60 * 1000; // older than this: "may have changed"
 
   // Motorway service areas and junctions: the feed has no flag for it, so read
   // the name and address ("Área de Serviço", "(A2) KM 148", "A25 - AS Vilar
@@ -453,6 +477,7 @@
     for (const c of items) if (!tags.has(c.id)) addDot(c);
     for (const c of items) if (tags.has(c.id)) addTag(c);
     renderList();
+    renderDataLine();
     if (state.route) renderRouteList();
   }
 
@@ -461,14 +486,15 @@
   function placeTags(items) {
     const placed = [];
     const out = new Set();
-    const rank = (c) => (c.id === state.selected?.id ? 2 : 0) + (state.route?.on.has(c.id) ? 1 : 0);
+    // Ultra-fast stations get their tag before cheaper chargers nearby.
+    const rank = (c) => (c.id === state.selected?.id ? 4 : 0) + (state.route?.on.has(c.id) ? 2 : 0) + (c.ultra ? 1 : 0);
     const view = map.getBounds().pad(0.1);
     const priority = items.filter((c) => c.eff != null && view.contains([c.lat, c.lon])).sort((a, b) => rank(b) - rank(a) || a.eff - b.eff);
     for (const c of priority) {
       const pt = map.latLngToLayerPoint([c.lat, c.lon]);
       // Real tag sizes; zoomed out, tags are compact (smaller, no bolt) so more fit.
       const compact = map.getZoom() < 13;
-      const w = compact ? 10 + priceTag(c).length * 6.5 : 16 + priceTag(c).length * 8 + (c.fast ? 12 : 0);
+      const w = compact ? 10 + priceTag(c).length * 6.5 + (c.ultra ? 14 : 0) : 16 + priceTag(c).length * 8 + (c.ultra ? 22 : c.fast ? 12 : 0);
       const h = compact ? 19 : 26, tip = compact ? 5 : 7;
       const box = { l: pt.x - w / 2, r: pt.x + w / 2, t: pt.y - h - tip, b: pt.y };
       if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
@@ -484,8 +510,8 @@
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
         html: map.getZoom() < 13 && !sel
-          ? `<span class="pin-tag compact${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
-          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
+          ? `<span class="pin-tag compact${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${c.ultra ? '<svg class="b2"><use href="#i-bolt2"/></svg>' : ""}${priceTag(c)}</span>`
+          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${c.ultra ? '<svg class="b2"><use href="#i-bolt2"/></svg>' : c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
     });
@@ -496,9 +522,9 @@
   function addDot(c) {
     const sel = state.selected?.id === c.id;
     const m = L.circleMarker([c.lat, c.lon], {
-      radius: sel ? 12 : c.fast ? 9 : 7,
-      color: sel ? colour("--focus") : c.fast ? colour("--ink") : "#ffffff",
-      weight: sel ? 4 : 2,
+      radius: sel ? 12 : c.ultra ? 10 : c.fast ? 9 : 7,
+      color: sel ? colour("--focus") : c.ultra ? colour("--ultra") : c.fast ? colour("--ink") : "#ffffff",
+      weight: sel ? 4 : c.ultra ? 3.5 : 2,
       fillColor: colour(c.colourVar), fillOpacity: 1,
       bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
     });
@@ -543,16 +569,16 @@
   function fillRows(list, items, sub, from, rowClass = () => "") {
     list.innerHTML = items.map((c, i) => `
       <li class="row ${rowClass(c)}" data-i="${i}" tabindex="0">
-        <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}" style="--c:var(${c.colourVar})">
-          <svg><use href="#${c.fast ? "i-bolt" : "i-plug"}"/></svg>
+        <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">
+          <svg><use href="#${c.ultra ? "i-bolt2" : c.fast ? "i-bolt" : "i-plug"}"/></svg>
         </span>
         <span class="row-main">
           <span class="row-name">${esc(c.title)}</span>
           <span class="row-sub">${esc(sub(c))}</span>
         </span>
         ${c.eff != null
-          ? `<span class="row-price${c.est ? " approx" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : tr`per kWh`}</small></span>`
-          : `<span class="row-price none">${tr`No price`}</span>`}
+          ? `<span class="row-price${c.est ? " approx" : ""}">${c.isFree ? tr`Free` : priceTag(c)}<small>${c.isFree ? "" : c.est ? tr`usual price` : FR ? tr`per kWh` : tr`est. /kWh`}</small></span>`
+          : `<span class="row-price none">${tr`No price data`}</span>`}
       </li>`).join("");
     const pick = (e) => {
       const li = e.target.closest(".row");
@@ -644,7 +670,9 @@
     const t = c.tariff;
     const p = state.pricing;
     if (c.eff == null) {
-      return `<div class="price-box none">${tr`No price published for this charger. Check your charging app before you start.`}</div>`;
+      return `<div class="price-box none"><span class="conf none">${tr`No price data`}</span>
+        ${c.source === "osm" ? tr`This network doesn't share its prices with MOBI.E. Check its own app before you start.`
+          : tr`The operator hasn't published a price. That doesn't mean it's free: check your app before you start.`}</div>`;
     }
     const parts = [];
     if (t?.kwh) parts.push(`${euro(t.kwh)}/kWh`);
@@ -657,6 +685,9 @@
         <div class="band">${BANDS[c.band](REGIONS[c.region].name)}</div>
         <div class="parts">${bd ? tr`≈ ${euro(bd.total)} for ${bd.n} kWh, incl. VAT` : esc(parts.join(" + "))}</div>
       </div>
+      <p class="trust"><span class="conf">${c.isFree ? tr`Operator says free` : tr`Estimate`}</span>
+        ${state.dataTime ? tr`Operator's price from MOBI.E, checked ${ago(state.dataTime)}.` : tr`Operator's price from MOBI.E.`}
+        ${tr`Your app shows the final price before you start; parking or idle fees aren't included.`}</p>
       ${bd ? `<details class="note"><summary><svg><use href="#i-info"/></svg>${tr`Estimated total. How is it worked out?`}</summary>
         <table class="breakdown">
           <tr><td>${tr`Charger operator (${esc(parts.join(" + "))})`}</td><td>${euro(bd.operator)}</td></tr>
@@ -703,6 +734,7 @@
           <button class="text-btn" id="back"><svg><use href="#i-back"/></svg>${back}</button>
           <button class="text-btn" id="close" aria-label="${tr`Close`}"><svg><use href="#i-close"/></svg></button>
         </div>
+        ${c.ultra ? `<span class="ultra-pill"><svg><use href="#i-bolt2"/></svg>${tr`Ultra-fast, ${fmtKw(c.max_kw || 150)} kW`}</span>` : ""}
         <h2 id="detail-title">${esc(c.title)}</h2>
         <div class="place">${esc(place || tr`Operator unknown`)}</div>
         ${routeInfo ? `<div class="leg">${routeInfo.off > 0.15
@@ -712,8 +744,7 @@
         ${navLink(primary, "nav-primary")}
         <div class="nav-more">${more.map((l) => navLink(l)).join("")}</div>
 
-        ${c.live ? `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span>${liveLong(c)}
-          <span class="sub">${tr`at ${hhmm(state.statusTime)}`}</span></div>` : ""}
+        ${statusBlock(c)}
         ${priceSection(c)}
 
         ${pay.length ? `<div class="section-label">${tr`How to pay`}</div><ul class="facts">${pay.join("")}</ul>` : ""}
@@ -722,14 +753,92 @@
         ${sockets || hours ? `<div class="section-label">${tr`Plugs`}</div><ul class="facts">${sockets}
           ${hours ? `<li><svg><use href="#i-clock"/></svg>${tr`Open ${esc(hours)}`}</li>` : ""}</ul>` : ""}
 
+        <div id="alts"></div>
         <div class="code">${c.mobie ? tr`MOBI.E code` : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
       </div>`;
     showView("detail-view");
     $("detail-view").querySelector(".detail").scrollTop = 0;
+    showAlternatives(c);
     $("back").onclick = () => closeDetail(true);
     $("close").onclick = () => closeDetail(false);
     setPanel(true);
     $("back").focus({ preventScroll: true });
+  }
+
+  // Live status with its age, or a plain "unknown": never green without data.
+  function statusBlock(c) {
+    if (c.live) {
+      const stale = Date.now() - state.statusTime > STATUS_STALE;
+      return `<div class="live ${c.live.free ? "ok" : c.live.busy ? "busy" : "bad"}"><span class="dot"></span><span>${liveLong(c)}
+        <span class="sub">${FR ? tr`Updated ${ago(state.statusTime)}` : tr`Live from MOBI.E, updated ${ago(state.statusTime)}`}${stale ? " · " + tr`may have changed` : ""}</span></span></div>`;
+    }
+    return `<div class="live unknown"><span class="dot"></span><span>${tr`Status unknown`}
+      <span class="sub">${c.source === "osm" && !FR ? tr`Not on MOBI.E, so no live data` : state.statusTime ? tr`This charger doesn't report live status` : tr`Live status isn't available right now`}</span></span></div>`;
+  }
+
+  // Plan B: the nearest chargers with a matching plug (and fast if this one is),
+  // leaving out ones reported out of order.
+  function showAlternatives(c) {
+    const box = $("alts");
+    if (!box) return;
+    const km = (a) => { const R = 6371, t = Math.PI / 180, dLat = (a.lat - c.lat) * t, dLon = (a.lon - c.lon) * t;
+      return 2 * R * Math.asin(Math.sqrt(Math.sin(dLat / 2) ** 2 + Math.cos(c.lat * t) * Math.cos(a.lat * t) * Math.sin(dLon / 2) ** 2)); };
+    const alts = state.all.filter((a) => a !== c && (!c.fast || a.fast)
+        && (!c.plugs.size || [...c.plugs].some((p) => a.plugs.has(p)))
+        && !(a.live && !a.live.free && !a.live.busy))
+      .map((a) => [a, km(a)]).filter(([, d]) => d > 0.03 && d < 25)
+      // a free plug beats a slightly nearer charger that's all in use
+      .sort((x, y) => x[1] + (x[0].live && !x[0].live.free ? 3 : 0) - y[1] - (y[0].live && !y[0].live.free ? 3 : 0)).filter(([a], i, arr) => arr.findIndex(([b]) => b.title === a.title) === i).slice(0, 3);
+    if (!alts.length) { box.innerHTML = ""; return; }
+    box.innerHTML = `<div class="section-label">${tr`If this one doesn't work`}</div><ol class="list alt-list" id="alt-list"></ol>`;
+    const d = new Map(alts);
+    fillRows($("alt-list"), alts.map(([a]) => a), (a) => [d.get(a) < 1 ? tr`${Math.round(d.get(a) * 1000)} m away` : tr`${d.get(a).toFixed(1)} km away`,
+      a.max_kw ? `${fmtKw(a.max_kw)} kW` : null, a.live ? liveShort(a) : tr`status unknown`].filter(Boolean).join(" · "), state.returnTo);
+  }
+
+  // What the map knows, per region and source.
+  function showCoverage() {
+    const rows = Object.entries(REGIONS).map(([k, r]) => {
+      const cs = state.all.filter((c) => c.region === k && c.source !== "osm");
+      return [r.name, cs.length, cs.filter((c) => c.eff != null).length, cs.filter((c) => c.live).length];
+    });
+    const osm = state.all.filter((c) => c.source === "osm");
+    if (osm.length) rows.push([tr`Tesla and others`, osm.length, 0, 0]);
+    const checked = state.dataTime ? " " + tr`Last checked ${ago(state.dataTime)}.` : "";
+    const updated = state.statusTime ? " " + tr`Last update ${ago(state.statusTime)}.` : "";
+    const pct = (a, n) => (n ? Math.round((a / n) * 100) + "%" : "–");
+    $("help-view").innerHTML = `
+      <div class="help">
+        <div class="detail-top"><button class="text-btn" id="help-back"><svg><use href="#i-back"/></svg>${tr`Back`}</button></div>
+        <h2>${tr`What this map knows`}</h2>
+        <table class="cov"><thead><tr><th></th><th>${tr`Chargers`}</th><th>${tr`Price`}</th><th>${tr`Live status`}</th></tr></thead>
+          <tbody>${rows.map(([n, all, pr, lv]) => `<tr><td>${esc(n)}</td><td>${all.toLocaleString(LOCALE)}</td><td>${pct(pr, all)}</td><td>${pct(lv, all)}</td></tr>`).join("")}</tbody></table>
+        ${FR ? `<h3>${tr`Prices`}</h3>
+        <p>${tr`What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a ${sessionKwh()} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.`}${checked}</p>
+        <h3>${tr`Live status`}</h3>
+        <p>${tr`Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.`}${updated} ${tr`Grey means unknown, not free.`}</p>
+        <p>${tr`Not an official government site.`}</p>` : `
+        <h3>${tr`Prices are estimates`}</h3>
+        <p>${tr`Each price adds the operator's fee (published on MOBI.E) to Miio's energy price, grid access and VAT, for a ${sessionKwh()} kWh charge. Other apps and subscriptions differ a little. Your app shows the final price before you start.`}${checked}</p>
+        <h3>${tr`Live status`}</h3>
+        <p>${tr`Free, in use or out of order, from MOBI.E every 15 minutes.`}${updated} ${tr`Grey means unknown, not free.`}</p>
+        <h3>${tr`Tesla and other networks`}</h3>
+        <p>${tr`Fast chargers outside MOBI.E come from OpenStreetMap: location and power only, no price or live status. Miio doesn't work there; use the network's own app.`}</p>
+        <p>${tr`Not an official MOBI.E site.`}</p>`}
+      </div>`;
+    showView("help-view");
+    setPanel(true);
+    $("help-back").onclick = () => showView(state.route ? "route-view" : "list-view");
+    track("coverage");
+  }
+  function renderDataLine() {
+    const el = $("data-line");
+    if (!el) return;
+
+    const bits = [FR ? (state.dataTime ? tr`Prices checked ${ago(state.dataTime)}` : tr`Prices`) : tr`Prices are estimates`];
+    if (state.statusTime) bits.push(tr`status ${ago(state.statusTime)}`);
+    el.innerHTML = `<svg><use href="#i-info"/></svg><span>${bits.join(" · ")}</span>`;
+    el.onclick = showCoverage;
   }
 
   function closeDetail(keepOpen) {
