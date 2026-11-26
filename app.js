@@ -70,6 +70,7 @@
     returnTo: "list", // which view "back" goes to from a charger
     labels: load("labels") !== "0",
     range: +load("range") || 0, // car's real-world range in km, for route stops; 0 = not set
+    plan: load("plan") === "fastest" ? "fastest" : "cheapest", // route stops: lowest cost or least time
     pickingStart: false,
   };
 
@@ -1293,30 +1294,92 @@
     }, "route", (c) => (plan?.stops.includes(c) ? "stop" : ""));
   }
 
-  // Charging stops for the car's range. Leaves with a full battery and keeps
-  // 10% in reserve (first leg 90% of the range); each fast charge is 10 -> 80%
-  // (70% of the range). In the last stretch of each leg it picks the cheapest
-  // fast charger, so stops are not only placed as far out as possible.
-  const FIRST_LEG = 0.9, NEXT_LEG = 0.7;
+  // Charging stops for the car's range, planned over the whole trip. The car
+  // leaves full, keeps 10% in reserve and charges at fast chargers to at most
+  // 80%. A search over (charger, battery level) finds where to stop and how
+  // much to charge so the whole trip is cheapest (energy cost, plus €3 per
+  // stop so it won't add a stop to save cents) or fastest (charging time from
+  // each charger's speed, plus a few minutes per stop).
+  const KWH_PER_KM = 0.18, RESERVE = 0.1, MAX_SOC = 0.8, CAR_KW = 120;
+  const STOP_EUR = 3, STOP_MIN = 8;
+  const chargeKw = (c) => Math.min(c.max_kw || 50, CAR_KW) * 0.75; // average over a 10-80% charge
   function planStops(items) {
     if (!state.range || !state.route) return null;
-    const total = state.route.km, on = state.route.on;
-    const fast = items.filter((c) => c.fast);
-    const stops = [];
-    let pos = 0, leg = state.range * FIRST_LEG, gap = null;
-    while (pos + leg < total) {
-      const reach = fast.filter((c) => { const a = on.get(c.id).along; return a > pos + 1 && a <= pos + leg; });
-      if (!reach.length) { gap = pos; break; }
-      const late = reach.filter((c) => on.get(c.id).along >= pos + leg * 0.6);
-      const pool = late.length ? late : reach;
-      const price = (c) => c.eff ?? Infinity;
-      const pick = pool.reduce((b, c) => (price(c) < price(b) || (price(c) === price(b) && on.get(c.id).along > on.get(b.id).along) ? c : b));
-      stops.push(pick);
-      pos = on.get(pick.id).along;
-      leg = state.range * NEXT_LEG;
-      if (stops.length > 30) break;
+    const R = state.range, total = state.route.km, on = state.route.on;
+    const fast = items.filter((c) => c.fast).sort((a, b) => on.get(a.id).along - on.get(b.id).along);
+    // Chargers without a price count at a high-ish price, so priced ones win ties.
+    const known = fast.map((c) => (c.isFree ? 0 : c.eff)).filter((v) => v != null).sort((a, b) => a - b);
+    const fallback = known.length ? known[Math.floor(known.length * 0.75)] : 0.6;
+    const price = (c) => (c.isFree ? 0 : c.eff ?? fallback);
+    const u = R / 100, L = 100; // battery in 1% steps
+    const res = Math.ceil((R * RESERVE) / u), cap = Math.floor((R * MAX_SOC) / u);
+    const fastest = state.plan === "fastest";
+    // Weight of one step charged at c, and of a stop: minutes or euros. The other
+    // goal breaks ties.
+    const stepW = (c) => fastest ? (u * KWH_PER_KM / chargeKw(c)) * 60 + u * KWH_PER_KM * price(c) * 0.01
+      : u * KWH_PER_KM * price(c) + (u * KWH_PER_KM / chargeKw(c)) * 0.01;
+    const stopW = fastest ? STOP_MIN : STOP_EUR;
+    const nodes = [{ along: 0 }, ...fast.map((c) => ({ c, along: on.get(c.id).along })), { along: total }];
+    const N = nodes.length;
+    const dp = nodes.map(() => new Float64Array(L + 1).fill(Infinity));
+    const fromNode = nodes.map(() => new Int32Array(L + 1).fill(-1));
+    const fromLevel = nodes.map(() => new Int16Array(L + 1));
+    const chargedFrom = nodes.map(() => null);
+    dp[0][L] = 0;
+    for (let i = 0; i < N - 1; i++) {
+      const arr = dp[i];
+      let best = arr, from = null;
+      if (i > 0) {
+        // Leave with level c: either as arrived, or charge from b < c (c <= cap).
+        const w = stepW(nodes[i].c);
+        best = Float64Array.from(arr);
+        from = new Int16Array(L + 1).fill(-1);
+        let m = Infinity, mb = -1;
+        for (let c = 0; c <= L; c++) {
+          if (c > 0 && arr[c - 1] - (c - 1) * w < m) { m = arr[c - 1] - (c - 1) * w; mb = c - 1; }
+          if (c <= cap && mb >= 0) {
+            const v = m + c * w + stopW;
+            if (v < best[c]) { best[c] = v; from[c] = mb; }
+          }
+        }
+        chargedFrom[i] = from;
+      }
+      for (let j = i + 1; j < N; j++) {
+        const d = Math.ceil((nodes[j].along - nodes[i].along) / u - 1e-9);
+        if (d > L - res) break;
+        const dj = dp[j];
+        for (let c = res + d; c <= L; c++) {
+          const v = best[c];
+          if (v < dj[c - d]) { dj[c - d] = v; fromNode[j][c - d] = i; fromLevel[j][c - d] = c; }
+        }
+      }
     }
-    return { stops, gap };
+    const end = N - 1;
+    let a = -1;
+    for (let x = res; x <= L; x++) if (dp[end][x] < Infinity && (a < 0 || dp[end][x] < dp[end][a])) a = x;
+    if (a < 0) {
+      let far = 0;
+      for (let i = 1; i < N - 1; i++) if (dp[i].some((v) => v < Infinity)) far = Math.max(far, nodes[i].along);
+      return { stops: [], legs: [], gap: far };
+    }
+    // Walk back from the destination.
+    const legs = [];
+    for (let j = end, lvl = a; j > 0;) {
+      const i = fromNode[j][lvl], c = fromLevel[j][lvl];
+      if (i > 0) {
+        const b = chargedFrom[i][c];
+        if (b >= 0) {
+          const ch = nodes[i].c, kwh = (c - b) * u * KWH_PER_KM;
+          legs.unshift({ c: ch, arrive: b / L, leave: c / L, kwh, cost: kwh * price(ch), priced: ch.isFree || ch.eff != null, min: (kwh / chargeKw(ch)) * 60 });
+        }
+        // a stop node without charging: carry on from its arrival level
+        lvl = b >= 0 ? b : c;
+      }
+      j = i;
+    }
+    const sum = (k) => legs.reduce((t, l) => t + l[k], 0);
+    return { stops: legs.map((l) => l.c), legs, gap: null, cost: sum("cost"), kwh: sum("kwh"),
+      chargeMin: sum("min") + legs.length * STOP_MIN, unpriced: legs.filter((l) => !l.priced).length, fallback };
   }
 
   function showStops(plan) {
@@ -1325,22 +1388,39 @@
     if (!box) return;
     box.hidden = !plan;
     if (!plan) { if ($("nav-label")) $("nav-label").hidden = true; return; }
-    const { stops, gap } = plan;
+    const { stops, gap, legs } = plan;
     const n = stops.length;
     const label0 = $("nav-label");
     if (label0) label0.hidden = true;
     box.className = "stops-summary" + (gap != null ? " warn" : "");
     const on = state.route.on;
-    box.innerHTML = `<p>${gap != null
+    const seg = `<div class="seg plan-seg" role="radiogroup" aria-label="${tr`Plan the stops for`}">
+      <button type="button" role="radio" data-plan="cheapest" aria-checked="${state.plan === "cheapest"}">${tr`Cheapest`}</button>
+      <button type="button" role="radio" data-plan="fastest" aria-checked="${state.plan === "fastest"}">${tr`Fastest`}</button></div>`;
+    const totals = n && gap == null ? `<p class="plan-total"><span><b>${plan.unpriced ? "~" : ""}${euro(plan.cost)}</b> ${tr`for charging`}</span> · <span><b>${fmtMin(plan.chargeMin)}</b> ${tr`stopped`}</span> · <span>${tr`${fmtMin(state.route.min + plan.chargeMin)} in total`}</span></p>` : "";
+    box.innerHTML = `${seg}<p>${gap != null
       ? tr`No fast charger within reach after km ${gap.toFixed(0)}. Plan this trip with your car's own planner, or turn a filter off.`
-      : n === 1 ? tr`1 charging stop with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
-        : n ? tr`${n} charging stops with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
-        : tr`No charging stop needed with a ${state.range} km range.`}</p>${n && gap == null ? googleRoute(stops) : ""}${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
+      : n === 1 ? (state.plan === "fastest" ? tr`1 charging stop, planned for the shortest trip.` : tr`1 charging stop, planned for the lowest total cost.`)
+        : n ? (state.plan === "fastest" ? tr`${n} charging stops, planned for the shortest trip.` : tr`${n} charging stops, planned for the lowest total cost.`)
+        : tr`No charging stop needed with a ${state.range} km range.`}</p>${totals}${n && gap == null ? googleRoute(stops) : ""}${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
     const label = $("nav-label");
     if (label) label.hidden = !(n && gap == null);
     $("share-stops")?.addEventListener("click", () => shareStops(stops));
-    if (n) fillRows($("stop-list"), stops, (c) => [tr`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
-      c.max_kw ? `${fmtKw(c.max_kw)} kW` : null].filter(Boolean).join(" · "), "route");
+    if (n) {
+      fillRows($("stop-list"), stops, (c) => {
+        const l = legs[stops.indexOf(c)];
+        return [tr`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`, c.max_kw ? `${fmtKw(c.max_kw)} kW` : null,
+          `${pct(l.arrive)}\u00a0→\u00a0${pct(l.leave)}`, `${l.priced ? "" : "~"}${euro(l.cost)}`, fmtMin(l.min)].filter(Boolean).join(" · ");
+      }, "route");
+      if (gap == null) box.insertAdjacentHTML("beforeend", `<p class="plan-note">${tr`Estimate for ${Math.round(KWH_PER_KM * 100)} kWh per 100 km, leaving full, arriving with at least 10% and charging up to 80%.`}${plan.unpriced ? " " + tr`A ~ means a stop without a price, counted at ${euro(plan.fallback)}/kWh.` : ""}</p>`);
+    }
+    box.querySelectorAll("[data-plan]").forEach((b) => b.addEventListener("click", () => {
+      if (state.plan === b.dataset.plan) return;
+      state.plan = b.dataset.plan;
+      save("plan", state.plan);
+      track("plan-" + state.plan);
+      renderRouteList();
+    }));
     stops.forEach((c, i) => L.marker([c.lat, c.lon], {
       icon: L.divIcon({ className: "stop-pin", html: `<span>${i + 1}</span>`, iconSize: [26, 26] }),
       interactive: false, keyboard: false, zIndexOffset: 1000,
@@ -1382,16 +1462,20 @@
   // Google Maps route, for the share sheet or the clipboard.
   async function shareStops(stops) {
     const r = state.route, on = r.on;
+    const plan = planStops(visible().filter((c) => on.has(c.id)));
     const from = r.start?.name || tr`Your location`;
     const lines = [tr`${from} to ${r.place.name}: ${r.km.toFixed(0)} km, ${stops.length} charging stops (${state.range} km range)`, ""];
     stops.forEach((c, i) => {
       const price = c.eff == null ? tr`no price data` : c.isFree ? tr`Free` : `${priceTag(c)}/kWh`;
       lines.push(`${i + 1}. ${c.title}`);
+      const l = plan?.legs[i];
       lines.push(`   km ${on.get(c.id).along.toFixed(0)} · ${c.max_kw ? `${fmtKw(c.max_kw)} kW · ` : ""}${price}`);
+      if (l) lines.push(`   ${pct(l.arrive)} → ${pct(l.leave)} · ${l.kwh.toFixed(0)} kWh · ${l.priced ? "" : "~"}${euro(l.cost)} · ${fmtMin(l.min)}`);
       if (c.address && !c.address.startsWith(c.title)) lines.push(`   ${c.address}`);
       lines.push(`   https://www.google.com/maps/search/?api=1&query=${ll(c.lat, c.lon)}`);
     });
     const parts = googleParts(stops);
+    if (plan?.legs.length) lines.push("", tr`Charging about ${euro(plan.cost)}, ${fmtMin(plan.chargeMin)} stopped, ${fmtMin(r.min + plan.chargeMin)} in total.`);
     lines.push("", tr`Whole route in Google Maps:`, ...parts.map(googleUrl), "", location.origin + location.pathname);
     const text = lines.join("\n");
     try {
@@ -1555,6 +1639,7 @@
       Math.cos(state.me[0] * toR) * Math.cos(c.lat * toR) * Math.sin(dLon / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(a));
   }
+  const pct = (f) => `${Math.round(f * 100)}%`;
   function fmtMin(m) { return m < 60 ? `${Math.round(m)} min` : `${Math.floor(m / 60)} h ${Math.round(m % 60)} min`; }
   function euro(v) { return LANG === "fr" ? v.toFixed(2).replace(".", ",") + " €" : "€" + v.toFixed(2); }
   // "~€0.52": a network's usual price rather than this charger's own (France).
