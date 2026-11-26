@@ -470,6 +470,13 @@ h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: 0; }
 .gmaps-route svg { width: 18px; height: 18px; flex: none; }
 @media (prefers-color-scheme: dark) { .gmaps-route { color: var(--brand-strong) !important; } }
 .gmaps-note { margin-top: 8px !important; color: var(--muted); }
+.plan-seg { grid-template-columns: 1fr 1fr; margin-bottom: 8px; background: var(--surface); }
+.plan-seg button[aria-checked="true"] { background: var(--brand); color: var(--brand-ink); }
+@media (prefers-color-scheme: dark) { .plan-seg button[aria-checked="true"] { background: var(--brand-strong); color: #07140f; } }
+.plan-total { margin-top: 4px !important; font-size: 14px; }
+.plan-total span { white-space: nowrap; }
+.stop-list .row-sub { white-space: normal; overflow: visible; text-overflow: clip; }
+.plan-note { margin-top: 6px !important; color: var(--muted); font-size: 12.5px; }
 .gmaps-actions { display: grid; gap: 6px; margin-top: 8px; }
 .gmaps-actions .gmaps-route { margin-top: 0; }
 button.gmaps-route { font: inherit; font-weight: 600; font-size: 14.5px; cursor: pointer; width: 100%; }
