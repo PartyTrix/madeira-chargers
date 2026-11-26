@@ -42,7 +42,8 @@
   const PALETTE = ["--p1", "--p2", "--p3", "--p4"];
   const BANDS = [(r) => tr`Cheap for ${r}`, () => tr`Below average`, () => tr`Above average`, (r) => tr`Expensive for ${r}`];
   const LABEL_ZOOM = 9;      // price tags from island level; overlapping ones stay dots (cheapest win)
-  const ROUTE_KM = 1.0;      // a charger within this distance of the road counts as "on the route"
+  const ROUTE_KM = 1.0;
+  const ULTRA_NET = /\b(ionity|tesla|supercharger|fastned)\b/i;      // a charger within this distance of the road counts as "on the route"
   const $ = (id) => document.getElementById(id);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const ua = navigator.userAgent;
@@ -137,7 +138,12 @@
   $("list").innerHTML = '<li class="skeleton"></li>'.repeat(4);
   const getJson = (f) => fetch(ROOT + f, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
   Promise.all(FR ? [
-    getJson("data/chargers.json").then(decodeFrance),
+    fetch(ROOT + "data/chargers.json", { cache: "no-cache" }).then((r) => {
+      if (!r.ok) throw new Error(r.status);
+      const lm = Date.parse(r.headers.get("last-modified"));
+      if (lm) state.dataTime = new Date(lm);
+      return r.json();
+    }).then(decodeFrance),
     {}, null,
     getJson("data/status.json").catch(() => null),
   ] : [
@@ -266,6 +272,8 @@
       lat, lon, tariff, opc, bd,
       eff: bd ? bd.perKwh : opc, // the number shown everywhere
       fast: (p.max_kw || 0) >= 50,
+      // Ultra-fast: 200 kW+, or a network built for motorway trips (Ionity, Tesla, Fastned).
+      ultra: (p.max_kw || 0) >= 200 || ((p.max_kw || 0) >= 100 && ULTRA_NET.test(`${p.operator || ""} ${p.network || ""} ${p.name || ""}`)),
       // Bank card at the charger. Not offered in Madeira in practice, whatever
       // the feed says, so only counted elsewhere.
       card: !!p.pay?.card && region !== "madeira",
@@ -485,7 +493,7 @@
       const pt = map.latLngToLayerPoint([c.lat, c.lon]);
       // Real tag sizes; zoomed out, tags are compact (smaller, no bolt) so more fit.
       const compact = map.getZoom() < 13;
-      const w = compact ? 10 + priceTag(c).length * 6.5 : 16 + priceTag(c).length * 8 + (c.fast ? 12 : 0);
+      const w = compact ? 10 + priceTag(c).length * 6.5 : 16 + priceTag(c).length * 8 + (c.ultra ? 18 : c.fast ? 12 : 0);
       const h = compact ? 19 : 26, tip = compact ? 5 : 7;
       const box = { l: pt.x - w / 2, r: pt.x + w / 2, t: pt.y - h - tip, b: pt.y };
       if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
@@ -501,8 +509,8 @@
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
         html: map.getZoom() < 13 && !sel
-          ? `<span class="pin-tag compact${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
-          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}" style="--c:var(${c.colourVar})">${c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
+          ? `<span class="pin-tag compact${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
+          : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${c.ultra ? '<svg class="b2"><use href="#i-bolt2"/></svg>' : c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
     });
@@ -513,9 +521,9 @@
   function addDot(c) {
     const sel = state.selected?.id === c.id;
     const m = L.circleMarker([c.lat, c.lon], {
-      radius: sel ? 12 : c.fast ? 9 : 7,
-      color: sel ? colour("--focus") : c.fast ? colour("--ink") : "#ffffff",
-      weight: sel ? 4 : 2,
+      radius: sel ? 12 : c.ultra ? 10 : c.fast ? 9 : 7,
+      color: sel ? colour("--focus") : c.ultra ? colour("--ultra") : c.fast ? colour("--ink") : "#ffffff",
+      weight: sel ? 4 : c.ultra ? 3.5 : 2,
       fillColor: colour(c.colourVar), fillOpacity: 1,
       bubblingMouseEvents: false, // a tap on a pin must not also count as a tap on the map
     });
@@ -560,8 +568,8 @@
   function fillRows(list, items, sub, from, rowClass = () => "") {
     list.innerHTML = items.map((c, i) => `
       <li class="row ${rowClass(c)}" data-i="${i}" tabindex="0">
-        <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}" style="--c:var(${c.colourVar})">
-          <svg><use href="#${c.fast ? "i-bolt" : "i-plug"}"/></svg>
+        <span class="badge${c.eff == null ? " none" : ""}${c.fast ? " fast" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">
+          <svg><use href="#${c.ultra ? "i-bolt2" : c.fast ? "i-bolt" : "i-plug"}"/></svg>
         </span>
         <span class="row-main">
           <span class="row-name">${esc(c.title)}</span>
@@ -725,6 +733,7 @@
           <button class="text-btn" id="back"><svg><use href="#i-back"/></svg>${back}</button>
           <button class="text-btn" id="close" aria-label="${tr`Close`}"><svg><use href="#i-close"/></svg></button>
         </div>
+        ${c.ultra ? `<span class="ultra-pill"><svg><use href="#i-bolt2"/></svg>${tr`Ultra-fast, ${fmtKw(c.max_kw || 150)} kW`}</span>` : ""}
         <h2 id="detail-title">${esc(c.title)}</h2>
         <div class="place">${esc(place || tr`Operator unknown`)}</div>
         ${routeInfo ? `<div class="leg">${routeInfo.off > 0.15
@@ -794,6 +803,8 @@
     });
     const osm = state.all.filter((c) => c.source === "osm");
     if (osm.length) rows.push([tr`Tesla and others`, osm.length, 0, 0]);
+    const checked = state.dataTime ? " " + tr`Last checked ${ago(state.dataTime)}.` : "";
+    const updated = state.statusTime ? " " + tr`Last update ${ago(state.statusTime)}.` : "";
     const pct = (a, n) => (n ? Math.round((a / n) * 100) + "%" : "–");
     $("help-view").innerHTML = `
       <div class="help">
@@ -801,13 +812,18 @@
         <h2>${tr`What this map knows`}</h2>
         <table class="cov"><thead><tr><th></th><th>${tr`Chargers`}</th><th>${tr`Price`}</th><th>${tr`Live status`}</th></tr></thead>
           <tbody>${rows.map(([n, all, pr, lv]) => `<tr><td>${esc(n)}</td><td>${all.toLocaleString(LOCALE)}</td><td>${pct(pr, all)}</td><td>${pct(lv, all)}</td></tr>`).join("")}</tbody></table>
-        <h3>${tr`Prices are estimates`}</h3>
-        <p>${tr`Each price adds the operator's fee (published on MOBI.E) to Miio's energy price, grid access and VAT, for a ${sessionKwh()} kWh charge. Other apps and subscriptions differ a little. Your app shows the final price before you start.`}${state.dataTime ? " " + tr`Last checked ${ago(state.dataTime)}.` : ""}</p>
+        ${FR ? `<h3>${tr`Prices`}</h3>
+        <p>${tr`What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a ${sessionKwh()} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.`}${checked}</p>
         <h3>${tr`Live status`}</h3>
-        <p>${tr`Free, in use or out of order, from MOBI.E every 15 minutes.`}${state.statusTime ? " " + tr`Last update ${ago(state.statusTime)}.` : ""} ${tr`Grey means unknown, not free.`}</p>
+        <p>${tr`Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.`}${updated} ${tr`Grey means unknown, not free.`}</p>
+        <p>${tr`Not an official government site.`}</p>` : `
+        <h3>${tr`Prices are estimates`}</h3>
+        <p>${tr`Each price adds the operator's fee (published on MOBI.E) to Miio's energy price, grid access and VAT, for a ${sessionKwh()} kWh charge. Other apps and subscriptions differ a little. Your app shows the final price before you start.`}${checked}</p>
+        <h3>${tr`Live status`}</h3>
+        <p>${tr`Free, in use or out of order, from MOBI.E every 15 minutes.`}${updated} ${tr`Grey means unknown, not free.`}</p>
         <h3>${tr`Tesla and other networks`}</h3>
         <p>${tr`Fast chargers outside MOBI.E come from OpenStreetMap: location and power only, no price or live status. Miio doesn't work there; use the network's own app.`}</p>
-        <p>${tr`Not an official MOBI.E site.`}</p>
+        <p>${tr`Not an official MOBI.E site.`}</p>`}
       </div>`;
     showView("help-view");
     setPanel(true);
@@ -817,9 +833,8 @@
   function renderDataLine() {
     const el = $("data-line");
     if (!el) return;
-    // The coverage page describes the Portuguese data (MOBI.E, Miio).
-    if (FR) { el.hidden = true; return; }
-    const bits = [tr`Prices are estimates`];
+
+    const bits = [FR ? (state.dataTime ? tr`Prices checked ${ago(state.dataTime)}` : tr`Prices`) : tr`Prices are estimates`];
     if (state.statusTime) bits.push(tr`status ${ago(state.statusTime)}`);
     el.innerHTML = `<svg><use href="#i-info"/></svg><span>${bits.join(" · ")}</span>`;
     el.onclick = showCoverage;

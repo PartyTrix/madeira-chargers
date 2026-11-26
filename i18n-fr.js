@@ -172,4 +172,10 @@ window.I18N = {
   "Fast chargers outside MOBI.E come from OpenStreetMap: location and power only, no price or live status. Miio doesn't work there; use the network's own app.": "Certaines bornes viennent d'OpenStreetMap : position et puissance seulement, sans prix ni état.",
   "Not an official MOBI.E site.": "Site non officiel.",
   "status {0}": "état {0}",
+  "Ultra-fast, {0} kW": "Ultra-rapide, {0} kW",
+  "Prices": "Prix",
+  "Prices checked {0}": "Prix vérifiés {0}",
+  "What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a {0} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.": "Le prix publié par l'opérateur pour payer sans abonnement, TTC, ramené à un prix par kWh pour une recharge de {0} kWh. Un ~ indique le prix habituel du réseau, pas celui de cette borne. Votre appli ou la borne affiche le prix final avant de commencer.",
+  "Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.": "Libre, occupée ou hors service, d'après les données nationales toutes les 15 minutes, pour les bornes qui le transmettent.",
+  "Not an official government site.": "Site non officiel.",
 };
