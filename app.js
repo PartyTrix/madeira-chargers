@@ -486,7 +486,8 @@
   function placeTags(items) {
     const placed = [];
     const out = new Set();
-    const rank = (c) => (c.id === state.selected?.id ? 2 : 0) + (state.route?.on.has(c.id) ? 1 : 0);
+    // Ultra-fast stations get their tag before cheaper chargers nearby.
+    const rank = (c) => (c.id === state.selected?.id ? 4 : 0) + (state.route?.on.has(c.id) ? 2 : 0) + (c.ultra ? 1 : 0);
     const view = map.getBounds().pad(0.1);
     const priority = items.filter((c) => c.eff != null && view.contains([c.lat, c.lon])).sort((a, b) => rank(b) - rank(a) || a.eff - b.eff);
     for (const c of priority) {
