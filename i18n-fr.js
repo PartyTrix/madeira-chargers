@@ -178,4 +178,9 @@ window.I18N = {
   "What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a {0} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.": "Le prix publié par l'opérateur pour payer sans abonnement, TTC, ramené à un prix par kWh pour une recharge de {0} kWh. Un ~ indique le prix habituel du réseau, pas celui de cette borne. Votre appli ou la borne affiche le prix final avant de commencer.",
   "Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.": "Libre, occupée ou hors service, d'après les données nationales toutes les 15 minutes, pour les bornes qui le transmettent.",
   "Not an official government site.": "Site non officiel.",
+  "Open route with stops in Google Maps": "Ouvrir l'itinéraire avec les arrêts dans Google Maps",
+  "Google Maps takes up to 9 stops per route, so this trip opens in {0} parts:": "Google Maps accepte 9 arrêts au plus par itinéraire, ce trajet s'ouvre donc en {0} parties :",
+  "Part {0}: stop {1} to the end": "Partie {0} : arrêt {1} jusqu'à l'arrivée",
+  "Part 1: start to stop {0}": "Partie 1 : départ jusqu'à l'arrêt {0}",
+  "Part {0}: stop {1} to {2}": "Partie {0} : arrêt {1} à {2}",
 };
