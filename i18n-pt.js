@@ -178,4 +178,9 @@ window.I18N = {
   "What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a {0} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.": "O preço que o operador publica para pagar sem assinatura, com IVA, como um preço por kWh para um carregamento de {0} kWh. Um ~ indica o preço habitual da rede, não o deste posto. A app ou o posto mostra o preço final antes de começar.",
   "Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.": "Livre, em uso ou avariado, dos dados nacionais franceses a cada 15 minutos, para os postos que o comunicam.",
   "Not an official government site.": "Não é um site oficial do governo.",
+  "Open route with stops in Google Maps": "Abrir percurso com paragens no Google Maps",
+  "Google Maps takes up to 9 stops per route, so this trip opens in {0} parts:": "O Google Maps aceita até 9 paragens por percurso, por isso esta viagem abre em {0} partes:",
+  "Part {0}: stop {1} to the end": "Parte {0}: paragem {1} até ao destino",
+  "Part 1: start to stop {0}": "Parte 1: partida até à paragem {0}",
+  "Part {0}: stop {1} to {2}": "Parte {0}: paragem {1} a {2}",
 };

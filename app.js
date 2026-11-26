@@ -1271,13 +1271,36 @@
       ? tr`No fast charger within reach after km ${gap.toFixed(0)}. Plan this trip with your car's own planner, or turn a filter off.`
       : n === 1 ? tr`1 charging stop with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
         : n ? tr`${n} charging stops with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
-        : tr`No charging stop needed with a ${state.range} km range.`}</p>${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
+        : tr`No charging stop needed with a ${state.range} km range.`}</p>${n && gap == null ? googleRoute(stops) : ""}${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
     if (n) fillRows($("stop-list"), stops, (c) => [tr`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
       c.max_kw ? `${fmtKw(c.max_kw)} kW` : null].filter(Boolean).join(" · "), "route");
     stops.forEach((c, i) => L.marker([c.lat, c.lon], {
       icon: L.divIcon({ className: "stop-pin", html: `<span>${i + 1}</span>`, iconSize: [26, 26] }),
       interactive: false, keyboard: false, zIndexOffset: 1000,
     }).addTo(stopLayer));
+  }
+
+  // The whole trip (start, every charging stop, destination) as Google Maps
+  // directions. A link takes at most 9 stops in between, so a longer trip is
+  // split into parts that each end where the next one starts.
+  const GMAPS_STOPS = 9;
+  function googleRoute(stops) {
+    const r = state.route;
+    const pts = [r.from, ...stops.map((c) => [c.lat, c.lon]), [r.place.lat, r.place.lon]].map(([a, b]) => `${(+a).toFixed(6)},${(+b).toFixed(6)}`);
+    const parts = [];
+    for (let i = 0; i < pts.length - 1; i += GMAPS_STOPS + 1) parts.push(pts.slice(i, i + GMAPS_STOPS + 2));
+    const url = (p) => "https://www.google.com/maps/dir/?api=1&travelmode=driving"
+      + `&origin=${p[0]}&destination=${p[p.length - 1]}`
+      + (p.length > 2 ? `&waypoints=${p.slice(1, -1).map(encodeURIComponent).join("%7C")}` : "");
+    const icon = '<svg><use href="#i-route"/></svg>';
+    if (parts.length === 1) return `<a class="gmaps-route" data-track="gmaps-route" href="${url(parts[0])}" target="_blank" rel="noopener">${icon}${tr`Open route with stops in Google Maps`}</a>`;
+    let stop = 0;
+    return `<p class="gmaps-note">${tr`Google Maps takes up to 9 stops per route, so this trip opens in ${parts.length} parts:`}</p>
+      <div class="gmaps-parts">${parts.map((p, i) => {
+        const from = stop, to = stop + p.length - 1; stop = to;
+        const label = i === parts.length - 1 ? tr`Part ${i + 1}: stop ${from} to the end` : i === 0 ? tr`Part 1: start to stop ${to}` : tr`Part ${i + 1}: stop ${from} to ${to}`;
+        return `<a class="gmaps-route" data-track="gmaps-route" href="${url(p)}" target="_blank" rel="noopener">${icon}${label}</a>`;
+      }).join("")}</div>`;
   }
 
   function clearRoute() {
