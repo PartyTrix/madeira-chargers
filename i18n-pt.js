@@ -185,4 +185,13 @@ window.I18N = {
   "Part {0}: stop {1} to {2}": "Parte {0}: paragem {1} a {2}",
   "From": "De",
   "Your location": "A sua localização",
+  "Or drive straight there, without stops:": "Ou vá diretamente, sem paragens:",
+  "Share the stops": "Partilhar paragens",
+  "Google Maps shows the stops as map points. Share the stops to keep their names, speeds and prices.": "O Google Maps mostra as paragens como pontos no mapa. Partilhe as paragens para guardar os nomes, potências e preços.",
+  "{0} to {1}: {2} km, {3} charging stops ({4} km range)": "{0} a {1}: {2} km, {3} paragens para carregar (autonomia {4} km)",
+  "no price data": "sem preço",
+  "Whole route in Google Maps:": "Percurso completo no Google Maps:",
+  "Charging stops": "Paragens para carregar",
+  "Stops copied": "Paragens copiadas",
+  "Couldn't copy the stops": "Não foi possível copiar as paragens",
 };

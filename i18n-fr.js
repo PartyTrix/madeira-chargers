@@ -185,4 +185,13 @@ window.I18N = {
   "Part {0}: stop {1} to {2}": "Partie {0} : arrêt {1} à {2}",
   "From": "Départ",
   "Your location": "Votre position",
+  "Or drive straight there, without stops:": "Ou allez-y directement, sans arrêt :",
+  "Share the stops": "Partager les arrêts",
+  "Google Maps shows the stops as map points. Share the stops to keep their names, speeds and prices.": "Google Maps affiche les arrêts comme des points sur la carte. Partagez les arrêts pour garder leurs noms, puissances et prix.",
+  "{0} to {1}: {2} km, {3} charging stops ({4} km range)": "{0} → {1} : {2} km, {3} arrêts de recharge (autonomie {4} km)",
+  "no price data": "prix inconnu",
+  "Whole route in Google Maps:": "Itinéraire complet dans Google Maps :",
+  "Charging stops": "Arrêts de recharge",
+  "Stops copied": "Arrêts copiés",
+  "Couldn't copy the stops": "Impossible de copier les arrêts",
 };

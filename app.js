@@ -1198,13 +1198,14 @@
             <button class="text-btn" id="route-clear" aria-label="${tr`Clear route`}"><svg><use href="#i-close"/></svg></button>
           </div>
           ${fromField()}
-          ${navLink(primary, "nav-primary")}
-          <div class="nav-more" style="margin-top:0">${more.map((l) => navLink(l)).join("")}</div>
           <div class="range-row">
             <label for="range">${tr`Your car's range`}</label>
             <span class="range-input"><input id="range" type="number" inputmode="numeric" min="50" max="1000" step="10" placeholder="${tr`e.g. 300`}" value="${state.range || ""}"> km</span>
           </div>
           <div id="stops-summary" class="stops-summary" hidden></div>
+          <div id="nav-label" class="nav-label" hidden>${tr`Or drive straight there, without stops:`}</div>
+          ${navLink(primary, "nav-primary")}
+          <div class="nav-more" style="margin-top:0">${more.map((l) => navLink(l)).join("")}</div>
           <h1 id="route-title" style="font-size:16px;margin-top:4px"></h1>
         </div>
         <ol id="route-list" class="list"></ol>`;
@@ -1323,9 +1324,11 @@
     stopLayer.clearLayers();
     if (!box) return;
     box.hidden = !plan;
-    if (!plan) return;
+    if (!plan) { if ($("nav-label")) $("nav-label").hidden = true; return; }
     const { stops, gap } = plan;
     const n = stops.length;
+    const label0 = $("nav-label");
+    if (label0) label0.hidden = true;
     box.className = "stops-summary" + (gap != null ? " warn" : "");
     const on = state.route.on;
     box.innerHTML = `<p>${gap != null
@@ -1333,6 +1336,9 @@
       : n === 1 ? tr`1 charging stop with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
         : n ? tr`${n} charging stops with a ${state.range} km range: fast chargers, 10 to 80%, the cheapest near the end of each leg.`
         : tr`No charging stop needed with a ${state.range} km range.`}</p>${n && gap == null ? googleRoute(stops) : ""}${n ? '<ol class="list stop-list" id="stop-list"></ol>' : ""}`;
+    const label = $("nav-label");
+    if (label) label.hidden = !(n && gap == null);
+    $("share-stops")?.addEventListener("click", () => shareStops(stops));
     if (n) fillRows($("stop-list"), stops, (c) => [tr`Stop ${stops.indexOf(c) + 1}`, `km ${on.get(c.id).along.toFixed(0)}`,
       c.max_kw ? `${fmtKw(c.max_kw)} kW` : null].filter(Boolean).join(" · "), "route");
     stops.forEach((c, i) => L.marker([c.lat, c.lon], {
@@ -1345,23 +1351,59 @@
   // directions. A link takes at most 9 stops in between, so a longer trip is
   // split into parts that each end where the next one starts.
   const GMAPS_STOPS = 9;
-  function googleRoute(stops) {
+  const ll = (lat, lon) => `${(+lat).toFixed(6)},${(+lon).toFixed(6)}`;
+  function googleParts(stops) {
     const r = state.route;
-    const pts = [r.from, ...stops.map((c) => [c.lat, c.lon]), [r.place.lat, r.place.lon]].map(([a, b]) => `${(+a).toFixed(6)},${(+b).toFixed(6)}`);
+    const pts = [r.from, ...stops.map((c) => [c.lat, c.lon]), [r.place.lat, r.place.lon]].map(([a, b]) => ll(a, b));
     const parts = [];
     for (let i = 0; i < pts.length - 1; i += GMAPS_STOPS + 1) parts.push(pts.slice(i, i + GMAPS_STOPS + 2));
-    const url = (p) => "https://www.google.com/maps/dir/?api=1&travelmode=driving"
-      + `&origin=${p[0]}&destination=${p[p.length - 1]}`
-      + (p.length > 2 ? `&waypoints=${p.slice(1, -1).map(encodeURIComponent).join("%7C")}` : "");
+    return parts;
+  }
+  const googleUrl = (p) => "https://www.google.com/maps/dir/?api=1&travelmode=driving"
+    + `&origin=${p[0]}&destination=${p[p.length - 1]}`
+    + (p.length > 2 ? `&waypoints=${p.slice(1, -1).map(encodeURIComponent).join("%7C")}` : "");
+  function googleRoute(stops) {
+    const parts = googleParts(stops), url = googleUrl;
     const icon = '<svg><use href="#i-route"/></svg>';
-    if (parts.length === 1) return `<a class="gmaps-route" data-track="gmaps-route" href="${url(parts[0])}" target="_blank" rel="noopener">${icon}${tr`Open route with stops in Google Maps`}</a>`;
+    const share = `<button type="button" class="gmaps-route share-stops" id="share-stops" data-track="share-stops"><svg><use href="#i-share"/></svg>${tr`Share the stops`}</button>`;
+    if (parts.length === 1) return `<div class="gmaps-actions"><a class="gmaps-route" data-track="gmaps-route" href="${url(parts[0])}" target="_blank" rel="noopener">${icon}${tr`Open route with stops in Google Maps`}</a>${share}</div>
+      <p class="gmaps-note">${tr`Google Maps shows the stops as map points. Share the stops to keep their names, speeds and prices.`}</p>`;
     let stop = 0;
     return `<p class="gmaps-note">${tr`Google Maps takes up to 9 stops per route, so this trip opens in ${parts.length} parts:`}</p>
       <div class="gmaps-parts">${parts.map((p, i) => {
         const from = stop, to = stop + p.length - 1; stop = to;
         const label = i === parts.length - 1 ? tr`Part ${i + 1}: stop ${from} to the end` : i === 0 ? tr`Part 1: start to stop ${to}` : tr`Part ${i + 1}: stop ${from} to ${to}`;
         return `<a class="gmaps-route" data-track="gmaps-route" href="${url(p)}" target="_blank" rel="noopener">${icon}${label}</a>`;
-      }).join("")}</div>`;
+      }).join("")}${share}</div>
+      <p class="gmaps-note">${tr`Google Maps shows the stops as map points. Share the stops to keep their names, speeds and prices.`}</p>`;
+  }
+
+  // The stops as plain text (name, km, speed, price, address, map link) plus the
+  // Google Maps route, for the share sheet or the clipboard.
+  async function shareStops(stops) {
+    const r = state.route, on = r.on;
+    const from = r.start?.name || tr`Your location`;
+    const lines = [tr`${from} to ${r.place.name}: ${r.km.toFixed(0)} km, ${stops.length} charging stops (${state.range} km range)`, ""];
+    stops.forEach((c, i) => {
+      const price = c.eff == null ? tr`no price data` : c.isFree ? tr`Free` : `${priceTag(c)}/kWh`;
+      lines.push(`${i + 1}. ${c.title}`);
+      lines.push(`   km ${on.get(c.id).along.toFixed(0)} · ${c.max_kw ? `${fmtKw(c.max_kw)} kW · ` : ""}${price}`);
+      if (c.address && !c.address.startsWith(c.title)) lines.push(`   ${c.address}`);
+      lines.push(`   https://www.google.com/maps/search/?api=1&query=${ll(c.lat, c.lon)}`);
+    });
+    const parts = googleParts(stops);
+    lines.push("", tr`Whole route in Google Maps:`, ...parts.map(googleUrl), "", location.origin + location.pathname);
+    const text = lines.join("\n");
+    try {
+      if (navigator.share && matchMedia("(pointer: coarse)").matches) { await navigator.share({ title: tr`Charging stops`, text }); return; }
+    } catch (e) { if (e?.name === "AbortError") return; }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast(tr`Stops copied`);
+    } catch {
+      toast(tr`Couldn't copy the stops`);
+    }
+    setTimeout(() => toast(), 2500);
   }
 
   function clearRoute() {
