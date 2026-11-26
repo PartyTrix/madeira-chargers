@@ -493,7 +493,7 @@
       const pt = map.latLngToLayerPoint([c.lat, c.lon]);
       // Real tag sizes; zoomed out, tags are compact (smaller, no bolt) so more fit.
       const compact = map.getZoom() < 13;
-      const w = compact ? 10 + priceTag(c).length * 6.5 : 16 + priceTag(c).length * 8 + (c.ultra ? 18 : c.fast ? 12 : 0);
+      const w = compact ? 10 + priceTag(c).length * 6.5 + (c.ultra ? 14 : 0) : 16 + priceTag(c).length * 8 + (c.ultra ? 22 : c.fast ? 12 : 0);
       const h = compact ? 19 : 26, tip = compact ? 5 : 7;
       const box = { l: pt.x - w / 2, r: pt.x + w / 2, t: pt.y - h - tip, b: pt.y };
       if (placed.some((p) => box.l < p.r && box.r > p.l && box.t < p.b && box.b > p.t)) continue;
@@ -509,7 +509,7 @@
       icon: L.divIcon({
         className: "pin-wrap", iconSize: null,
         html: map.getZoom() < 13 && !sel
-          ? `<span class="pin-tag compact${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${priceTag(c)}</span>`
+          ? `<span class="pin-tag compact${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${c.ultra ? '<svg class="b2"><use href="#i-bolt2"/></svg>' : ""}${priceTag(c)}</span>`
           : `<span class="pin-tag${sel ? " selected" : ""}${c.est ? " approx" : ""}${c.ultra ? " ultra" : ""}" style="--c:var(${c.colourVar})">${c.ultra ? '<svg class="b2"><use href="#i-bolt2"/></svg>' : c.fast ? '<svg><use href="#i-bolt"/></svg>' : ""}${priceTag(c)}</span>`,
       }),
       keyboard: true, title: c.title, riseOnHover: true, zIndexOffset: sel ? 1000 : 0,
