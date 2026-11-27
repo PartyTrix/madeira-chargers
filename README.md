@@ -1,6 +1,6 @@
 # Madeira EV Chargers
 
-A fast, mobile-first map of every public EV charger in Portugal on the MOBI.E network: Madeira (the default view), the Azores and the mainland.
+A fast, mobile-first map of the public EV chargers in Portugal on the MOBI.E network (plus Tesla and other networks from OpenStreetMap): Madeira (the default view), the Azores and the mainland.
 Pins are coloured by price, and each charger has one-tap **Google Maps / Apple Maps / Waze** buttons.
 Payment still happens in Miio or any other charging app.
 
@@ -74,7 +74,7 @@ To fix or add a price, edit `data/tariffs.json` on GitHub (pencil icon):
 
 ## Filters
 
-Above the map: "Show prices" and "50 kW+", plus a "Filters" button (with a count of active ones) that opens a menu with free now (live status), has a price, pay by card, motorway service areas and plug type (CCS, Type 2, CHAdeMO). Only three chips sit on the map, so the row fits even a 320 px phone; under 360 px "Show prices" shortens to "Prices". "Pay by card" uses the payment methods operators publish on the NAP and is hidden on Madeira (no card payment there in practice). "Motorway" has no flag in the feed: `isMotorway()` in `app.js` reads names and addresses like "Área de Serviço", "(A2) KM 148" or "A25 - AS Vilar Formoso" (~280 sites).
+Above the map: "Show prices" and "50 kW+", plus a "Filters" button (with a count of active ones) that opens a menu with available now (live status), price estimate available, bank card at the charger, motorway service areas and plug type (CCS, Type 2, CHAdeMO). Only three chips sit on the map, so the row fits even a 320 px phone; under 360 px "Show prices" shortens to "Prices". "Bank card at the charger" uses the payment methods operators publish on the NAP and is hidden on Madeira (no card payment there in practice). "Motorway" has no flag in the feed: `isMotorway()` in `app.js` reads names and addresses like "Área de Serviço", "(A2) KM 148" or "A25 - AS Vilar Formoso" (~280 sites).
 
 ## Search and routes
 

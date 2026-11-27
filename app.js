@@ -307,10 +307,10 @@
   }
   const liveTotal = (c) => c.live.free + c.live.busy + c.live.broken;
   const liveShort = (c) => !c.live ? null
-    : c.live.free ? tr`${c.live.free} of ${liveTotal(c)} free`
+    : c.live.free ? tr`${c.live.free} of ${liveTotal(c)} available`
       : c.live.busy ? tr`all in use` : tr`out of order`;
   const liveLong = (c) => (c.live.free
-    ? (liveTotal(c) === 1 ? tr`1 of 1 plug free` : tr`${c.live.free} of ${liveTotal(c)} plugs free`)
+    ? (liveTotal(c) === 1 ? tr`1 of 1 plug available` : tr`${c.live.free} of ${liveTotal(c)} plugs available`)
       + (c.live.broken ? " · " + tr`${c.live.broken} out of order` : "")
     : c.live.busy ? tr`All plugs in use` : tr`Out of order`);
   const hhmm = (d) => d.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" });
@@ -630,6 +630,7 @@
   const navLink = ([name, href, key], cls = "") =>
     `<a class="${cls}" data-track="navigate-${key}" href="${href}" ${href.startsWith("geo:") ? "" : 'target="_blank" rel="noopener"'}>${cls === "nav-primary" ? '<svg><use href="#i-nav"/></svg>' + tr`Navigate with ${name}` : name}</a>`;
 
+  const MOBIE_GUIDE = "https://www.mobie.pt/en/mobility/are-you-travelling-through-portugal-in-an-electric-vehicle";
   const MIIO = isAndroid
     ? "https://play.google.com/store/search?q=miio&c=apps"
     : "https://apps.apple.com/pt/app/miio/id1462182013";
@@ -687,9 +688,9 @@
         <div class="band">${BANDS[c.band](REGIONS[c.region].name)}</div>
         <div class="parts">${bd ? tr`≈ ${euro(bd.total)} for ${bd.n} kWh, incl. VAT` : esc(parts.join(" + "))}</div>
       </div>
-      <p class="trust"><span class="conf">${c.isFree ? tr`Operator says free` : tr`Estimate`}</span>
+      <p class="trust"><span class="conf">${c.isFree ? tr`Operator says free` : tr`Estimate · Miio tariff`}</span>
         ${state.dataTime ? tr`Operator's price from MOBI.E, checked ${ago(state.dataTime)}.` : tr`Operator's price from MOBI.E.`}
-        ${tr`Your app shows the final price before you start; parking or idle fees aren't included.`}</p>
+        ${tr`Other apps charge a different energy price, so your total may differ. Your app shows the final price before you start; parking or idle fees aren't included.`}</p>
       ${bd ? `<details class="note"><summary><svg><use href="#i-info"/></svg>${tr`Estimated total. How is it worked out?`}</summary>
         <table class="breakdown">
           <tr><td>${tr`Charger operator (${esc(parts.join(" + "))})`}</td><td>${euro(bd.operator)}</td></tr>
@@ -721,9 +722,13 @@
     } else if (c.payUnknown) {
       pay.push(`<li class="warn"><svg><use href="#i-info"/></svg>${tr`Not on the MOBI.E network, so Miio probably won't work here. Check the operator's app or the charger.`}</li>`);
     } else if (c.pay.apps) {
-      pay.push(`<li><svg><use href="#i-phone"/></svg>${tr`Miio, any MOBI.E app or a MOBI.E card`}</li>`);
+      pay.push(`<li><svg><use href="#i-phone"/></svg><span>${tr`The app or card of a MOBI.E electricity supplier, such as Miio. Set it up and test it before you travel.`}
+        <button type="button" class="link-btn" id="pay-help">${tr`How to pay as a visitor`}</button></span></li>`);
     }
     if (!FR && c.card) pay.push(`<li><svg><use href="#i-card"/></svg>${tr`Bank card at the charger (the operator says so; check on site)`}</li>`);
+
+    const source = FR ? "" : c.source === "osm" ? tr`Data: OpenStreetMap (location and power only)`
+      : state.dataTime ? tr`Data: MOBI.E via the National Access Point, updated ${ago(state.dataTime)}` : tr`Data: MOBI.E via the National Access Point`;
 
     const sockets = (c.sockets || []).map((s) =>
       `<li><svg><use href="#${(s.kw || 0) >= 50 ? "i-bolt" : "i-plug"}"/></svg>${s.count}× ${esc(s.type)}
@@ -756,6 +761,7 @@
           ${hours ? `<li><svg><use href="#i-clock"/></svg>${tr`Open ${esc(hours)}`}</li>` : ""}</ul>` : ""}
 
         <div id="alts"></div>
+        ${source ? `<div class="code">${esc(source)}</div>` : ""}
         <div class="code">${c.mobie ? tr`MOBI.E code` : c.source === "osm" ? "OpenStreetMap" : "ID"}: ${esc(c.source === "osm" ? c.id.replace(/^osm-/, "") : c.id)}</div>
       </div>`;
     showView("detail-view");
@@ -763,6 +769,8 @@
     showAlternatives(c);
     $("back").onclick = () => closeDetail(true);
     $("close").onclick = () => closeDetail(false);
+    const ph = $("pay-help");
+    if (ph) ph.onclick = () => showCoverage("detail-view");
     setPanel(true);
     $("back").focus({ preventScroll: true });
   }
@@ -799,7 +807,7 @@
   }
 
   // What the map knows, per region and source.
-  function showCoverage() {
+  function showCoverage(from) {
     const rows = Object.entries(REGIONS).map(([k, r]) => {
       const cs = state.all.filter((c) => c.region === k && c.source !== "osm");
       return [r.name, cs.length, cs.filter((c) => c.eff != null).length, cs.filter((c) => c.live).length];
@@ -807,6 +815,7 @@
     const osm = state.all.filter((c) => c.source === "osm");
     if (osm.length) rows.push([tr`Tesla and others`, osm.length, 0, 0]);
     const checked = state.dataTime ? " " + tr`Last checked ${ago(state.dataTime)}.` : "";
+    const MADEIRA_NOCARD = " " + tr`Not in Madeira: chargers there don't take bank cards in practice.`;
     const updated = state.statusTime ? " " + tr`Last update ${ago(state.statusTime)}.` : "";
     const pct = (a, n) => (n ? Math.round((a / n) * 100) + "%" : "–");
     $("help-view").innerHTML = `
@@ -818,26 +827,40 @@
         ${FR ? `<h3>${tr`Prices`}</h3>
         <p>${tr`What the operator publishes for paying without a subscription, incl. VAT, as one price per kWh for a ${sessionKwh()} kWh charge. A ~ means the network's usual price, not this charger's own. Your app or the charger shows the final price before you start.`}${checked}</p>
         <h3>${tr`Live status`}</h3>
-        <p>${tr`Free, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.`}${updated} ${tr`Grey means unknown, not free.`}</p>
+        <p>${tr`Available, in use or out of order, from France's national charging data every 15 minutes, for the chargers that report it.`}${updated} ${tr`Grey means the status is unknown, not that it's available.`}</p>
         <p>${tr`Not an official government site.`}</p>` : `
+        <h3 id="pay-guide">${tr`Paying as a visitor`}</h3>
+        <p>${tr`You don't need to live in Portugal to charge, but how you pay depends on the network and the charger.`}</p>
+        <ol>
+          <li>${tr`On MOBI.E chargers (most of the map), start and pay with the app or card of a MOBI.E electricity supplier, such as Miio.`}</li>
+          <li>${tr`Install the app, register and add a payment card before your trip, and check it works.`}</li>
+          <li>${tr`Some chargers also let you pay on the spot with a bank card or QR code. The charger card says so when the operator publishes it.`}${MADEIRA_NOCARD}</li>
+          <li>${tr`Tesla and other networks outside MOBI.E use their own app.`}</li>
+          <li>${tr`At the charger, check the operator, the charger code and the price before you start.`}</li>
+        </ol>
+        <p><a href="${MOBIE_GUIDE}" target="_blank" rel="noopener">${tr`MOBI.E's guide for EV drivers`}</a></p>
         <h3>${tr`Prices are estimates`}</h3>
         <p>${tr`Each price adds the operator's fee (published on MOBI.E) to Miio's energy price, grid access and VAT, for a ${sessionKwh()} kWh charge. Other apps and subscriptions differ a little. Your app shows the final price before you start.`}${checked}</p>
         <h3>${tr`Live status`}</h3>
-        <p>${tr`Free, in use or out of order, from MOBI.E every 15 minutes.`}${updated} ${tr`Grey means unknown, not free.`}</p>
-        <h3>${tr`Tesla and other networks`}</h3>
-        <p>${tr`Fast chargers outside MOBI.E come from OpenStreetMap: location and power only, no price or live status. Miio doesn't work there; use the network's own app.`}</p>
+        <p>${tr`Available, in use or out of order, from MOBI.E every 15 minutes.`}${updated} ${tr`Grey means the status is unknown, not that it's available.`}</p>
+        <h3>${tr`Where the chargers come from`}</h3>
+        <p>${tr`Most chargers come from MOBI.E's official data via Portugal's National Access Point, with location, plugs, operator prices and live status where the operator reports them.`}${checked}</p>
+        <p>${tr`Tesla Superchargers and other chargers outside MOBI.E come from OpenStreetMap: location and power only, no price or live status, and possibly not complete. Miio doesn't work there; use the network's own app.`}</p>
+        <p>${tr`No price shown doesn't mean free, and unknown status doesn't mean out of order.`}</p>
         <p>${tr`Not an official MOBI.E site.`}</p>`}
       </div>`;
     showView("help-view");
     setPanel(true);
-    $("help-back").onclick = () => showView(state.route ? "route-view" : "list-view");
+    $("help-back").onclick = () => showView(from || (state.route ? "route-view" : "list-view"));
+    if (from) $("pay-guide")?.scrollIntoView();
     track("coverage");
   }
   function renderDataLine() {
     const el = $("data-line");
     if (!el) return;
 
-    const bits = [FR ? (state.dataTime ? tr`Prices checked ${ago(state.dataTime)}` : tr`Prices`) : tr`Prices are estimates`];
+    const bits = [FR ? (state.dataTime ? tr`Prices checked ${ago(state.dataTime)}` : tr`Prices`)
+      : tr`Estimated prices (Miio tariff)`];
     if (state.statusTime) bits.push(tr`status ${ago(state.statusTime)}`);
     el.innerHTML = `<svg><use href="#i-info"/></svg><span>${bits.join(" · ")}</span>`;
     el.onclick = showCoverage;

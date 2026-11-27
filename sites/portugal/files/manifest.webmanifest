@@ -1,7 +1,7 @@
 {
   "name": "Charge Portugal",
   "short_name": "Chargers",
-  "description": "Every public EV charger in Portugal on one map, with estimated all-in prices incl. VAT, fast-charger filters and one-tap navigation.",
+  "description": "Public EV chargers across Portugal on one map, with estimated prices incl. VAT, fast-charger filters and one-tap navigation.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
