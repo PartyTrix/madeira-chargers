@@ -1,7 +1,7 @@
 {
   "name": "Madeira EV Chargers",
   "short_name": "Chargers",
-  "description": "Find every public EV charger in Madeira with real prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.",
+  "description": "Public EV chargers in Madeira on one map, with estimated prices incl. VAT, fast-charger filters and one-tap navigation. Also covers the Azores and mainland Portugal.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

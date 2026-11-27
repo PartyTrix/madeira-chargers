@@ -90,16 +90,16 @@
       "aria-label=\"Plus de filtres\""
     ],
     [
-      "</svg>Free now<span",
-      "</svg>Libre maintenant<span"
+      "</svg>Available now<span",
+      "</svg>Disponible maintenant<span"
     ],
     [
-      "</svg>Has price<span",
+      "</svg>Has a price<span",
       "</svg>Avec prix<span"
     ],
     [
-      "</svg>Pay by card<span",
-      "</svg>Paiement par carte<span"
+      "</svg>Bank card at the charger<span",
+      "</svg>Carte bancaire sur place<span"
     ],
     [
       "</svg>Motorway service areas<span",
@@ -112,6 +112,10 @@
     [
       "id=\"filters-done\">Done<",
       "id=\"filters-done\">OK<"
+    ],
+    [
+      "title=\"Chargers whose operator says you can pay with a bank card at the charger, no app needed\"",
+      "title=\"Bornes dont l'opérateur dit accepter la carte bancaire sur place, sans appli\""
     ]
   ]
 }
