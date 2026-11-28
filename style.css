@@ -494,6 +494,27 @@ button.gmaps-route { font: inherit; font-weight: 600; font-size: 14.5px; cursor:
 .help ol { margin: 0 0 14px; padding-left: 20px; display: grid; gap: 4px; }
 .help h3 { font-size: 14px; margin: 14px 0 6px; }
 .help .actions { display: grid; gap: 8px; margin-top: 16px; }
+.help-icon {
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; margin: 6px 0 12px;
+  background: var(--brand-soft); color: var(--brand);
+}
+.help-icon svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; }
+.help-icon.off { background: var(--surface-2); color: var(--muted); position: relative; }
+.help-icon.off::after { content: ""; position: absolute; width: 30px; height: 2.5px; border-radius: 2px; background: currentColor; transform: rotate(-45deg); box-shadow: 0 0 0 2px var(--surface-2); }
+.help-steps { border: 1px solid var(--line); border-radius: 12px; padding: 2px 14px 2px; background: var(--surface); }
+.help-steps h3 { margin-top: 12px; }
+.help-steps ol { margin-bottom: 12px; }
+.help-steps.nudge { animation: nudge .5s ease; border-color: var(--p3); }
+@keyframes nudge { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+.help .help-small { font-size: 13.5px; margin: 12px 0 0; }
+.help .help-status { margin: 14px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); color: var(--ink); font-size: 14px; font-weight: 600; }
+.help .help-status[hidden] { display: none; }
+.help-status.ok { background: var(--brand-soft); color: var(--brand); }
+.help-status.bad { background: color-mix(in srgb, var(--p3) 16%, var(--surface)); }
+.help .nav-primary { width: 100%; border: 0; margin-top: 0; cursor: pointer; font: inherit; font-weight: 600; font-size: 17px; }
+.help .nav-primary svg { fill: none; stroke: currentColor; stroke-width: 2.2; }
+.help .nav-primary[aria-busy="true"] svg { animation: pulse 1s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .help-steps.nudge { animation: none; } }
 .btn-quiet {
   display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 12px;
   border: 1px solid var(--line); background: var(--surface-2); font-weight: 600;

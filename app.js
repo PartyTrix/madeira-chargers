@@ -982,22 +982,30 @@
   }
 
   // Ask for the position. Resolves with [lat, lon], or null when the user
-  // blocked it (then the help screen explains how to allow it again).
+  // said no (then the help screen offers to ask again, or explains how to
+  // switch it back on if the browser now refuses without asking).
   function locate() {
     return new Promise((resolve) => {
       if (!navigator.geolocation) { showLocationHelp("unsupported"); return resolve(null); }
       const btn = $("locate");
       btn.setAttribute("aria-busy", "true");
+      const asked = performance.now();
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           btn.removeAttribute("aria-busy");
+          const wasHelp = !$("help-view").hidden;
           setMe([pos.coords.latitude, pos.coords.longitude]);
-          if (!$("help-view").hidden) showView(state.route ? "route-view" : "list-view");
+          if (wasHelp) { showView(state.route ? "route-view" : "list-view"); toast(tr`Found you`); setTimeout(() => toast(), 1800); }
           resolve(state.me);
         },
-        (err) => {
+        async (err) => {
           btn.removeAttribute("aria-busy");
-          showLocationHelp(err.code === 1 ? "denied" : "unavailable");
+          if (err.code !== 1) { showLocationHelp("unavailable"); return resolve(null); }
+          // A "no" that comes back at once means no popup was shown: the browser
+          // remembers an earlier "Don't allow", so only its settings can undo it.
+          const perm = await geoPermission();
+          const silent = perm === "denied" || perm === "granted" || performance.now() - asked < 450;
+          showLocationHelp(silent ? "denied" : "declined");
           resolve(null);
         },
         { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 }
@@ -1005,39 +1013,99 @@
     });
   }
 
-  function showLocationHelp(reason) {
-    const title = reason === "denied" ? tr`Location is blocked for this site`
-      : reason === "unsupported" ? tr`This browser can't share your location`
-      : tr`Couldn't find your location`;
-    const steps = reason !== "denied" ? `<p>${tr`Make sure Location Services are on for your browser, then try again.`}</p>` : `
-      <p>${tr`Your browser remembers the "Don't allow". Switch it back on like this, then tap Try again:`}</p>
-      ${isIOS ? `<h3>iPhone (Safari)</h3><ol>
-        <li>${tr`Tap <b>aA</b> in the address bar, then <b>Website Settings</b>.`}</li>
-        <li>${tr`Set <b>Location</b> to <b>Ask</b> or <b>Allow</b>.`}</li>
-        <li>${tr`Still blocked? Settings → Privacy &amp; Security → Location Services → Safari Websites → <b>While Using</b>.`}</li></ol>`
-      : isAndroid ? `<h3>Android (Chrome)</h3><ol>
-        <li>${tr`Tap the <b>settings icon</b> left of the address.`}</li>
-        <li>${tr`Tap <b>Permissions</b> → <b>Location</b> → <b>Allow</b>.`}</li>
-        <li>${tr`Reload the page.`}</li></ol>`
-      : `<h3>${tr`On a computer`}</h3><ol>
-        <li>${tr`Click the <b>icon left of the address</b> (padlock or sliders).`}</li>
-        <li>${tr`Set <b>Location</b> to <b>Allow</b>, then reload the page.`}</li></ol>`}`;
+  async function geoPermission() {
+    try { return (await navigator.permissions.query({ name: "geolocation" })).state; } catch { return null; }
+  }
+
+  // While the help screen is open, notice when location gets switched back on
+  // (in the site settings, or in the iPhone Settings app) and carry on by itself.
+  let helpReason = null, permWatch = null;
+  const helpOpen = () => !$("help-view").hidden && helpReason === "denied";
+  async function watchPermission() {
+    if (permWatch !== null) return;
+    try { permWatch = await navigator.permissions.query({ name: "geolocation" }); } catch { permWatch = false; return; }
+    permWatch.addEventListener("change", () => { if (helpOpen() && permWatch.state !== "denied") resumeLocate(); });
+  }
+  document.addEventListener("visibilitychange", async () => {
+    if (document.visibilityState === "visible" && helpOpen() && (await geoPermission()) === "granted") resumeLocate();
+  });
+  function resumeLocate() {
+    helpStatus(tr`Location is on. Finding you…`, "ok");
+    locate();
+  }
+  function helpStatus(msg, kind) {
+    const el = $("help-status");
+    if (!el) return;
+    el.className = "help-status " + (kind || "");
+    el.textContent = msg;
+    el.hidden = !msg;
+  }
+
+  function showLocationHelp(reason, again = false) {
+    helpReason = reason;
+    const iosChrome = isIOS && /CriOS/.test(ua);
+    const content = reason === "declined" ? `
+        <div class="help-icon"><svg><use href="#i-locate"/></svg></div>
+        <h2>${tr`Find chargers near you`}</h2>
+        <p>${tr`With your location the map sorts chargers by distance and starts routes from where you are. This site never saves it.`}</p>`
+      : reason === "denied" ? `
+        <div class="help-icon off"><svg><use href="#i-locate"/></svg></div>
+        <h2>${tr`Location is switched off for this site`}</h2>
+        <p>${tr`Your browser remembers the earlier "Don't allow", so it won't ask again by itself. Switching it back on takes a few taps:`}</p>
+        <div class="help-steps">
+        ${iosChrome ? `<h3>iPhone (Chrome)</h3><ol>
+          <li>${tr`Open the iPhone <b>Settings</b> app and find <b>Chrome</b>.`}</li>
+          <li>${tr`Set <b>Location</b> to <b>While Using the App</b>.`}</li>
+          <li>${tr`Come back here and tap <b>Try again</b>.`}</li></ol>`
+        : isIOS ? `<h3>iPhone (Safari)</h3><ol>
+          <li>${tr`Tap <b>aA</b> in the address bar, then <b>Website Settings</b>.`}</li>
+          <li>${tr`Set <b>Location</b> to <b>Ask</b> or <b>Allow</b>.`}</li>
+          <li>${tr`Still blocked? Settings → Privacy &amp; Security → Location Services → Safari Websites → <b>While Using</b>.`}</li></ol>`
+        : isAndroid ? `<h3>Android (Chrome)</h3><ol>
+          <li>${tr`Tap the <b>settings icon</b> left of the address.`}</li>
+          <li>${tr`Tap <b>Permissions</b> → <b>Location</b> → <b>Allow</b>.`}</li>
+          <li>${tr`Still blocked? Check that <b>Location</b> is on in your phone's quick settings.`}</li></ol>`
+        : `<h3>${tr`On a computer`}</h3><ol>
+          <li>${tr`Click the <b>icon left of the address</b> (padlock or sliders).`}</li>
+          <li>${tr`Set <b>Location</b> to <b>Allow</b>.`}</li></ol>`}
+        </div>
+        <p class="help-small">${tr`Done? Tap Try again. No need to reload the page.`}</p>`
+      : `
+        <div class="help-icon off"><svg><use href="#i-locate"/></svg></div>
+        <h2>${reason === "unsupported" ? tr`This browser can't share your location` : tr`Couldn't find your location`}</h2>
+        <p>${tr`Make sure Location Services are on for your browser, then try again.`}</p>`;
     $("help-view").innerHTML = `
       <div class="help">
         <div class="detail-top"><button class="text-btn" id="help-back"><svg><use href="#i-back"/></svg>${tr`Back`}</button></div>
-        <h2>${title}</h2>
-        ${steps}
+        ${content}
+        <p class="help-status" id="help-status" role="status" hidden></p>
         <div class="actions">
-          <button class="nav-primary" id="help-retry"><svg><use href="#i-locate"/></svg>${tr`Try again`}</button>
+          ${reason === "unsupported" ? "" : `<button class="nav-primary" id="help-retry"><svg><use href="#i-locate"/></svg>${reason === "declined" ? tr`Use my location` : tr`Try again`}</button>`}
           <button class="btn-quiet" id="help-pick"><svg><use href="#i-pin"/></svg>${tr`Set my location on the map`}</button>
         </div>
+        <p class="help-small">${tr`Or search for a town or address in the box at the top.`}</p>
       </div>`;
     showView("help-view");
     setPanel(true);
+    if (again) {
+      helpStatus(tr`Still switched off. Follow the steps above, then try again.`, "bad");
+      $("help-view").querySelector(".help-steps")?.classList.add("nudge");
+      $("help-status").scrollIntoView({ block: "center", behavior: "smooth" });
+    }
     $("help-back").onclick = () => showView(state.route ? "route-view" : "list-view");
-    $("help-retry").onclick = () => (reason === "denied" && !isIOS ? location.reload() : locate());
+    const retry = $("help-retry");
+    if (retry) retry.onclick = async () => {
+      retry.setAttribute("aria-busy", "true");
+      helpStatus(tr`Checking…`);
+      track("location-retry");
+      // Known to be blocked: no point asking, show the steps (again) right away.
+      if ((await geoPermission()) === "denied") { showLocationHelp("denied", true); return; }
+      const wasBlocked = reason === "denied";
+      if (!(await locate()) && wasBlocked && helpReason === "denied") showLocationHelp("denied", true);
+    };
     $("help-pick").onclick = startPicking;
-    track("location-" + reason);
+    if (reason === "denied") watchPermission();
+    if (!again) track("location-" + reason);
   }
 
   let toastEl;
